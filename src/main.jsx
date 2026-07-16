@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {ArrowDown, ArrowLeft, ArrowUpRight, CalendarDays, MapPin, Menu, X, LockKeyhole, BookOpen, ExternalLink} from 'lucide-react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import './style.css';
 import './puzzle.css';
 
 const chapters = [
-  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'城市把名字交給你',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:['1916工坊','臺中市第三公有零售市場','富興工廠1962文創聚落','合作金庫銀行 台中分行','臺中市役所','三信商業銀行 台中分行','永生蔘藥行三連棟','柳川古道','第二市場','柳美術館','文化部文化資產園區']},
-  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'真人角色與城市場景在終章交會。解開最後一道謎題，翻閱一份不曾被收進史書的本島人手稿。',place:'臺中舊城・第二章',tone:'blue',points:['中山綠橋','台中市第四信用合作社','中央書局','全安堂台灣台中太陽餅博物館','歷史建築臺中第四市場','綠空鐵道1908']}
+  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'城市把名字交給你',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',lat:24.131331,lng:120.681887},{name:'臺中市第三公有零售市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',lat:24.1411747,lng:120.6794953},{name:'柳川古道',lat:24.1423566,lng:120.6775796},{name:'第二市場',lat:24.1424183,lng:120.6791452},{name:'柳美術館',lat:24.1419249,lng:120.6777138},{name:'文化部文化資產園區',lat:24.1330547,lng:120.6805222}]},
+  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'真人角色與城市場景在終章交會。解開最後一道謎題，翻閱一份不曾被收進史書的本島人手稿。',place:'臺中舊城・第二章',tone:'blue',points:[{name:'中山綠橋',lat:24.1378842,lng:120.6831311},{name:'台中市第四信用合作社',lat:24.1390204,lng:120.6819297},{name:'中央書局',lat:24.1408452,lng:120.6811557},{name:'全安堂台灣台中太陽餅博物館',lat:24.1397217,lng:120.6824917},{name:'歷史建築臺中第四市場',lat:24.140556,lng:120.6933848},{name:'綠空鐵道1908',lat:24.1354544,lng:120.6821701}]}
 ];
 
 const puzzles = [
@@ -24,6 +26,29 @@ function Puzzle({item,index}){
   </article>
 }
 
+function StoryMap({onDayChange}){
+ const mapNode=useRef(null); const mapInstance=useRef(null); const [filter,setFilter]=useState('all');
+ useEffect(()=>{
+  if(mapInstance.current) mapInstance.current.remove();
+  const map=L.map(mapNode.current,{zoomControl:false,scrollWheelZoom:false}); mapInstance.current=map;
+  L.control.zoom({position:'bottomright'}).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  const visible=chapters.flatMap((chapter,day)=>filter==='all'||filter===day+1?chapter.points.map((point,index)=>({...point,day,index})):[]);
+  const bounds=[];
+  visible.forEach(point=>{
+   const dayClass=point.day===0?'day-one':'day-two';
+   const icon=L.divIcon({className:'story-pin-wrap',html:`<span class="story-pin ${dayClass}">${point.index+1}</span>`,iconSize:[38,46],iconAnchor:[19,42],popupAnchor:[0,-38]});
+   const navigation=`https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`;
+   L.marker([point.lat,point.lng],{icon}).addTo(map).bindPopup(`<div class="story-popup"><small>DAY ${point.day+1} · STOP ${String(point.index+1).padStart(2,'0')}</small><strong>${point.name}</strong><a href="${navigation}" target="_blank" rel="noreferrer">開啟導航 ↗</a></div>`).on('click',()=>onDayChange(point.day));
+   bounds.push([point.lat,point.lng]);
+  });
+  chapters.forEach((chapter,day)=>{if(filter==='all'||filter===day+1)L.polyline(chapter.points.map(p=>[p.lat,p.lng]),{color:day===0?'#a73a2b':'#6a4a9b',weight:3,opacity:.85,dashArray:'7 8'}).addTo(map)});
+  map.fitBounds(bounds,{padding:[40,40],maxZoom:16});
+  return()=>{map.remove();mapInstance.current=null};
+ },[filter,onDayChange]);
+ return <div className="story-map-shell"><div className="map-filter" aria-label="切換路線"><button className={filter==='all'?'active':''} onClick={()=>setFilter('all')}>全部</button><button className={filter===1?'active day-one':''} onClick={()=>setFilter(1)}>DAY 1</button><button className={filter===2?'active day-two':''} onClick={()=>setFilter(2)}>DAY 2</button></div><div ref={mapNode} className="story-map"></div></div>
+}
+
 function RoutePage({chapter,index}){
  const back=()=>window.location.assign('./#journey');
  const mapsUrl=name=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(name+' 台中');
@@ -31,7 +56,7 @@ function RoutePage({chapter,index}){
   <header className="route-nav"><button className="brand" onClick={back}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={back}><ArrowLeft size={18}/> 回到兩日章節</button></header>
   <main>
    <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>沿著章節順序走進臺中舊城，共有 <b>{chapter.points.length}</b> 個可走地點。</p></div><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
-   <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((name,i)=><article className="route-stop" key={name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{name}</h2><a href={mapsUrl(name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
+   <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((point,i)=><article className="route-stop" key={point.name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{point.name}</h2><a href={mapsUrl(point.name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
    <section className="route-finish"><p className="eyebrow">END OF ROUTE · CONTINUE THE STORY</p><h2>走完路線，回到謎題解鎖手稿。</h2><button onClick={()=>window.location.assign('./#puzzles')}>前往謎題手稿 <ArrowUpRight size={18}/></button></section>
   </main>
  </div>
@@ -53,7 +78,7 @@ function App(){
    <section className="manifesto" id="about"><span>01</span><div><p>活動命題</p><h2>歷史不是完成式，<br/>而是一頁頁<span>等待翻閱</span>的手稿。</h2></div><p className="sidecopy">參與者在兩日活動中走入街區，與真人角色相遇、交換線索並完成謎題。手機是打開故事的鑰匙，真正的內容則發生在城市與人的相遇之間。</p></section>
    <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，前往獨立頁面查看當日路線。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>window.location.assign('./?day='+(i+1))} onKeyDown={e=>e.key==='Enter'&&window.location.assign('./?day='+(i+1))}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="前往當日路線頁面">開啟路線頁 <ArrowUpRight/></button></div></div></article>)}</div></section>
    <section className="puzzles" id="puzzles"><div className="puzzle-intro"><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h2>解謎・翻閱本島人手稿</h2><p>答案藏在走讀現場。輸入正確暗號後，塵封的手稿殘頁將在此展開。</p></div><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label} item={p} index={i}/>)}</div></section>
-   <section className="map" id="map"><div className="map-grid"><span className="road r1"></span><span className="road r2"></span><span className="road r3"></span>{chapters.map((n,i)=><button key={i} className={'pin p'+i+(active===i?' active':'')} onClick={()=>setActive(i)}><i>{i+1}</i><b>{n.title}</b></button>)}</div><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>沿著兩日路線，數位線索會把你帶到真實街角。請抬起頭，故事的下一句也許正由某個人親口說出。</p><div className="selected"><CalendarDays/><span>{chapters[active].date}<small>{chapters[active].place}</small></span></div></div></section>
+   <section className="map" id="map"><StoryMap onDayChange={setActive}/><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>地圖標示兩日活動的真實位置。切換路線、縮放街區或點選編號，即可查看地點並開啟導航。</p><div className="selected"><CalendarDays/><span>{chapters[active].date}<small>{chapters[active].place} · {chapters[active].points.length} 個地點</small></span></div></div></section>
   </main>
   <footer><div className="brand foot"><span>翻閱1938</span><i>待續</i></div><p>我們留下的不是結局，<br/>而是邀請下一個人繼續閱讀。</p><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 那些待續的章節</small></div></footer>
  </>
