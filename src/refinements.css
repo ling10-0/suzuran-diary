@@ -1,0 +1,52 @@
+footer {
+  min-height: 225px;
+  padding: 62px 7vw;
+  align-items: center;
+}
+
+footer > p {
+  margin: 0;
+  padding: 0 4vw;
+}
+
+footer > div:last-child {
+  justify-content: center;
+  gap: 20px;
+}
+
+footer button {
+  padding: 0;
+}
+
+.foot {
+  align-self: center;
+}
+
+@media (max-width: 800px) {
+  .puzzle-page-hero {
+    padding: 70px 7vw 50px;
+    border-bottom-width: 8px;
+  }
+
+  .puzzle-page-hero h1 {
+    font-size: 43px;
+  }
+
+  .puzzle-page-content {
+    padding-top: 55px;
+  }
+
+  .map-filter button {
+    padding-inline: 7px;
+    font-size: 9px;
+  }
+
+  footer {
+    min-height: 0;
+    align-items: start;
+  }
+
+  footer > p {
+    padding: 0;
+  }
+}
