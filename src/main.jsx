@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ArrowDown, ArrowLeft, ArrowUpRight, CalendarDays, MapPin, Menu, X, LockKeyhole, BookOpen, ExternalLink, Phone, Clock3, Ticket} from 'lucide-react';
+import {ArrowDown, ArrowLeft, ArrowUpRight, CalendarDays, MapPin, Menu, X, LockKeyhole, BookOpen, ExternalLink, Instagram} from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
@@ -63,21 +63,31 @@ function RoutePage({chapter,index}){
  </div>
 }
 
+function InfoPage(){
+ const home=()=>window.location.assign('./');
+ const link=hash=>window.location.assign('./'+hash);
+ return <div className="participant-info-page">
+  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到活動首頁</button></header>
+  <main><section className="participant-info-hero"><p className="eyebrow">PARTICIPANT INFORMATION</p><h1>參加者資訊</h1><p>集合提醒、活動異動與最新公告，請以官方 Instagram 發布內容為準。</p></section>
+  <section className="participant-info-body"><a className="instagram-card" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>OFFICIAL INSTAGRAM</small><h2>@tcold.spots</h2><p>查看最新公告與活動提醒</p></div><ExternalLink/></a><div className="participant-links"><button onClick={()=>link('#journey')}><span>01</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>02</span><b>章節座標</b><small>開啟真實點位與導航</small><ArrowUpRight/></button><button onClick={()=>link('#puzzles')}><span>03</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
+ </div>
+}
+
 function App(){
- const day=Number(new URLSearchParams(window.location.search).get('day'));
+ const params=new URLSearchParams(window.location.search); const day=Number(params.get('day')); const page=params.get('page');
  const [menu,setMenu]=useState(false); const [active,setActive]=useState(0);
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
+ if(page==='info') return <InfoPage/>;
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>go('info')}>活動資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>go('puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>開始調查</button></nav>
+   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>go('puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
    <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
   </header>
   <main id="top">
-   <section className="hero campaign-hero"><div className="hero-copy campaign-copy"><p className="eyebrow">小京都 · OLD CITY INVESTIGATION · 1938</p><img className="campaign-wordmark" src="./assets/campaign-logo.webp" alt="舊城調查團・翻閱一九三八：那些待續的章節"/><h1 className="sr-only">舊城調查團：翻閱一九三八，那些待續的章節</h1><p className="lead">有些歷史寫進書裡，有些故事留在人身上。<br/>化身舊城調查員，循著鈴蘭與街道的線索，翻開尚未完結的章節。</p><div className="hero-facts"><span><b>8.13 — 8.14</b><small>兩日文化調查</small></span><span><b>臺中火車站周邊</b><small>舊城沉浸式走讀</small></span></div><button className="read" onClick={()=>go('info')}>查看活動資訊 <ArrowDown size={18}/></button></div>
-    <div className="campaign-portrait"><div className="portrait-sun"></div><img src="./assets/campaign-portrait.webp" alt="穿著復古服裝、手持鈴蘭的調查員插畫"/><span>調查員<br/>募集 中</span></div><p className="vertical">臺中舊城・文化體驗・城市走讀</p></section>
+   <section className="hero campaign-hero"><div className="hero-copy campaign-copy"><p className="eyebrow">OLD CITY INVESTIGATION · 1938</p><img className="campaign-wordmark" src="./assets/campaign-logo.webp" alt="舊城調查團・翻閱一九三八：那些待續的章節"/><h1 className="sr-only">舊城調查團：翻閱一九三八，那些待續的章節</h1><p className="lead">有些歷史寫進書裡，有些故事留在人身上。<br/>循著鈴蘭與街道的線索，翻開尚未完結的章節。</p><div className="hero-facts"><span><b>DAY 01 — DAY 02</b><small>兩日調查任務</small></span><span><b>臺中舊城</b><small>章節座標已開啟</small></span></div><button className="read" onClick={()=>go('journey')}>進入第一章 <ArrowDown size={18}/></button></div>
+    <div className="campaign-portrait"><div className="portrait-sun"></div><img src="./assets/campaign-portrait.webp" alt="穿著復古服裝、手持鈴蘭的調查員插畫"/><span>調查員<br/>已登錄</span></div><p className="vertical">臺中舊城・文化體驗・城市走讀</p></section>
    <section className="manifesto" id="about"><span>01</span><div><p>活動命題</p><h2>歷史不是完成式，<br/>而是一頁頁<span>等待翻閱</span>的手稿。</h2></div><p className="sidecopy">參與者在兩日活動中走入街區，與真人角色相遇、交換線索並完成謎題。手機是打開故事的鑰匙，真正的內容則發生在城市與人的相遇之間。</p></section>
-   <section className="activity-info" id="info"><div className="info-heading"><div><p className="eyebrow">INVESTIGATION PROGRAM</p><h2>選擇你的調查任務</h2></div><p>從半日文化體驗到完整兩日調查，<br/>循著臺中火車站周邊的城市記憶出發。</p></div><div className="programs"><article className="program featured"><div className="program-label">兩日行</div><p className="eyebrow">FULL INVESTIGATION</p><h3>8.13 <small>THU</small><i>—</i> 8.14 <small>FRI</small></h3><div className="price"><b>3000</b><span>元／人<small>2 人以上團報價 2800 元／人</small></span></div><p>包含舊城導覽、餐飲、活動體驗、保險及住宿。</p><button onClick={()=>go('journey')}>查看兩日路線 <ArrowUpRight size={18}/></button></article><article className="program"><div className="program-label">半日行</div><p className="eyebrow">CULTURAL EXPERIENCE</p><h3>8.07 <small>FRI</small></h3><div className="sessions"><span><Clock3/>上午場</span><span><Clock3/>下午場</span></div><div className="price"><b>600</b><span>元／人<small>2 人以上團報價 550 元／人</small></span></div><p>適合想先從一段街區故事開始的文化體驗。</p></article></div><div className="contact-strip"><span><MapPin/>活動地點<b>臺中火車站周邊</b></span><span><Phone/>報名電話<a href="tel:0422257020">（04）2225-7020</a></span><span><Ticket/>經濟需求者<b>可洽主辦單位詢問補助</b></span></div></section>
    <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，前往獨立頁面查看當日路線。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>window.location.assign('./?day='+(i+1))} onKeyDown={e=>e.key==='Enter'&&window.location.assign('./?day='+(i+1))}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="前往當日路線頁面">開啟路線頁 <ArrowUpRight/></button></div></div></article>)}</div></section>
    <section className="puzzles" id="puzzles"><div className="puzzle-intro"><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h2>解謎・翻閱本島人手稿</h2><p>答案藏在走讀現場。輸入正確暗號後，塵封的手稿殘頁將在此展開。</p></div><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label} item={p} index={i}/>)}</div></section>
    <section className="map" id="map"><StoryMap onDayChange={setActive}/><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>地圖標示兩日活動的真實位置。切換路線、縮放街區或點選編號，即可查看地點並開啟導航。</p><div className="selected"><CalendarDays/><span>{chapters[active].date}<small>{chapters[active].place} · {chapters[active].points.length} 個地點</small></span></div></div></section>
