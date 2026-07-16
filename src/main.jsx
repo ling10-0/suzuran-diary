@@ -4,9 +4,9 @@ import {ArrowDown, ArrowUpRight, CalendarDays, MapPin, Menu, X} from 'lucide-rea
 import './style.css';
 
 const notes = [
-  {date:'06 / 18',year:'2026',tag:'街屋觀察',title:'光從木窗的縫裡醒來',text:'清晨六點，市場鐵門還沒完全拉起。騎樓下的磨石子地，留著昨夜雨水的光。',place:'北門街・23°00′N',tone:'ochre'},
-  {date:'06 / 12',year:'2026',tag:'人物採集',title:'修鐘的人，仍替城市守時',text:'林師傅說，老鐘慢一分鐘不是故障，是它也需要喘氣。牆上的擺鐘一起發出細小心跳。',place:'鐘錶巷・120°12′E',tone:'blue'},
-  {date:'05 / 29',year:'2026',tag:'聲音地圖',title:'午後三點的廟埕',text:'風鈴、棋子、遠處的叫賣聲。聲音繞過紅磚牆，把陌生人也留在同一個午後。',place:'城隍廟前・編號 017',tone:'red'}
+  {date:'DAY / 01',year:'1916',tag:'初次登陸',title:'尋找失落的名字',text:'從一張舊報與陌生人的招呼開始。玩家不是旁觀者，而是剛踏進鈴蘭世界、尚未被寫進故事的人。',place:'鈴蘭通り・任務 001',tone:'ochre'},
+  {date:'DAY / 02',year:'1916',tag:'人物任務',title:'街角的人正在等你',text:'真人 NPC 帶著各自的生活與秘密出現。完成對話、交換物件，讓塵封的關係重新連上線。',place:'中央市場・人物線索',tone:'blue'},
+  {date:'DAY / 03',year:'1916',tag:'記憶回收',title:'把我們的故事帶回來',text:'所有片段在最後一站匯合。你留下的選擇，將成為這座城市繼續被記得的一部分。',place:'鈴蘭園區・最終章',tone:'red'}
 ];
 
 function App(){
@@ -14,25 +14,25 @@ function App(){
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>登陸</span><i>日記</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>go('journal')}>踏查日誌</button><button onClick={()=>go('map')}>記憶座標</button><button onClick={()=>go('about')}>關於計畫</button><button className="seal" onClick={()=>go('journal')}>開始閱讀</button></nav>
+   <nav className={menu?'open':''}><button onClick={()=>go('journal')}>登陸任務</button><button onClick={()=>go('map')}>記憶座標</button><button onClick={()=>go('about')}>世界設定</button><button className="seal" onClick={()=>go('journal')}>進入 1916</button></nav>
    <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
   </header>
   <main id="top">
    <section className="hero">
-    <div className="hero-copy"><p className="eyebrow">OLD TOWN FIELD NOTES · 2026</p><h1>在離開以前，<br/><em>記住一座城。</em></h1><p className="lead">我們走進街巷，記下正在消失，也正在發生的事。<br/>這是一份關於舊城、日常與人的登陸日記。</p><button className="read" onClick={()=>go('journal')}>翻開日記 <ArrowDown size={18}/></button></div>
+    <div className="hero-copy"><p className="eyebrow">SUZURAN MEMORY SYSTEM · 1916</p><h1>登入一段，<br/><em>尚未完成的記憶。</em></h1><p className="lead">城市忘記的，人還記得。<br/>跟著鈴蘭的居民，走進 1916 年仍在發生的故事。</p><button className="read" onClick={()=>go('journal')}>開始登陸 <ArrowDown size={18}/></button></div>
     <div className="hero-art"><div className="sun"></div><div className="building b1"></div><div className="building b2"></div><div className="building b3"></div><div className="wire"></div><div className="stamp">舊城<br/><b>採集</b><small>2026</small></div><span className="coord">23° 00′ 42″ N<br/>120° 12′ 33″ E</span></div>
-    <p className="vertical">地方記憶採集計畫　第一輯</p>
+    <p className="vertical">鈴蘭園區沉浸式走讀計畫　第一章</p>
    </section>
 
-   <section className="manifesto" id="about"><span>01</span><div><p>我們相信</p><h2>一座城真正的樣子，<br/>藏在那些<span>不被標記</span>的地方。</h2></div><p className="sidecopy">從一扇窗、一碗湯，到一段沒有被寫進史書的記憶。我們用步行丈量舊城，以文字與影像，保存它此刻的呼吸。</p></section>
+   <section className="manifesto" id="about"><span>01</span><div><p>核心命題</p><h2>你不是來參觀過去，<br/>而是<span>被過去記住</span>。</h2></div><p className="sidecopy">以真人 NPC、城市場景與手機任務交織出一條可被參與的歷史。每一次選擇、對話與物件交換，都讓玩家從觀眾成為故事裡真正的人。</p></section>
 
-   <section className="journal" id="journal"><div className="section-head"><div><p className="eyebrow">RECENT ENTRIES</p><h2>最近登陸</h2></div><p>每一次走入，都是重新認識。<br/>點開一頁，跟我們一起回到現場。</p></div>
+   <section className="journal" id="journal"><div className="section-head"><div><p className="eyebrow">THREE-DAY JOURNEY</p><h2>三日登陸任務</h2></div><p>登入系統、遇見人物、回收記憶。<br/>每一日都會把你帶得更深。</p></div>
     <div className="cards">{notes.map((n,i)=><article key={n.title} className={n.tone} onMouseEnter={()=>setActive(i)}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="閱讀文章"><ArrowUpRight/></button></div></div></article>)}</div>
    </section>
 
-   <section className="map" id="map"><div className="map-grid"><span className="road r1"></span><span className="road r2"></span><span className="road r3"></span>{notes.map((n,i)=><button key={i} className={'pin p'+i+(active===i?' active':'')} onClick={()=>setActive(i)}><i>{i+1}</i><b>{n.title}</b></button>)}</div><div className="mapcopy"><p className="eyebrow">MEMORY COORDINATES</p><h2>記憶座標</h2><p>把散落在街區裡的故事，一個一個釘回地圖。這不是觀光路線，而是一張由氣味、聲音與相遇組成的城市肖像。</p><div className="selected"><CalendarDays/><span>{notes[active].date}<small>{notes[active].place}</small></span></div></div></section>
+   <section className="map" id="map"><div className="map-grid"><span className="road r1"></span><span className="road r2"></span><span className="road r3"></span>{notes.map((n,i)=><button key={i} className={'pin p'+i+(active===i?' active':'')} onClick={()=>setActive(i)}><i>{i+1}</i><b>{n.title}</b></button>)}</div><div className="mapcopy"><p className="eyebrow">MEMORY COORDINATES</p><h2>鈴蘭記憶座標</h2><p>任務不是把玩家鎖在螢幕裡，而是引導你抬起頭、走進街道。真人 NPC 會在座標上出現，讓數位線索在真實城市裡獲得回應。</p><div className="selected"><CalendarDays/><span>{notes[active].date}<small>{notes[active].place}</small></span></div></div></section>
   </main>
-  <footer><div className="brand foot"><span>登陸</span><i>日記</i></div><p>我們仍在路上，也仍在記錄。<br/>下一篇，或許就在你每天經過的轉角。</p><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 OLD TOWN FIELD NOTES</small></div></footer>
+  <footer><div className="brand foot"><span>登陸</span><i>日記</i></div><p>登入不是驗證身分，<br/>而是向這座城市留下「我來過」的證明。</p><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 SUZURAN MEMORY PROJECT</small></div></footer>
  </>
 }
 createRoot(document.getElementById('root')).render(<App/>);
