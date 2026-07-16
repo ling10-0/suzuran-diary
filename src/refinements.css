@@ -2,6 +2,7 @@ footer {
   min-height: 225px;
   padding: 62px 7vw;
   align-items: center;
+  grid-template-columns: 1fr 1fr;
 }
 
 footer > p {
@@ -20,6 +21,36 @@ footer button {
 
 .foot {
   align-self: center;
+}
+
+.participant-info-hero h1 {
+  margin-bottom: 38px;
+}
+
+.participant-info-hero > p:last-child {
+  max-width: 500px;
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+  .participant-info-hero {
+    padding: 145px 7vw 64px;
+    border-width: 14px;
+    border-top-width: 88px;
+  }
+
+  .participant-info-hero h1 {
+    max-width: 760px;
+    margin: 14px 0 34px;
+    font-size: clamp(54px, 9vw, 76px);
+  }
+
+  .participant-info-hero > p:last-child {
+    max-width: 460px;
+    padding: 13px 16px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 800px) {
@@ -217,16 +248,113 @@ footer button {
   }
 
   .puzzle-page-hero {
-    padding: 70px 7vw 50px;
+    padding: 54px 18px 42px;
     border-bottom-width: 8px;
   }
 
   .puzzle-page-hero h1 {
-    font-size: 43px;
+    margin: 12px 0 18px;
+    font-size: 36px;
+    line-height: 1.25;
+  }
+
+  .puzzle-page-hero > p:last-child {
+    margin: 0;
+    font-size: 13px;
   }
 
   .puzzle-page-content {
-    padding-top: 55px;
+    padding: 42px 14px 64px;
+  }
+
+  .puzzle-page .puzzle-list {
+    gap: 14px;
+  }
+
+  .puzzle-page .puzzle {
+    display: block;
+    min-height: 0;
+    padding: 24px 18px 22px;
+  }
+
+  .puzzle-page .puzzle-no {
+    margin-bottom: 16px;
+    font-size: 11px;
+  }
+
+  .puzzle-page .puzzle-body {
+    width: 100%;
+    max-width: none;
+  }
+
+  .puzzle-page .puzzle-title {
+    display: block;
+    padding-right: 28px;
+  }
+
+  .puzzle-page .puzzle-title h3 {
+    margin: 7px 0 12px;
+    font-size: 22px;
+  }
+
+  .puzzle-page .puzzle-title button {
+    width: 100%;
+    margin: 0 0 14px;
+  }
+
+  .puzzle-page .puzzle-body > p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .puzzle-page .puzzle form {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: none;
+    gap: 8px;
+  }
+
+  .puzzle-page .puzzle input {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .puzzle-page .puzzle form button {
+    min-height: 48px;
+    border: 1px solid var(--ink);
+    justify-content: center;
+  }
+
+  .puzzle-page .lock {
+    top: 22px;
+    right: 18px;
+  }
+
+  .participant-info-hero {
+    padding: 112px 20px 48px;
+    border-width: 10px;
+    border-top-width: 76px;
+  }
+
+  .participant-info-hero::after {
+    inset: 7px;
+    border-width: 2px;
+  }
+
+  .participant-info-hero h1 {
+    margin: 10px 0 28px;
+    font-size: 42px;
+    line-height: 1.15;
+  }
+
+  .participant-info-hero > p:last-child {
+    width: calc(100% - 10px);
+    max-width: 390px;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.75;
+    border-left-width: 5px;
   }
 
   .map-filter button {
@@ -237,6 +365,7 @@ footer button {
   footer {
     min-height: 0;
     align-items: start;
+    grid-template-columns: 1fr;
     padding: 48px 20px;
     gap: 26px;
   }

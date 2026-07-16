@@ -65,7 +65,7 @@ function StoryMap({onDayChange,onModeChange}){
    const icon=L.divIcon({className:'story-pin-wrap',html:`<span class="story-pin ${dayClass}">${point.index+1}</span>`,iconSize:[38,46],iconAnchor:[19,42],popupAnchor:[0,-38]});
    const navigation=`https://www.google.com/maps/dir/?api=1&destination=${point.lat},${point.lng}`;
    const routeLabel=point.kind==='guide'?'GUIDED TOUR':`DAY ${point.day+1}`;
-   L.marker([point.lat,point.lng],{icon}).addTo(map).bindPopup(`<div class="story-popup"><small>${routeLabel} · STOP ${String(point.index+1).padStart(2,'0')}</small><strong>${point.name}</strong><a href="${navigation}" target="_blank" rel="noreferrer">開啟導航 ↗</a></div>`).on('click',()=>{if(point.kind==='day')onDayChange(point.day);onModeChange(point.kind==='guide'?'guide':'days')});
+   L.marker([point.lat,point.lng],{icon}).addTo(map).bindPopup(`<div class="story-popup"><small>${routeLabel} · STOP ${String(point.index+1).padStart(2,'0')}</small><strong>${point.name}</strong><a href="${navigation}" target="_blank" rel="noreferrer">開啟導航 ↗</a></div>`).on('click',()=>{if(point.kind==='day')onDayChange(point.day);onModeChange(point.kind==='guide'?'guide':`day${point.day+1}`)});
    bounds.push([point.lat,point.lng]);
   });
   if(filter==='guide') L.polyline(guidedTour.map(p=>[p.lat,p.lng]),{color:'#cf2560',weight:4,opacity:.9,dashArray:'7 8'}).addTo(map);
@@ -73,7 +73,7 @@ function StoryMap({onDayChange,onModeChange}){
   map.fitBounds(bounds,{padding:[40,40],maxZoom:16});
   return()=>{map.remove();mapInstance.current=null};
  },[filter,onDayChange,onModeChange]);
- const choose=value=>{setFilter(value);if(value===1||value===2)onDayChange(value-1);onModeChange(value==='guide'?'guide':'days')};
+ const choose=value=>{setFilter(value);if(value===1||value===2)onDayChange(value-1);onModeChange(value==='guide'?'guide':value==='days'?'both':`day${value}`)};
  return <div className="story-map-shell"><div className="map-filter" aria-label="切換路線"><button className={filter==='days'?'active':''} onClick={()=>choose('days')}>兩日路線</button><button className={filter===1?'active day-one':''} onClick={()=>choose(1)}>DAY 1</button><button className={filter===2?'active day-two':''} onClick={()=>choose(2)}>DAY 2</button><button className={filter==='guide'?'active guided':''} onClick={()=>choose('guide')}>導覽路線</button></div><div ref={mapNode} className="story-map"></div></div>
 }
 
@@ -102,7 +102,7 @@ function InfoPage(){
 
 function App(){
  const params=new URLSearchParams(window.location.search); const day=Number(params.get('day')); const page=params.get('page');
- const [menu,setMenu]=useState(false); const [active,setActive]=useState(0); const [mapMode,setMapMode]=useState('days');
+ const [menu,setMenu]=useState(false); const [active,setActive]=useState(0); const [mapMode,setMapMode]=useState('both');
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
  if(page==='info') return <InfoPage/>;
@@ -116,9 +116,9 @@ function App(){
    <section className="hero campaign-hero"><div className="hero-copy campaign-copy"><p className="eyebrow">OLD CITY INVESTIGATION · 1938</p><img className="campaign-wordmark" src="./assets/campaign-logo.webp" alt="舊城調查團・翻閱一九三八：那些待續的章節"/><h1 className="sr-only">舊城調查團：翻閱一九三八，那些待續的章節</h1><p className="lead">有些歷史寫進書裡，有些故事留在人身上。<br/>循著鈴蘭與街道的線索，翻開尚未完結的章節。</p><div className="hero-facts"><span><b>DAY 01 — DAY 02</b><small>兩日調查任務</small></span><span><b>臺中舊城</b><small>章節座標已開啟</small></span></div><button className="read" onClick={()=>go('journey')}>進入第一章 <ArrowDown size={18}/></button></div>
     <div className="campaign-portrait"><div className="portrait-sun"></div><img src="./assets/campaign-portrait.webp" alt="穿著復古服裝、手持鈴蘭的調查員插畫"/><span>調查員<br/>已登錄</span></div><p className="vertical">臺中舊城・文化體驗・城市走讀</p></section>
    <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，前往獨立頁面查看當日路線。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>window.location.assign('./?day='+(i+1))} onKeyDown={e=>e.key==='Enter'&&window.location.assign('./?day='+(i+1))}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="前往當日路線頁面">開啟路線頁 <ArrowUpRight/></button></div></div></article>)}</div></section>
-   <section className="map" id="map"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>切換兩日活動或合作導覽路線，縮放街區、點選編號，即可查看地點並開啟導航。</p><div className="selected"><CalendarDays/><span>{mapMode==='guide'?'導覽路線':chapters[active].date}<small>{mapMode==='guide'?`合作導覽 · ${guidedTour.length} 個地點`:`${chapters[active].place} · ${chapters[active].points.length} 個地點`}</small></span></div></div></section>
+   <section className="map" id="map"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>切換兩日活動或合作導覽路線，縮放街區、點選編號，即可查看地點並開啟導航。</p><div className="selected"><CalendarDays/><span>{mapMode==='guide'?'導覽路線':mapMode==='both'?'兩日路線總覽':chapters[active].date}<small>{mapMode==='guide'?`合作導覽 · ${guidedTour.length} 個地點`:mapMode==='both'?`第一章與第二章 · ${chapters.reduce((total,chapter)=>total+chapter.points.length,0)} 個地點`:`${chapters[active].place} · ${chapters[active].points.length} 個地點`}</small></span></div></div></section>
   </main>
-  <footer><div className="brand foot"><span>翻閱1938</span><i>待續</i></div><p>我們留下的不是結局，<br/>而是邀請下一個人繼續閱讀。</p><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 那些待續的章節</small></div></footer>
+  <footer><div className="brand foot"><span>翻閱1938</span><i>待續</i></div><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 那些待續的章節</small></div></footer>
  </>
 }
 createRoot(document.getElementById('root')).render(<App/>);
