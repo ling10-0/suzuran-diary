@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ArrowDown, ArrowUpRight, CalendarDays, MapPin, Menu, X, LockKeyhole, BookOpen} from 'lucide-react';
+import {ArrowDown, ArrowLeft, ArrowUpRight, CalendarDays, MapPin, Menu, X, LockKeyhole, BookOpen, ExternalLink} from 'lucide-react';
 import './style.css';
 import './puzzle.css';
 
 const chapters = [
-  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'城市把名字交給你',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'鈴蘭通り・序章',tone:'ochre',points:[{time:'10 min',name:'鈴蘭通り入口',type:'報到・取得角色',detail:'領取第一張舊報，完成角色登錄。'},{time:'20 min',name:'中央市場',type:'人物線索',detail:'尋找攤商 NPC，以指定物件交換口述記憶。'},{time:'15 min',name:'時計店街角',type:'觀察任務',detail:'從招牌、鐘面與門牌拼出第一組暗號。'},{time:'10 min',name:'第一日手稿站',type:'章節解鎖',detail:'輸入暗號，翻閱本島人手稿第一張殘頁。'}]},
-  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'真人角色與城市場景在終章交會。解開最後一道謎題，翻閱一份不曾被收進史書的本島人手稿。',place:'舊城街區・終章',tone:'blue',points:[{time:'15 min',name:'舊城驛站',type:'線索重組',detail:'把第一日取得的紙片排回正確年代。'},{time:'20 min',name:'廟埕口述站',type:'真人對話',detail:'與居民 NPC 對話，找出兩份記憶的共同人物。'},{time:'15 min',name:'鈴蘭記憶座標',type:'城市定向',detail:'依座標找到藏在街角的最後一句話。'},{time:'15 min',name:'終章手稿室',type:'最終解謎',detail:'輸入年份，翻閱手稿終頁並留下你的待續章節。'}]}
+  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'城市把名字交給你',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:['1916工坊','臺中市第三公有零售市場','富興工廠1962文創聚落','合作金庫銀行 台中分行','臺中市役所','三信商業銀行 台中分行','永生蔘藥行三連棟','柳川古道','第二市場','柳美術館','文化部文化資產園區']},
+  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'真人角色與城市場景在終章交會。解開最後一道謎題，翻閱一份不曾被收進史書的本島人手稿。',place:'臺中舊城・第二章',tone:'blue',points:['中山綠橋','台中市第四信用合作社','中央書局','全安堂台灣台中太陽餅博物館','歷史建築臺中第四市場','綠空鐵道1908']}
 ];
 
 const puzzles = [
@@ -24,9 +24,24 @@ function Puzzle({item,index}){
   </article>
 }
 
+function RoutePage({chapter,index}){
+ const back=()=>window.location.assign('./#journey');
+ const mapsUrl=name=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(name+' 台中');
+ return <div className={'route-page route-day-'+(index+1)}>
+  <header className="route-nav"><button className="brand" onClick={back}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={back}><ArrowLeft size={18}/> 回到兩日章節</button></header>
+  <main>
+   <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>沿著章節順序走進臺中舊城，共有 <b>{chapter.points.length}</b> 個可走地點。</p></div><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
+   <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((name,i)=><article className="route-stop" key={name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{name}</h2><a href={mapsUrl(name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
+   <section className="route-finish"><p className="eyebrow">END OF ROUTE · CONTINUE THE STORY</p><h2>走完路線，回到謎題解鎖手稿。</h2><button onClick={()=>window.location.assign('./#puzzles')}>前往謎題手稿 <ArrowUpRight size={18}/></button></section>
+  </main>
+ </div>
+}
+
 function App(){
- const [menu,setMenu]=useState(false); const [active,setActive]=useState(0); const [selectedDay,setSelectedDay]=useState(null);
+ const day=Number(new URLSearchParams(window.location.search).get('day'));
+ const [menu,setMenu]=useState(false); const [active,setActive]=useState(0);
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
+ if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
    <nav className={menu?'open':''}><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>go('puzzles')}>謎題手稿</button><button onClick={()=>go('about')}>關於活動</button><button className="seal" onClick={()=>go('journey')}>開始翻閱</button></nav>
@@ -36,7 +51,7 @@ function App(){
    <section className="hero"><div className="hero-copy"><p className="eyebrow">SUZURAN · OLD TOWN · 1938</p><h1>翻閱1938<br/><em>那些待續的章節</em></h1><p className="lead">有些歷史寫進書裡，有些故事留在人身上。<br/>用兩日時間，走進舊城尚未完結的章節。</p><button className="read" onClick={()=>go('journey')}>開始翻閱 <ArrowDown size={18}/></button></div>
     <div className="hero-art"><div className="sun"></div><div className="building b1"></div><div className="building b2"></div><div className="building b3"></div><div className="wire"></div><div className="stamp">待續<br/><b>章節</b><small>1938</small></div><span className="coord">OLD TOWN ARCHIVE<br/>MANUSCRIPT No. 1938</span></div><p className="vertical">鈴蘭舊城沉浸式走讀活動</p></section>
    <section className="manifesto" id="about"><span>01</span><div><p>活動命題</p><h2>歷史不是完成式，<br/>而是一頁頁<span>等待翻閱</span>的手稿。</h2></div><p className="sidecopy">參與者在兩日活動中走入街區，與真人角色相遇、交換線索並完成謎題。手機是打開故事的鑰匙，真正的內容則發生在城市與人的相遇之間。</p></section>
-   <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，查看當日可走的地點。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>setSelectedDay(i)} onKeyDown={e=>e.key==='Enter'&&setSelectedDay(i)}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="查看當日路線">查看路線 <ArrowUpRight/></button></div></div></article>)}</div>{selectedDay!==null&&<div className="day-route"><div className="route-head"><div><p className="eyebrow">{chapters[selectedDay].date} · ROUTE</p><h3>{selectedDay===0?'第一日可走的地點':'第二日可走的地點'}</h3></div><button onClick={()=>setSelectedDay(null)}><X/> 關閉</button></div><div className="route-points">{chapters[selectedDay].points.map((p,i)=><article key={p.name}><i>{String(i+1).padStart(2,'0')}</i><div><span>{p.type} · {p.time}</span><h4>{p.name}</h4><p>{p.detail}</p></div></article>)}</div><button className="route-next" onClick={()=>go('puzzles')}>前往謎題手稿 <ArrowDown size={17}/></button></div>}</section>
+   <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，前往獨立頁面查看當日路線。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>window.location.assign('./?day='+(i+1))} onKeyDown={e=>e.key==='Enter'&&window.location.assign('./?day='+(i+1))}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="前往當日路線頁面">開啟路線頁 <ArrowUpRight/></button></div></div></article>)}</div></section>
    <section className="puzzles" id="puzzles"><div className="puzzle-intro"><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h2>解謎・翻閱本島人手稿</h2><p>答案藏在走讀現場。輸入正確暗號後，塵封的手稿殘頁將在此展開。</p></div><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label} item={p} index={i}/>)}</div></section>
    <section className="map" id="map"><div className="map-grid"><span className="road r1"></span><span className="road r2"></span><span className="road r3"></span>{chapters.map((n,i)=><button key={i} className={'pin p'+i+(active===i?' active':'')} onClick={()=>setActive(i)}><i>{i+1}</i><b>{n.title}</b></button>)}</div><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>沿著兩日路線，數位線索會把你帶到真實街角。請抬起頭，故事的下一句也許正由某個人親口說出。</p><div className="selected"><CalendarDays/><span>{chapters[active].date}<small>{chapters[active].place}</small></span></div></div></section>
   </main>
