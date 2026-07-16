@@ -629,3 +629,173 @@ footer button {
     padding: 0;
   }
 }
+
+/* Illustration assets supplied by the project team */
+.participant-info-hero::before {
+  content: '';
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+  width: 46%;
+  height: 64%;
+  background: url('/assets/decor-station.webp') right bottom / contain no-repeat;
+  opacity: 0.13;
+  pointer-events: none;
+}
+
+.participant-info-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.journal {
+  position: relative;
+  overflow: hidden;
+}
+
+.journal::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  right: -42px;
+  width: 235px;
+  height: 260px;
+  background: url('/assets/decor-lily-teal.webp') center / contain no-repeat;
+  opacity: 0.18;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.journal > * {
+  position: relative;
+  z-index: 1;
+}
+
+.puzzle-page-hero,
+.schedule-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.puzzle-page-hero::after {
+  content: '';
+  position: absolute;
+  right: 4vw;
+  bottom: -34%;
+  width: min(30vw, 340px);
+  aspect-ratio: 1;
+  background: url('/assets/decor-lily-gold.webp') center / contain no-repeat;
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+.puzzle-page-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.schedule-hero::after {
+  content: '';
+  position: absolute;
+  right: 3%;
+  bottom: -7%;
+  width: 53%;
+  height: 80%;
+  background: url('/assets/decor-station.webp') right bottom / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.schedule-hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+
+.schedule-hero-copy > p:last-child {
+  max-width: 580px;
+  line-height: 1.9;
+}
+
+.schedule-character {
+  position: absolute;
+  z-index: 1;
+  right: 8vw;
+  bottom: -18%;
+  height: 118%;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.route-hero > div,
+.route-day-mark {
+  position: relative;
+  z-index: 2;
+}
+
+.route-character {
+  position: absolute;
+  z-index: 1;
+  right: 15%;
+  bottom: -10%;
+  height: 105%;
+  max-width: 34%;
+  object-fit: contain;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+@media (max-width: 800px) {
+  .participant-info-hero::before {
+    right: -10%;
+    width: 90%;
+    height: 42%;
+    opacity: 0.1;
+  }
+
+  .journal::before {
+    top: 12px;
+    right: -55px;
+    width: 170px;
+    height: 190px;
+    opacity: 0.13;
+  }
+
+  .puzzle-page-hero::after {
+    right: -48px;
+    bottom: -24px;
+    width: 180px;
+    opacity: 0.16;
+  }
+
+  .schedule-hero::after {
+    right: -16%;
+    width: 100%;
+    height: 54%;
+    opacity: 0.12;
+  }
+
+  .schedule-character {
+    right: -24px;
+    bottom: -10%;
+    height: 70%;
+    opacity: 0.2;
+  }
+
+  .schedule-hero-copy {
+    max-width: 82%;
+  }
+
+  .schedule-hero-copy > p:last-child {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .route-character {
+    right: -8%;
+    bottom: -4%;
+    height: 74%;
+    max-width: 58%;
+    opacity: 0.11;
+  }
+}
