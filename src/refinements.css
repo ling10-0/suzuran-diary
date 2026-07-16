@@ -12,11 +12,14 @@ footer > p {
 
 footer > div:last-child {
   justify-content: center;
+  align-items: flex-end;
   gap: 20px;
 }
 
 footer button {
+  width: fit-content;
   padding: 0;
+  text-align: right;
 }
 
 .foot {
@@ -627,6 +630,14 @@ footer button {
 
   footer > p {
     padding: 0;
+  }
+
+  footer > div:last-child {
+    align-items: flex-start;
+  }
+
+  footer button {
+    text-align: left;
   }
 }
 
