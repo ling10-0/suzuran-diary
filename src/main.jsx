@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ArrowDown, ArrowLeft, ArrowUpRight, AtSign, CalendarDays, MapPin, Menu, X, LockKeyhole, Unlock, BookOpen, ExternalLink, Instagram} from 'lucide-react';
+import {ArrowDown, ArrowLeft, ArrowUpRight, AtSign, CalendarDays, Clock, MapPin, Menu, X, LockKeyhole, Unlock, BookOpen, ExternalLink, Instagram} from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
@@ -28,6 +28,27 @@ const guidedTour = [
   {name:'東協廣場',lat:24.1393005,lng:120.6838692},
   {name:'宮原眼科',lat:24.1378278,lng:120.6835552},
   {name:'中山綠橋',lat:24.1378842,lng:120.6831311}
+];
+
+const schedules = [
+  {day:'第一日',label:'DAY / 01',items:[
+    {time:'09：00',title:'序章：集合啦！見習調查員'},
+    {time:'10：30',title:'第一章：拾光琉璃'},
+    {time:'12：30',title:'第二章：舌尖上的1938'},
+    {time:'13：30',title:'第三章：連線1938重組篇章'},
+    {time:'16：00',title:'第四章：漫步舊城區'},
+    {time:'18：00',title:'第五章：玩轉舊城區美食'},
+    {time:'19：30',title:'第六章：文學交流會'},
+    {time:'20：00',title:'未完待續'}
+  ]},
+  {day:'第二日',label:'DAY / 02',items:[
+    {time:'08：30',title:'第七章：元氣早點補給'},
+    {time:'10：00',title:'第八章：悠遊循跡'},
+    {time:'12：00',title:'第九章：走回1938'},
+    {time:'13：00',title:'第十章：老味道重現'},
+    {time:'15：00',title:'第十一章：記憶顯影中'},
+    {time:'16：30',title:'終章：特邀作家結業式'}
+  ]}
 ];
 
 function Puzzle({item,index}){
@@ -96,7 +117,16 @@ function InfoPage(){
  return <div className="participant-info-page">
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到活動首頁</button></header>
   <main><section className="participant-info-hero"><p className="eyebrow">PARTICIPANT INFORMATION</p><h1>參加者資訊</h1><p>集合提醒、活動異動與最新公告，請以官方 Instagram 發布內容為準。</p></section>
-  <section className="participant-info-body"><div className="social-links"><a className="social-card instagram" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>INSTAGRAM</small><h2>@tcold.spots</h2><p>最新公告與活動提醒</p></div><ExternalLink/></a><a className="social-card threads" href="https://www.threads.com/@tcold.spots" target="_blank" rel="noreferrer"><AtSign/><div><small>THREADS</small><h2>@tcold.spots</h2><p>追蹤即時動態</p></div><ExternalLink/></a><a className="social-card facebook" href="https://www.facebook.com/TCOldHouse" target="_blank" rel="noreferrer"><span className="facebook-glyph">f</span><div><small>FACEBOOK</small><h2>TCOldHouse</h2><p>前往官方粉絲專頁</p></div><ExternalLink/></a></div><div className="participant-links"><button onClick={()=>link('#journey')}><span>01</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>02</span><b>章節座標</b><small>開啟兩日點位與合作導覽路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=puzzles')}><span>03</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
+  <section className="participant-info-body"><div className="social-links"><a className="social-card instagram" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>INSTAGRAM</small><h2>@tcold.spots</h2><p>最新公告與活動提醒</p></div><ExternalLink/></a><a className="social-card threads" href="https://www.threads.com/@tcold.spots" target="_blank" rel="noreferrer"><AtSign/><div><small>THREADS</small><h2>@tcold.spots</h2><p>追蹤即時動態</p></div><ExternalLink/></a><a className="social-card facebook" href="https://www.facebook.com/TCOldHouse" target="_blank" rel="noreferrer"><span className="facebook-glyph">f</span><div><small>FACEBOOK</small><h2>TCOldHouse</h2><p>前往官方粉絲專頁</p></div><ExternalLink/></a></div><div className="participant-links four"><button onClick={()=>link('#journey')}><span>01</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=schedule')}><span>02</span><b>活動時程</b><small>查看兩日大概行程時間</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>03</span><b>章節座標</b><small>開啟兩日點位與合作導覽路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=puzzles')}><span>04</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
+ </div>
+}
+
+function SchedulePage(){
+ const home=()=>window.location.assign('./');
+ return <div className="schedule-page">
+  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
+  <main><section className="schedule-hero"><p className="eyebrow">TWO-DAY PROGRAM</p><h1>兩日活動時程</h1><p>以下為活動的大概時程，當日進行時間可能依現場狀況調整。</p></section>
+  <section className="schedule-body">{schedules.map((schedule,index)=><article className={'schedule-day schedule-day-'+(index+1)} key={schedule.day}><div className="schedule-day-head"><div><p className="eyebrow">{schedule.label}</p><h2>{schedule.day}</h2></div><span>1938</span></div><ol>{schedule.items.map((item,itemIndex)=><li key={item.time+item.title}><div className="schedule-time"><Clock size={17}/><time>{item.time}</time></div><div className="schedule-event"><small>{String(itemIndex+1).padStart(2,'0')}</small><h3>{item.title}</h3></div></li>)}</ol></article>)}</section></main>
  </div>
 }
 
@@ -107,9 +137,10 @@ function App(){
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
  if(page==='info') return <InfoPage/>;
  if(page==='puzzles') return <PuzzlePage/>;
+ if(page==='schedule') return <SchedulePage/>;
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
+   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
    <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
   </header>
   <main id="top">

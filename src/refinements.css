@@ -98,6 +98,122 @@ footer button {
   font: 700 28px/1 Arial, sans-serif;
 }
 
+.participant-links.four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.schedule-page {
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.schedule-page .route-nav {
+  position: relative;
+}
+
+.schedule-hero {
+  padding: 90px 8vw 70px;
+  color: var(--paper);
+  background: var(--red);
+  border-bottom: 12px solid var(--orange);
+}
+
+.schedule-hero h1 {
+  margin: 15px 0 20px;
+  font-size: clamp(52px, 7vw, 88px);
+  line-height: 1.1;
+}
+
+.schedule-hero > p:last-child {
+  max-width: 580px;
+  line-height: 1.9;
+}
+
+.schedule-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  padding: 75px 7vw 100px;
+}
+
+.schedule-day {
+  background: #fffaf2;
+  border: 3px solid var(--orange);
+  clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+}
+
+.schedule-day-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 30px 30px 24px;
+  color: white;
+  background: var(--teal);
+}
+
+.schedule-day-2 .schedule-day-head {
+  background: var(--red);
+}
+
+.schedule-day-head p,
+.schedule-day-head h2 {
+  margin: 0;
+}
+
+.schedule-day-head h2 {
+  margin-top: 7px;
+  font-size: 38px;
+}
+
+.schedule-day-head > span {
+  font: 13px 'DM Mono';
+}
+
+.schedule-day ol {
+  margin: 0;
+  padding: 0 30px 30px;
+  list-style: none;
+}
+
+.schedule-day li {
+  display: grid;
+  grid-template-columns: 115px minmax(0, 1fr);
+  min-height: 86px;
+  border-bottom: 1px solid var(--line);
+}
+
+.schedule-time,
+.schedule-event {
+  display: flex;
+  align-items: center;
+}
+
+.schedule-time {
+  gap: 10px;
+  font: 15px 'DM Mono';
+  border-right: 1px solid var(--line);
+}
+
+.schedule-event {
+  position: relative;
+  padding: 16px 0 16px 24px;
+}
+
+.schedule-event small {
+  position: absolute;
+  top: 11px;
+  right: 0;
+  color: var(--red);
+  font: 9px 'DM Mono';
+}
+
+.schedule-event h3 {
+  margin: 0;
+  padding-right: 28px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+
 @media (max-width: 1100px) {
   .participant-info-hero {
     padding: 145px 7vw 64px;
@@ -435,6 +551,65 @@ footer button {
 
   .social-card h2 {
     font-size: 19px;
+  }
+
+  .participant-links.four {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-hero {
+    padding: 54px 18px 44px;
+    border-bottom-width: 8px;
+  }
+
+  .schedule-hero h1 {
+    margin: 10px 0 16px;
+    font-size: 40px;
+  }
+
+  .schedule-hero > p:last-child {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .schedule-body {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 42px 14px 68px;
+  }
+
+  .schedule-day-head {
+    padding: 24px 20px 20px;
+  }
+
+  .schedule-day-head h2 {
+    font-size: 32px;
+  }
+
+  .schedule-day ol {
+    padding: 0 18px 22px;
+  }
+
+  .schedule-day li {
+    grid-template-columns: 90px minmax(0, 1fr);
+    min-height: 78px;
+  }
+
+  .schedule-time {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .schedule-time svg {
+    width: 14px;
+  }
+
+  .schedule-event {
+    padding-left: 16px;
+  }
+
+  .schedule-event h3 {
+    font-size: 15px;
   }
 
   .map-filter button {
