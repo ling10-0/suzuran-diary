@@ -721,9 +721,9 @@ footer button {
   position: absolute;
   z-index: 1;
   right: 8vw;
-  bottom: -18%;
+  bottom: -28%;
   height: 118%;
-  opacity: 0.72;
+  opacity: 0.52;
   pointer-events: none;
 }
 
@@ -777,9 +777,9 @@ footer button {
 
   .schedule-character {
     right: -24px;
-    bottom: -10%;
+    bottom: -18%;
     height: 70%;
-    opacity: 0.2;
+    opacity: 0.16;
   }
 
   .schedule-hero-copy {
