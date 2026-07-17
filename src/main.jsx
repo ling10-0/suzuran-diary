@@ -7,6 +7,7 @@ import './style.css';
 import './puzzle.css';
 import './campaign.css';
 import './refinements.css';
+import './office.css';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',lat:24.1411747,lng:120.6794953},{name:'柳美術館',lat:24.1419249,lng:120.6777138},{name:'柳川古道',lat:24.1423566,lng:120.6775796},{name:'第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -14,8 +15,33 @@ const chapters = [
 ];
 
 const puzzles = [
-  {hint:'街區以一種花為名。它低垂、潔白，卻帶著微毒。',answer:'鈴蘭',label:'第一日暗號',manuscript:'昭和十三年，鈴蘭通り的風仍吹過店家的布簾。人們用不同的名字叫這座城，但我們記得每一扇門後的生活。這不是誰替我們寫的歷史，是我們自己留下的聲音。'},
-  {hint:'請輸入故事發生的西元年份。',answer:'1938',label:'第二日暗號',manuscript:'我把未說完的話藏在紙頁之間，等下一個翻閱的人。若你讀到這裡，請不要只記得事件，也記得那些做飯、工作、相愛與等待的人。章節尚未結束，因為你已經來到其中。'}
+  {code:'庶務秘第〇一號',hint:'第一巡查區的暗號。低垂、潔白，街區曾以它為名。',hash:'08b4a3e523f2e56e43260f12c68b6dc3fb71d692d56062b891b661b5b3621b84',label:'第一號照會',manuscript:'臨時公告：鈴蘭通り的布簾仍隨風掀動。請記錄門牌、商號與每一扇門後的生活；城市的名字不只寫在地圖上，也由居住其中的人共同留下。'},
+  {code:'庶務秘第〇二號',hint:'請登記本次卷宗所屬的西元年份。',hash:'bd6303e3a1e73659f04940eed53dd9581a57ec3200b03d385790457d78637ee5',label:'第二號照會',manuscript:'補遺通知：本卷宗原應歸入昭和十三年度。檔案所缺並非日期，而是做飯、工作、相愛與等待的人。請勿只抄錄事件，務必記下生活。'},
+  {code:'巡查第〇三號',hint:'由1916工坊出發後，所處舊町區的方位名稱。',hash:'723fa34d842a6b71af4085c2ba528dd9e3aa12140f2137b1ad737f38aec6c92d',label:'第三號照會',manuscript:'巡查附記：驛前南側的倉庫、鐵道與工場構成城市入口。公文只記載用途，調查員應另行補錄工人移動與貨物流向。'},
+  {code:'商工第〇四號',hint:'第三市場與富興工廠所在的舊町名。',hash:'a7d883bc14476d7364d8ebde566f144755b6d84ce6b29982c961b9a70f3578ea',label:'第四號照會',manuscript:'商工課便箋：市場不是一張攤位名冊。叫賣聲、秤重的手勢與熟客間的招呼，才是每日真正運轉的帳簿。'},
+  {code:'文書第〇五號',hint:'本次命令由哪一座公署發出？',hash:'d8db5c63f4b9a0361c6ae243a0ea628e11397511e8c1cb06bf254a5f8404f2ea',label:'第五號照會',manuscript:'未決裁稿：市役所保存城市的正式紀錄，卻也製造空白。若表格沒有欄位容納某人的聲音，那便由調查員寫在頁緣。'},
+  {code:'金融第〇六號',hint:'三信與永生蔘藥行一帶的舊町名。',hash:'d83cfa92e275094c99cfab727b640ce800d69e7a2798cfa2ec0438a24d1b3691',label:'第六號照會',manuscript:'異動備忘：金融街的帳冊記得數字，藥行的抽屜記得氣味。兩者都在保存信用，只是使用了不同的方法。'},
+  {code:'河川第〇七號',hint:'流經市場西側、也是末段巡查地名的水路。',hash:'c6da77165300a8289bb52e28761d44a463616b63ee24e2377590c9d8fa57ad3e',label:'第七號照會',manuscript:'結案前附記：河道帶走昨日的聲音，也把故事送往下一處。請將本次巡查所得寫成一頁，交由後來的人繼續閱覽。'}
+];
+
+const patrolRoute = [
+  {no:'壹',district:'驛前南側巡查區',coverage:'1916工坊／文化資產園區',duty:'核對鐵道、倉庫及產業遺構'},
+  {no:'貳',district:'新富町巡查區',coverage:'第三市場／富興工廠',duty:'查錄市場商號與工場用途'},
+  {no:'參',district:'市役所前巡查區',coverage:'合作金庫／臺中市役所',duty:'領取文書並核對公署配置'},
+  {no:'肆',district:'鈴蘭通巡查區',coverage:'第四信用合作社／中央書局',duty:'查訪通り沿線店家與案內標示'},
+  {no:'伍',district:'榮町巡查區',coverage:'三信銀行／永生蔘藥行',duty:'記錄金融與民生商業往來'},
+  {no:'陸',district:'柳川市場巡查區',coverage:'柳美術館／柳川古道／第二市場',duty:'沿河道採集市場生活紀錄'},
+  {no:'柒',district:'東町終點巡查區',coverage:'綠空鐵道／歷史建築第四市場',duty:'彙整調查簿並辦理終章發表'}
+];
+
+const officeStaff = [
+  {unit:'市尹室',title:'市尹',name:'佐久間 正一',note:'總理市政（劇情資料）'},
+  {unit:'庶務課',title:'課長',name:'高橋 義雄',note:'文書總核'},
+  {unit:'庶務課',title:'庶務係長',name:'林 清河',note:'巡查命令承辦'},
+  {unit:'文書係',title:'屬',name:'陳 文彬',note:'昭和十三年八月異動'},
+  {unit:'案內係',title:'雇',name:'鈴蘭',note:'名簿旁註：未到'},
+  {unit:'商工係',title:'雇',name:'許 金水',note:'市場調查'},
+  {unit:'臨時調查掛',title:'見習調查員',name:'本案受命學生',note:'七區巡查・未結案'}
 ];
 
 const guidedTour = [
@@ -52,29 +78,37 @@ const schedules = [
 ];
 
 const investigationStages = [
-  {no:'00',label:'序章',title:'接受市役所委派',text:'活動開始時，你將收到一份來自臺中市役所的調查命令。完成角色登錄、與隊員組成調查小組，確認彼此分工後，正式以「見習調查員」的身分進入任務。'},
-  {no:'01',label:'第一日',title:'進入舊城，採集記憶線索',text:'依第一日路線前進，在建築、市場、店家與街道之間觀察細節。透過走讀、飲食體驗與解謎收集散落的文字、圖像和生活線索，拼回1938年的城市日常。'},
-  {no:'02',label:'第一夜',title:'整理調查紀錄',text:'小組交換白天的發現，整理尚未解開的問題，並從文學交流中辨認「官方紀錄」之外的個人聲音。完成第一日暗號後，可在網站解鎖第一份本島人手稿。'},
-  {no:'03',label:'第二日',title:'循跡追查，補回缺頁',text:'沿第二日路線繼續追查，將前一日取得的線索帶回街區比對。每到一站，都要留意空間用途、人物生活與城市變化，逐步完成最後一份調查紀錄。'},
-  {no:'04',label:'解鎖',title:'翻閱本島人手稿',text:'答案藏在走讀現場。找到暗號後，進入網站的「謎題手稿」頁面輸入答案；正確即可解鎖手稿。解鎖後仍可在題目與手稿之間自由切換。'},
-  {no:'05',label:'終章',title:'在第四市場留下待續',text:'抵達歷史建築臺中第四市場後，各組選出兩日中最有感的一個地點，整理成一段一分鐘的調查發表，並寫下一張「待續章節卡」，把你們看見的1938留給下一位閱讀城市的人。'}
+  {no:'00',label:'序',title:'領受市役所調查命令',text:'於指定時刻至受付處領取調查命令，編成臨時調查小隊；確認引路、觀察、記錄及報告分掌後，以見習調查員身分開始勤務。'},
+  {no:'01',label:'第一日',title:'進入舊城採集生活紀錄',text:'依第一日巡查圖前進，在建築、市場、商店與街道間觀察細節。將飲食、文字、圖像及現地所得登記字號，逐項記入調查簿。'},
+  {no:'02',label:'第一夜',title:'整理調查簿及未決事項',text:'小隊交換當日所見，整理尚未查明事項，並從文學交流中辨認正式紀錄之外的個人聲音。第一日字號得送文書係照會。'},
+  {no:'03',label:'第二日',title:'循跡追查補回缺頁',text:'依第二日巡查圖續行查錄，將前一日所得與現地互相比對。各地點均須留意空間用途、人物生活及城市變化。'},
+  {no:'04',label:'照會',title:'辦理登記字號查核',text:'現地所得之字號，應至受理番號照會所填具。查核相符者，附屬公告與未綴込文書即予開示；受理核章將留存於本機。'},
+  {no:'05',label:'終章',title:'於第四市場提出終章報告',text:'抵達歷史建築臺中第四市場後，各隊選定兩日中最重要的一處，作一分鐘調查報告，並填具「待續章節卡」交付揭示。'}
 ];
 
+async function hashAnswer(value){
+  const normalized='suzuran-1938:'+value.trim().normalize('NFKC').toLowerCase();
+  const bytes=new TextEncoder().encode(normalized);
+  const digest=await window.crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(digest)).map(byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+
 function Puzzle({item,index}){
-  const [value,setValue]=useState(''); const [solved,setSolved]=useState(false); const [view,setView]=useState('question'); const [error,setError]=useState(false);
-  const submit=e=>{e.preventDefault(); const ok=value.trim().toLowerCase()===item.answer.toLowerCase();setSolved(ok);setView(ok?'manuscript':'question');setError(!ok)};
+  const storageKey='suzuran-office-unlocked-'+index;
+  const [value,setValue]=useState(''); const [solved,setSolved]=useState(()=>window.localStorage.getItem(storageKey)==='1'); const [view,setView]=useState('question'); const [error,setError]=useState(false);
+  const submit=async e=>{e.preventDefault(); const ok=await hashAnswer(value)===item.hash;setSolved(ok);setView(ok?'manuscript':'question');setError(!ok);if(ok)window.localStorage.setItem(storageKey,'1')};
   return <article className={'puzzle '+(solved?'unlocked':'')}>
-    <div className="puzzle-no">0{index+1}</div><div className="puzzle-body"><p className="eyebrow">{item.label}</p><div className="puzzle-title"><h3>{solved?'手稿已解鎖':'輸入謎題答案'}</h3>{solved&&<button onClick={()=>setView(view==='question'?'manuscript':'question')}>{view==='question'?'翻閱手稿':'返回題目'}</button>}</div>
-    {view==='question'?<><p>{item.hint}</p>{!solved&&<form onSubmit={submit}><input aria-label={item.label+'答案'} value={value} onChange={e=>{setValue(e.target.value);setError(false)}} placeholder="在此輸入答案"/><button type="submit">確認暗號 <ArrowUpRight size={17}/></button></form>}{solved&&<p className="solved-note">此題已完成，可隨時切換回手稿。</p>}{error&&<small className="error">暗號不正確，請回到現場尋找線索。</small>}</>:<div className="manuscript"><BookOpen/><p>{item.manuscript}</p><small>— 本島人手稿・殘頁 {index+1}</small></div>}</div>
-    {solved?<Unlock className="lock" aria-label="已解鎖"/>:<LockKeyhole className="lock" aria-label="未解鎖"/>}
+    <div className="puzzle-no">{String(index+1).padStart(2,'0')}</div><div className="puzzle-body"><p className="eyebrow">{item.code} · {item.label}</p><div className="puzzle-title"><h3>{solved?'受理済・附屬公告已開示':'登記字號照會'}</h3>{solved&&<button onClick={()=>setView(view==='question'?'manuscript':'question')}>{view==='question'?'閱覽附屬公告':'返回照會欄'}</button>}</div>
+    {view==='question'?<><p>{item.hint}</p>{!solved&&<form onSubmit={submit}><input aria-label={item.label+'登記字號'} value={value} onChange={e=>{setValue(e.target.value);setError(false)}} placeholder="請填入登記字號"/><button type="submit">送交查核 <ArrowUpRight size={17}/></button></form>}{solved&&<p className="solved-note">本件已核章，可隨時調閱附屬公告。</p>}{error&&<small className="error">查無此案號，請確認登記內容。</small>}</>:<div className="manuscript"><BookOpen/><p>{item.manuscript}</p><small>— 臺中市役所・未綴込文書 {index+1}</small></div>}</div>
+    {solved?<Unlock className="lock" aria-label="已受理"/>:<LockKeyhole className="lock" aria-label="未受理"/>}
   </article>
 }
 
 function PuzzlePage(){
  const home=()=>window.location.assign('./');
- return <div className="puzzle-page">
-  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
-  <main><section className="puzzle-page-hero"><img className="puzzle-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h1>解謎・翻閱本島人手稿</h1><p><span className="puzzle-lead-primary">答案藏在走讀現場，輸入正確暗號後，手稿將會解鎖；</span><span className="puzzle-lead-secondary">解鎖後仍可自由切換題目與手稿內容。</span></p></section>
+ return <div className="puzzle-page office-subpage">
+  <header className="route-nav"><button className="brand" onClick={home}><span>臺中市役所</span><i>文書</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
+  <main><section className="puzzle-page-hero"><img className="puzzle-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/><p className="eyebrow">臺中市役所 庶務課 文書係</p><h1>受理番號照會所</h1><p><span className="puzzle-lead-primary">現地巡查所得之登記字號，請依號填入下列照會欄。</span><span className="puzzle-lead-secondary">查核相符者，附屬公告即予開示；已受理案件將保留核章紀錄。</span></p></section>
   <section className="puzzles puzzle-page-content"><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label+i} item={p} index={i}/>)}</div></section></main>
  </div>
 }
@@ -111,12 +145,12 @@ function RoutePage({chapter,index}){
  const back=()=>window.location.assign('./#journey');
  const mapsUrl=name=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(name+' 台中');
  return <div className={'route-page route-day-'+(index+1)}>
-  <header className="route-nav"><button className="brand" onClick={back}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={back}><ArrowLeft size={18}/> 回到兩日章節</button></header>
+  <header className="route-nav"><button className="brand" onClick={back}><span>臺中市役所</span><i>巡查</i></button><button className="route-back" onClick={back}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
   <main>
-   <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>依章節順序走進臺中舊城，共 <b>{chapter.points.length}</b> 個地點</p></div><img className="route-character" src={index===0?'./assets/decor-person-walk.webp':'./assets/decor-person-front.webp'} alt="" aria-hidden="true"/><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
-   <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((point,i)=><article className="route-stop" key={point.name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{point.name}</h2><a href={mapsUrl(point.name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
+   <section className="route-hero"><div><p className="eyebrow">昭和十三年度 · {chapter.date}</p><h1>{index===0?'第一日':'第二日'}巡查路線</h1><p>左記順序辦理現地查錄，共 <b>{chapter.points.length}</b> 處</p></div><img className="route-character" src={index===0?'./assets/decor-person-walk.webp':'./assets/decor-person-front.webp'} alt="" aria-hidden="true"/><div className="route-day-mark"><small>巡查圖</small><b>0{index+1}</b><span>昭和十三年</span></div></section>
+   <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'巡查地點'}>{chapter.points.map((point,i)=><article className="route-stop" key={point.name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 地點</p><h2>{point.name}</h2><a href={mapsUrl(point.name)} target="_blank" rel="noreferrer">配置圖で確認 <ExternalLink size={15}/></a></div></article>)}</section>
    {index===1&&<section className="route-final-mission"><div className="final-mission-heading"><p className="eyebrow">FINAL CHAPTER · FOURTH MARKET</p><h2>終章：把1938寫回城市</h2><p>完成最後一站後，請以小組為單位整理兩日調查成果，將你們看見的城市故事說給彼此聽。</p></div><div className="final-mission-grid"><article><span>01</span><h3>選一個地點</h3><p>選出兩日走讀中最有感、最想留下的一個地點。</p></article><article><span>02</span><h3>寫下待續</h3><p>完成句子：「我們在＿＿看見＿＿。如果替城市留下下一頁，我們想寫下＿＿。」</p></article><article><span>03</span><h3>一分鐘發表</h3><p>每組派一位代表分享發現，也可以由全組接力完成。</p></article><article><span>04</span><h3>把記憶留下</h3><p>將待續章節卡貼到活動地圖，在第四市場完成合照與任務收尾。</p></article></div></section>}
-   <section className="route-finish"><p className="eyebrow">END OF ROUTE · CONTINUE THE STORY</p><h2><span>走完路線</span><span>回到謎題解鎖手稿</span></h2><button onClick={()=>window.location.assign('./?page=puzzles')}>前往謎題手稿 <ArrowUpRight size={18}/></button></section>
+   <section className="route-finish"><p className="eyebrow">巡查終了 · 文書照會</p><h2><span>巡查簿完成後</span><span>辦理登記字號照會</span></h2><button onClick={()=>window.location.assign('./?page=puzzles')}>前往受理番號照會所 <ArrowUpRight size={18}/></button></section>
   </main>
  </div>
 }
@@ -124,13 +158,13 @@ function RoutePage({chapter,index}){
 function GameGuidePage(){
  const home=()=>window.location.assign('./');
  return <div className="game-guide-page">
-  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
+  <header className="route-nav"><button className="brand" onClick={home}><span>臺中市役所</span><i>心得</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
   <main>
-   <section className="game-guide-hero"><div><p className="eyebrow">INVESTIGATION HANDBOOK · 1938</p><h1>調查任務</h1><p>這不是一場普通的走讀。從收到市役所命令的那一刻起，你就是負責找回城市缺頁的見習調查員。</p></div><img src="./assets/decor-person-walk.webp" alt="" aria-hidden="true"/></section>
-   <section className="game-story"><div className="guide-section-heading"><p className="eyebrow">STORY SETTING</p><h2>任務從一份缺頁檔案開始</h2></div><div className="assignment-letter"><small>臺中市役所・調查命令 第1938號</small><p>昭和十三年，市役所整理城市檔案時，發現關於臺中舊城的紀錄出現多處空白。建築仍在，街道仍有名字，然而曾經生活在這裡的人、氣味、聲音與日常，正從紙頁上逐漸消失。</p><p>市役所因此召集各位學生，委派你們成為「見習調查員」。你們必須走進街區，以觀察、走讀、飲食、訪談與解謎採集線索，找回沒有被正式史書完整收錄的故事，完成一份屬於本島人的城市手稿。</p><strong>調查目的不是找出唯一答案，而是確認：一座城市除了被記錄的歷史，還留下了哪些人的生活。</strong></div></section>
-   <section className="investigator-role"><div className="guide-section-heading"><p className="eyebrow">YOUR ROLE</p><h2>你們是見習調查員</h2><p>每組都是一支調查小隊。行動時彼此提醒、交換發現，並共同保管取得的線索。</p></div><div className="role-grid"><article><span>01</span><h3>引路員</h3><p>確認路線、集合時間與下一個調查地點。</p></article><article><span>02</span><h3>觀察員</h3><p>留意建築、招牌、器物、氣味與現場細節。</p></article><article><span>03</span><h3>記錄員</h3><p>把發現、疑問與關鍵字寫進調查紀錄。</p></article><article><span>04</span><h3>發表員</h3><p>整理小組觀點，在終章代表小隊分享。</p></article></div><p className="role-note">人數較少時可以一人兼任多項；角色不是固定職位，途中可自由交換。</p></section>
-   <section className="investigation-flow"><div className="guide-section-heading"><p className="eyebrow">HOW THE STORY UNFOLDS</p><h2>兩日任務進行方式</h2></div><div className="flow-list">{investigationStages.map(stage=><article key={stage.no}><div className="flow-no">{stage.no}</div><div><p>{stage.label}</p><h3>{stage.title}</h3><span>{stage.text}</span></div></article>)}</div></section>
-   <section className="game-rules"><div className="guide-section-heading"><p className="eyebrow">FIELD RULES</p><h2>現場行動原則</h2></div><ol><li><b>先觀察，再作答。</b><span>題目線索來自現場，不必急著搜尋網路；請先看建築、街道與帶隊人員提供的材料。</span></li><li><b>以小組完成，不以速度競賽。</b><span>每個人看見的細節可能不同，交換觀察比搶先抵達更重要。</span></li><li><b>依帶隊指示移動。</b><span>過馬路、進入店家或公共空間時，以安全、現場秩序與工作人員提醒為優先。</span></li><li><b>尊重街區與居民。</b><span>拍攝人物、店家內部或私人空間前，請先取得同意；不碰觸未開放物件。</span></li><li><b>保留自己的解讀。</b><span>調查紀錄沒有標準感受。請分清楚「現場事實」與「你的想法」，兩者都值得被留下。</span></li></ol></section>
+   <section className="game-guide-hero"><div><p className="eyebrow">昭和十三年度・臨時調查掛</p><h1>調查勤務心得</h1><p>受命之見習調查員，應依本心得辦理市街巡查、文書查錄及終章報告。</p></div><img src="./assets/decor-person-walk.webp" alt="" aria-hidden="true"/></section>
+   <section className="game-story"><div className="guide-section-heading"><p className="eyebrow">任命緣由</p><h2>勤務始於一份缺頁檔案</h2></div><div className="assignment-letter"><small>臺中市役所・調查命令 第1938號</small><p>昭和十三年，市役所整理城市檔案時，發現關於臺中舊城的紀錄出現多處空白。建築仍在，街道仍有名字，然而曾經生活在這裡的人、氣味、聲音與日常，正從紙頁上逐漸消失。</p><p>市役所因此召集各位學生，委派為「見習調查員」。受命者須進入街區，以觀察、巡查、飲食、訪談與字號照會採集線索，找回未被正式史書完整收錄的故事，補成一份屬於本島人的城市手稿。</p><strong>本件不以取得唯一答案為目的；務必查明一座城市除正式紀錄之外，尚留下哪些人的生活。</strong></div></section>
+   <section className="investigator-role"><div className="guide-section-heading"><p className="eyebrow">調查掛編制</p><h2>見習調查員勤務分掌</h2><p>各組編為一調查小隊。行動時彼此提醒、交換所見，並共同保管取得之文書與線索。</p></div><div className="role-grid"><article><span>01</span><h3>引路員</h3><p>確認路線、集合時間與下一個調查地點。</p></article><article><span>02</span><h3>觀察員</h3><p>留意建築、招牌、器物、氣味與現場細節。</p></article><article><span>03</span><h3>記錄員</h3><p>把發現、疑問與關鍵字寫進調查紀錄。</p></article><article><span>04</span><h3>報告員</h3><p>整理小組觀點，在終章代表小隊報告。</p></article></div><p className="role-note">人數不足時得兼任；勤務分掌可於巡查途中交換。</p></section>
+   <section className="investigation-flow"><div className="guide-section-heading"><p className="eyebrow">勤務順序</p><h2>兩日巡查辦理方式</h2></div><div className="flow-list">{investigationStages.map(stage=><article key={stage.no}><div className="flow-no">{stage.no}</div><div><p>{stage.label}</p><h3>{stage.title}</h3><span>{stage.text}</span></div></article>)}</div></section>
+   <section className="game-rules"><div className="guide-section-heading"><p className="eyebrow">執務心得</p><h2>現地行動注意事項</h2></div><ol><li><b>先觀察，再登記。</b><span>字號線索均在現地，應先查看建築、街道及係員交付之材料。</span></li><li><b>共同查錄，不競速度。</b><span>各員所見未必相同，互相核對比搶先抵達更為重要。</span></li><li><b>遵從係員指示移動。</b><span>通過道路、進入店家或公共空間時，以安全與現地秩序為先。</span></li><li><b>不得妨礙街區居民。</b><span>攝影人物、店家內部或私人空間前，須先取得同意；未開放物件不得觸碰。</span></li><li><b>事實與所感分別記入。</b><span>正式紀錄與個人感受均可保留，惟應於調查簿中清楚區分。</span></li></ol></section>
    <section className="guide-finale"><p className="eyebrow">FINAL CHAPTER</p><h2>你們找到的不是結局</h2><p>兩日任務最後將在第四市場完成。每一組的發表與待續章節卡，會成為這次調查新增的一頁。當你把觀察說出來、把記憶寫下來，城市的故事便不再只停留在1938，而是由你繼續往後書寫。</p><button onClick={()=>window.location.assign('./?page=schedule')}>查看兩日活動時程 <ArrowUpRight size={18}/></button><small>實際流程與集合移動仍以當日帶隊人員指示為準。</small></section>
   </main>
  </div>
@@ -140,8 +174,8 @@ function InfoPage(){
  const home=()=>window.location.assign('./');
  const link=hash=>window.location.assign('./'+hash);
  return <div className="participant-info-page">
-  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到活動首頁</button></header>
-  <main><section className="participant-info-hero"><p className="eyebrow">PARTICIPANT INFORMATION</p><h1>參加者資訊</h1><p>集合提醒、活動異動與最新公告，請以官方 Instagram 發布內容為準。</p></section>
+  <header className="route-nav"><button className="brand" onClick={home}><span>臺中市役所</span><i>庶務</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
+  <main><section className="participant-info-hero"><p className="eyebrow">庶務課・外部連絡掛</p><h1>庶務課案內</h1><p>集合時刻、勤務異動及緊急連絡，以左列外部連絡板之告示為準。</p></section>
   <section className="participant-info-body"><div className="social-links"><a className="social-card instagram" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>INSTAGRAM</small><h2>@tcold.spots</h2><p>最新公告與活動提醒</p></div><ExternalLink/></a><a className="social-card threads" href="https://www.threads.com/@tcold.spots" target="_blank" rel="noreferrer"><AtSign/><div><small>THREADS</small><h2>@tcold.spots</h2><p>追蹤即時動態</p></div><ExternalLink/></a><a className="social-card facebook" href="https://www.facebook.com/TCOldHouse" target="_blank" rel="noreferrer"><span className="facebook-glyph">f</span><div><small>FACEBOOK</small><h2>TCOldHouse</h2><p>前往官方粉絲專頁</p></div><ExternalLink/></a></div><div className="participant-links five"><button onClick={()=>window.location.assign('./?page=guide')}><span>01</span><b>調查任務</b><small>了解故事設定與遊戲方式</small><ArrowUpRight/></button><button onClick={()=>link('#journey')}><span>02</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=schedule')}><span>03</span><b>活動時程</b><small>查看兩日大概行程時間</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>04</span><b>章節座標</b><small>開啟兩日點位與合作導覽路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=puzzles')}><span>05</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
  </div>
 }
@@ -149,9 +183,30 @@ function InfoPage(){
 function SchedulePage(){
  const home=()=>window.location.assign('./');
  return <div className="schedule-page">
-  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
-  <main><section className="schedule-hero"><div className="schedule-hero-copy"><p className="eyebrow">TWO-DAY PROGRAM</p><h1>兩日活動時程</h1><p>以下為活動的大概時程，當日進行時間可能依現場狀況調整。</p></div><img className="schedule-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/></section>
+  <header className="route-nav"><button className="brand" onClick={home}><span>臺中市役所</span><i>時刻</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
+  <main><section className="schedule-hero"><div className="schedule-hero-copy"><p className="eyebrow">昭和十三年度・臨時調查掛</p><h1>兩日執務時刻表</h1><p>左記為預定執務時刻。現地情況有變時，依帶隊係員之指示辦理。</p></div><img className="schedule-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/></section>
   <section className="schedule-body">{schedules.map((schedule,index)=><article className={'schedule-day schedule-day-'+(index+1)} key={schedule.day}><div className="schedule-day-head"><div><p className="eyebrow">{schedule.label}</p><h2>{schedule.day}</h2></div><span>1938</span></div><ol>{schedule.items.map((item,itemIndex)=><li key={item.time+item.title}><div className="schedule-time"><Clock size={17}/><time>{item.time}</time></div><div className="schedule-event"><small>{String(itemIndex+1).padStart(2,'0')}</small><h3>{item.title}</h3></div></li>)}</ol></article>)}</section></main>
+ </div>
+}
+
+function MunicipalHome(){
+ const [mapMode,setMapMode]=useState('both'); const [active,setActive]=useState(0);
+ const [visits]=useState(()=>{const key='suzuran-office-counter';const next=Math.min((Number(window.localStorage.getItem(key))||36)+1,9999);window.localStorage.setItem(key,String(next));return String(next).padStart(4,'0')});
+ const open=target=>window.location.assign(target); const scroll=id=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+ return <div className="municipal-site">
+  <header className="office-header"><div className="office-identity"><div className="office-seal-mark">臺中<br/>市役所</div><div><p>昭和十三年度・臨時公示板</p><h1>臺中市役所</h1><span>臺中州臺中市・庶務課文書係</span></div></div><div className="office-date"><small>告示更新</small><b>昭和十三年八月十三日</b><span>庶務秘第七二號</span></div></header>
+  <div className="office-ticker"><b>新着</b><div><span>市街巡查ニ關スル臨時調查員ヲ命ズ　</span><span>未綴込文書七件・照會受付中　</span><span>第四市場ニ於テ終章報告會ヲ執行ス</span></div></div>
+  <div className="office-shell">
+   <aside className="office-sidebar"><section><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、巡回路線公告</button><button onClick={()=>scroll('roster')}>三、職員編制表</button><button onClick={()=>open('./?page=puzzles')}>四、受理番號照會</button><button onClick={()=>scroll('office-map')}>五、市街配置圖</button><button onClick={()=>open('./?page=schedule')}>六、當日執務時刻</button><button onClick={()=>open('./?page=info')}>七、庶務課案內</button></section><section className="office-counter"><h2>本日洽公人數</h2><strong>{visits}</strong><p>本月累計　〇九一三件</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。登記字號不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
+   <main className="office-main">
+    <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list"><article><time>八月十三日</time><div><small>庶務秘第七二號</small><h3>臨時調查員任命及市街巡查要領</h3><p>因市役所舊簿冊出現缺頁，命受理學生編為見習調查員，依指定區域採集民生日常及商號紀錄。</p></div><button onClick={()=>open('./?page=guide')}>公告本文</button><i>受理</i></article><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>七區巡回路線及配置變更</h3><p>本次巡查分為七區，應依公告順序完成查錄；區內各點詳見配置圖及附屬路線頁。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button><i>已閱</i></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>未綴込文書照會受付</h3><p>現地所得登記字號得於文書係照會。查核相符者，准予閱覽附屬公告及未綴込文書。</p></div><button onClick={()=>open('./?page=puzzles')}>番號照會</button><i>秘</i></article></div></section>
+    <section className="patrol-notice office-paper" id="patrol"><div className="document-head"><div><small>臺中市役所　巡查第十九號</small><h2>市街七區巡回路線公告</h2><p>昭和十三年八月十三日</p></div><div className="document-stamp">巡查<br/>指定</div></div><p className="document-intro">臨時調查員之巡查區域，依左列次序辦理。各區所列地點為查錄範圍，並非競速通過之關卡；應就現場用途、人物生活及異動痕跡詳實記入調查簿。</p><div className="patrol-table"><div className="table-head"><span>順序</span><span>巡查區名</span><span>查錄範圍</span><span>勤務摘要</span><span>核章</span></div>{patrolRoute.map(route=><div className="table-row" key={route.no}><b>{route.no}</b><strong>{route.district}</strong><span>{route.coverage}</span><span>{route.duty}</span><i></i></div>)}</div><div className="route-attachments"><button onClick={()=>open('./?day=1')}>附圖甲　第一日詳細路線</button><button onClick={()=>open('./?day=2')}>附圖乙　第二日詳細路線</button></div><p className="hand-note">鉛筆書入：第伍區的名簿，少了一個人。</p></section>
+    <section className="staff-board" id="roster"><div className="office-title-row"><p>劇情用編制資料</p><h2>市役所職員編制表</h2><span>庶務課保管・部外秘</span></div><table><thead><tr><th>所屬</th><th>官職</th><th>氏名</th><th>摘要</th></tr></thead><tbody>{officeStaff.map(person=><tr key={person.unit+person.name} className={person.name==='鈴蘭'?'staff-anomaly':''}><td>{person.unit}</td><td>{person.title}</td><td>{person.name}</td><td>{person.note}</td></tr>)}</tbody></table><p className="roster-footnote">※ 本表為活動情境之虛構資料。職稱用字參照當時官署慣例；人名與異動紀錄非真實史料。</p></section>
+    <section className="office-map-board" id="office-map"><div className="office-title-row"><p>附圖・市街配置</p><h2>巡查區域配置圖</h2><span>縮尺及現況以現地為準</span></div><div className="office-map-layout"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="map-register"><h3>配置圖取扱欄</h3><dl><div><dt>現在表示</dt><dd>{mapMode==='guide'?'案內係巡回路線':mapMode==='both'?'兩日巡查總圖':chapters[active].date+' 詳圖'}</dd></div><div><dt>圖面番號</dt><dd>中市庶圖 第〇七號</dd></div><div><dt>保管係</dt><dd>庶務課 文書係</dd></div><div><dt>閱覽</dt><dd>見習調查員限</dd></div></dl><button onClick={()=>open('./?page=schedule')}>當日執務時刻ヲ見る</button></div></div></section>
+   </main>
+   <aside className="office-rightbar"><section><h2>執務欄</h2><p><b>受付</b><span>午前九時開始</span></p><p><b>巡查</b><span>七區指定</span></p><p><b>照會</b><span>七件受付中</span></p><p><b>終章</b><span>第四市場</span></p></section><section className="office-clipping"><h2>係員備忘</h2><p>「正式紀錄」與「人們記得的事」若有出入，兩者均須留下。</p><span>— 文書係頁緣註記</span></section><section><h2>關係書類</h2><button onClick={()=>open('./?page=guide')}>調查勤務心得</button><button onClick={()=>open('./?page=puzzles')}>未決文書綴</button><button onClick={()=>open('./?page=info')}>庶務課連絡先</button></section></aside>
+  </div>
+  <footer className="office-footer"><p>本公示板由臺中市役所庶務課文書係維持管理。連結錯誤及文書缺落請向係員申告。</p><p>昭和十三年度臨時公示板　最佳閱覽幅員 1024px 以上　最終更新 08月13日 17時40分</p><small>本頁為《翻閱1938：那些待續的章節》活動情境網站，所列職員與公文均屬虛構。</small></footer>
  </div>
 }
 
@@ -164,18 +219,6 @@ function App(){
  if(page==='puzzles') return <PuzzlePage/>;
  if(page==='schedule') return <SchedulePage/>;
  if(page==='guide') return <GameGuidePage/>;
- return <>
-  <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=guide')}>調查任務</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
-   <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
-  </header>
-  <main id="top">
-   <section className="hero campaign-hero"><div className="hero-copy campaign-copy"><p className="eyebrow">OLD CITY INVESTIGATION · 1938</p><img className="campaign-wordmark" src="./assets/campaign-logo.webp" alt="舊城調查團・翻閱一九三八：那些待續的章節"/><h1 className="sr-only">舊城調查團：翻閱一九三八，那些待續的章節</h1><p className="lead">有些歷史寫進書裡，有些故事留在人身上。<br/>循著鈴蘭與街道的線索，翻開尚未完結的章節。</p><div className="hero-facts"><span><b>DAY 01 — DAY 02</b><small>兩日調查任務</small></span><span><b>臺中舊城</b><small>章節座標已開啟</small></span></div><button className="read" onClick={()=>go('journey')}>進入第一章 <ArrowDown size={18}/></button></div>
-    <div className="campaign-portrait"><div className="portrait-sun"></div><img src="./assets/campaign-portrait.webp" alt="穿著復古服裝、手持鈴蘭的調查員插畫"/><span>調查員<br/>已登錄</span></div><p className="vertical">臺中舊城・文化體驗・城市走讀</p></section>
-   <section className="journal" id="journey"><div className="section-head"><div><p className="eyebrow">TWO-DAY JOURNEY</p><h2>兩日・兩個章節</h2></div><p>第一日進入故事，第二日回收記憶。<br/>點選任一章節，前往獨立頁面查看當日路線。</p></div><div className="cards two">{chapters.map((n,i)=><article key={n.title} role="button" tabIndex="0" className={n.tone+' chapter-card'} onMouseEnter={()=>setActive(i)} onClick={()=>window.location.assign('./?day='+(i+1))} onKeyDown={e=>e.key==='Enter'&&window.location.assign('./?day='+(i+1))}><div className="date"><b>{n.date}</b><small>{n.year}</small></div><div className="photo"><div className={'scene s'+i}></div><span>{n.tag}</span></div><div className="cardcopy"><h3>{n.title}</h3><p>{n.text}</p><div><span><MapPin size={14}/>{n.place}</span><button aria-label="前往當日路線頁面">開啟路線頁 <ArrowUpRight/></button></div></div></article>)}</div></section>
-   <section className="map" id="map"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="mapcopy"><p className="eyebrow">STORY COORDINATES</p><h2>章節座標</h2><p>切換兩日活動或合作導覽路線，縮放街區、點選編號，即可查看地點並開啟導航。</p><div className="selected"><CalendarDays/><span>{mapMode==='guide'?'導覽路線':mapMode==='both'?'兩日路線總覽':chapters[active].date}<small>{mapMode==='guide'?`合作導覽 · ${guidedTour.length} 個地點`:mapMode==='both'?`第一章與第二章 · ${chapters.reduce((total,chapter)=>total+chapter.points.length,0)} 個地點`:`${chapters[active].place} · ${chapters[active].points.length} 個地點`}</small></span></div></div></section>
-  </main>
-  <footer><div className="brand foot"><span>翻閱1938</span><i>待續</i></div><div><button onClick={()=>go('top')}>回到頁首 ↑</button><small>© 2026 那些待續的章節</small></div></footer>
- </>
+ return <MunicipalHome/>
 }
 createRoot(document.getElementById('root')).render(<App/>);
