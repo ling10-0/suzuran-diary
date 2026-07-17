@@ -166,7 +166,7 @@ function App(){
  if(page==='guide') return <GameGuidePage/>;
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>window.location.assign('./?page=guide')}>調查任務</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
+   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=guide')}>調查任務</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
    <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
   </header>
   <main id="top">
