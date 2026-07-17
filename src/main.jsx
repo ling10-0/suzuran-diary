@@ -65,7 +65,7 @@ function PuzzlePage(){
  const home=()=>window.location.assign('./');
  return <div className="puzzle-page">
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
-  <main><section className="puzzle-page-hero"><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h1>解謎・翻閱本島人手稿</h1><p>答案藏在走讀現場。輸入正確暗號後，手稿將會解鎖；解鎖後仍可自由切換題目與手稿內容。</p></section>
+  <main><section className="puzzle-page-hero"><img className="puzzle-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h1>解謎・翻閱本島人手稿</h1><p>答案藏在走讀現場。輸入正確暗號後，手稿將會解鎖；解鎖後仍可自由切換題目與手稿內容。</p></section>
   <section className="puzzles puzzle-page-content"><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label+i} item={p} index={i}/>)}</div></section></main>
  </div>
 }

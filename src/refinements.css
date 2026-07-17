@@ -691,12 +691,12 @@ footer button {
 .puzzle-page-hero::after {
   content: '';
   position: absolute;
-  right: 4vw;
-  bottom: -34%;
-  width: min(30vw, 340px);
-  aspect-ratio: 1;
-  background: url('/assets/decor-lily-gold.webp') center / contain no-repeat;
-  opacity: 0.24;
+  right: 3%;
+  bottom: -7%;
+  width: 53%;
+  height: 80%;
+  background: url('/assets/decor-station.webp') right bottom / contain no-repeat;
+  opacity: 0.16;
   pointer-events: none;
 }
 
@@ -728,11 +728,12 @@ footer button {
   line-height: 1.9;
 }
 
-.schedule-character {
+.schedule-character,
+.puzzle-page-hero > .puzzle-character {
   position: absolute;
   z-index: 1;
   right: 8vw;
-  bottom: -28%;
+  bottom: -20%;
   height: 118%;
   opacity: 0.52;
   pointer-events: none;
@@ -773,10 +774,11 @@ footer button {
   }
 
   .puzzle-page-hero::after {
-    right: -48px;
-    bottom: -24px;
-    width: 180px;
-    opacity: 0.16;
+    right: -16%;
+    bottom: -7%;
+    width: 100%;
+    height: 54%;
+    opacity: 0.12;
   }
 
   .schedule-hero::after {
@@ -786,9 +788,10 @@ footer button {
     opacity: 0.12;
   }
 
-  .schedule-character {
+  .schedule-character,
+  .puzzle-page-hero > .puzzle-character {
     right: -24px;
-    bottom: -18%;
+    bottom: -12%;
     height: 70%;
     opacity: 0.16;
   }
