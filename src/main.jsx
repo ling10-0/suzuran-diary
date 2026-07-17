@@ -47,8 +47,17 @@ const schedules = [
     {time:'12：00',title:'第九章：走回1938'},
     {time:'13：00',title:'第十章：老味道重現'},
     {time:'15：00',title:'第十一章：記憶顯影中'},
-    {time:'16：30',title:'終章：特邀作家結業式'}
+    {time:'16：30',title:'終章：把1938寫回城市'}
   ]}
+];
+
+const investigationStages = [
+  {no:'00',label:'序章',title:'接受市役所委派',text:'活動開始時，你將收到一份來自臺中市役所的調查命令。完成角色登錄、與隊員組成調查小組，確認彼此分工後，正式以「見習調查員」的身分進入任務。'},
+  {no:'01',label:'第一日',title:'進入舊城，採集記憶線索',text:'依第一日路線前進，在建築、市場、店家與街道之間觀察細節。透過走讀、飲食體驗與解謎收集散落的文字、圖像和生活線索，拼回1938年的城市日常。'},
+  {no:'02',label:'第一夜',title:'整理調查紀錄',text:'小組交換白天的發現，整理尚未解開的問題，並從文學交流中辨認「官方紀錄」之外的個人聲音。完成第一日暗號後，可在網站解鎖第一份本島人手稿。'},
+  {no:'03',label:'第二日',title:'循跡追查，補回缺頁',text:'沿第二日路線繼續追查，將前一日取得的線索帶回街區比對。每到一站，都要留意空間用途、人物生活與城市變化，逐步完成最後一份調查紀錄。'},
+  {no:'04',label:'解鎖',title:'翻閱本島人手稿',text:'答案藏在走讀現場。找到暗號後，進入網站的「謎題手稿」頁面輸入答案；正確即可解鎖手稿。解鎖後仍可在題目與手稿之間自由切換。'},
+  {no:'05',label:'終章',title:'在第四市場留下待續',text:'抵達歷史建築臺中第四市場後，各組選出兩日中最有感的一個地點，整理成一段一分鐘的調查發表，並寫下一張「待續章節卡」，把你們看見的1938留給下一位閱讀城市的人。'}
 ];
 
 function Puzzle({item,index}){
@@ -106,7 +115,23 @@ function RoutePage({chapter,index}){
   <main>
    <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>依章節順序走進臺中舊城，共 <b>{chapter.points.length}</b> 個地點</p></div><img className="route-character" src={index===0?'./assets/decor-person-walk.webp':'./assets/decor-person-front.webp'} alt="" aria-hidden="true"/><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
    <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((point,i)=><article className="route-stop" key={point.name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{point.name}</h2><a href={mapsUrl(point.name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
+   {index===1&&<section className="route-final-mission"><div className="final-mission-heading"><p className="eyebrow">FINAL CHAPTER · FOURTH MARKET</p><h2>終章：把1938寫回城市</h2><p>完成最後一站後，請以小組為單位整理兩日調查成果，將你們看見的城市故事說給彼此聽。</p></div><div className="final-mission-grid"><article><span>01</span><h3>選一個地點</h3><p>選出兩日走讀中最有感、最想留下的一個地點。</p></article><article><span>02</span><h3>寫下待續</h3><p>完成句子：「我們在＿＿看見＿＿。如果替城市留下下一頁，我們想寫下＿＿。」</p></article><article><span>03</span><h3>一分鐘發表</h3><p>每組派一位代表分享發現，也可以由全組接力完成。</p></article><article><span>04</span><h3>把記憶留下</h3><p>將待續章節卡貼到活動地圖，在第四市場完成合照與任務收尾。</p></article></div></section>}
    <section className="route-finish"><p className="eyebrow">END OF ROUTE · CONTINUE THE STORY</p><h2><span>走完路線</span><span>回到謎題解鎖手稿</span></h2><button onClick={()=>window.location.assign('./?page=puzzles')}>前往謎題手稿 <ArrowUpRight size={18}/></button></section>
+  </main>
+ </div>
+}
+
+function GameGuidePage(){
+ const home=()=>window.location.assign('./');
+ return <div className="game-guide-page">
+  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
+  <main>
+   <section className="game-guide-hero"><div><p className="eyebrow">INVESTIGATION HANDBOOK · 1938</p><h1>調查任務</h1><p>這不是一場普通的走讀。從收到市役所命令的那一刻起，你就是負責找回城市缺頁的見習調查員。</p></div><img src="./assets/decor-person-walk.webp" alt="" aria-hidden="true"/></section>
+   <section className="game-story"><div className="guide-section-heading"><p className="eyebrow">STORY SETTING</p><h2>任務從一份缺頁檔案開始</h2></div><div className="assignment-letter"><small>臺中市役所・調查命令 第1938號</small><p>昭和十三年，市役所整理城市檔案時，發現關於臺中舊城的紀錄出現多處空白。建築仍在，街道仍有名字，然而曾經生活在這裡的人、氣味、聲音與日常，正從紙頁上逐漸消失。</p><p>市役所因此召集各位學生，委派你們成為「見習調查員」。你們必須走進街區，以觀察、走讀、飲食、訪談與解謎採集線索，找回沒有被正式史書完整收錄的故事，完成一份屬於本島人的城市手稿。</p><strong>調查目的不是找出唯一答案，而是確認：一座城市除了被記錄的歷史，還留下了哪些人的生活。</strong></div></section>
+   <section className="investigator-role"><div className="guide-section-heading"><p className="eyebrow">YOUR ROLE</p><h2>你們是見習調查員</h2><p>每組都是一支調查小隊。行動時彼此提醒、交換發現，並共同保管取得的線索。</p></div><div className="role-grid"><article><span>01</span><h3>引路員</h3><p>確認路線、集合時間與下一個調查地點。</p></article><article><span>02</span><h3>觀察員</h3><p>留意建築、招牌、器物、氣味與現場細節。</p></article><article><span>03</span><h3>記錄員</h3><p>把發現、疑問與關鍵字寫進調查紀錄。</p></article><article><span>04</span><h3>發表員</h3><p>整理小組觀點，在終章代表小隊分享。</p></article></div><p className="role-note">人數較少時可以一人兼任多項；角色不是固定職位，途中可自由交換。</p></section>
+   <section className="investigation-flow"><div className="guide-section-heading"><p className="eyebrow">HOW THE STORY UNFOLDS</p><h2>兩日任務進行方式</h2></div><div className="flow-list">{investigationStages.map(stage=><article key={stage.no}><div className="flow-no">{stage.no}</div><div><p>{stage.label}</p><h3>{stage.title}</h3><span>{stage.text}</span></div></article>)}</div></section>
+   <section className="game-rules"><div className="guide-section-heading"><p className="eyebrow">FIELD RULES</p><h2>現場行動原則</h2></div><ol><li><b>先觀察，再作答。</b><span>題目線索來自現場，不必急著搜尋網路；請先看建築、街道與帶隊人員提供的材料。</span></li><li><b>以小組完成，不以速度競賽。</b><span>每個人看見的細節可能不同，交換觀察比搶先抵達更重要。</span></li><li><b>依帶隊指示移動。</b><span>過馬路、進入店家或公共空間時，以安全、現場秩序與工作人員提醒為優先。</span></li><li><b>尊重街區與居民。</b><span>拍攝人物、店家內部或私人空間前，請先取得同意；不碰觸未開放物件。</span></li><li><b>保留自己的解讀。</b><span>調查紀錄沒有標準感受。請分清楚「現場事實」與「你的想法」，兩者都值得被留下。</span></li></ol></section>
+   <section className="guide-finale"><p className="eyebrow">FINAL CHAPTER</p><h2>你們找到的不是結局</h2><p>兩日任務最後將在第四市場完成。每一組的發表與待續章節卡，會成為這次調查新增的一頁。當你把觀察說出來、把記憶寫下來，城市的故事便不再只停留在1938，而是由你繼續往後書寫。</p><button onClick={()=>window.location.assign('./?page=schedule')}>查看兩日活動時程 <ArrowUpRight size={18}/></button><small>實際流程與集合移動仍以當日帶隊人員指示為準。</small></section>
   </main>
  </div>
 }
@@ -117,7 +142,7 @@ function InfoPage(){
  return <div className="participant-info-page">
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到活動首頁</button></header>
   <main><section className="participant-info-hero"><p className="eyebrow">PARTICIPANT INFORMATION</p><h1>參加者資訊</h1><p>集合提醒、活動異動與最新公告，請以官方 Instagram 發布內容為準。</p></section>
-  <section className="participant-info-body"><div className="social-links"><a className="social-card instagram" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>INSTAGRAM</small><h2>@tcold.spots</h2><p>最新公告與活動提醒</p></div><ExternalLink/></a><a className="social-card threads" href="https://www.threads.com/@tcold.spots" target="_blank" rel="noreferrer"><AtSign/><div><small>THREADS</small><h2>@tcold.spots</h2><p>追蹤即時動態</p></div><ExternalLink/></a><a className="social-card facebook" href="https://www.facebook.com/TCOldHouse" target="_blank" rel="noreferrer"><span className="facebook-glyph">f</span><div><small>FACEBOOK</small><h2>TCOldHouse</h2><p>前往官方粉絲專頁</p></div><ExternalLink/></a></div><div className="participant-links four"><button onClick={()=>link('#journey')}><span>01</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=schedule')}><span>02</span><b>活動時程</b><small>查看兩日大概行程時間</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>03</span><b>章節座標</b><small>開啟兩日點位與合作導覽路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=puzzles')}><span>04</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
+  <section className="participant-info-body"><div className="social-links"><a className="social-card instagram" href="https://www.instagram.com/tcold.spots/" target="_blank" rel="noreferrer"><Instagram/><div><small>INSTAGRAM</small><h2>@tcold.spots</h2><p>最新公告與活動提醒</p></div><ExternalLink/></a><a className="social-card threads" href="https://www.threads.com/@tcold.spots" target="_blank" rel="noreferrer"><AtSign/><div><small>THREADS</small><h2>@tcold.spots</h2><p>追蹤即時動態</p></div><ExternalLink/></a><a className="social-card facebook" href="https://www.facebook.com/TCOldHouse" target="_blank" rel="noreferrer"><span className="facebook-glyph">f</span><div><small>FACEBOOK</small><h2>TCOldHouse</h2><p>前往官方粉絲專頁</p></div><ExternalLink/></a></div><div className="participant-links five"><button onClick={()=>window.location.assign('./?page=guide')}><span>01</span><b>調查任務</b><small>了解故事設定與遊戲方式</small><ArrowUpRight/></button><button onClick={()=>link('#journey')}><span>02</span><b>兩日章節</b><small>查看 Day 1、Day 2 路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=schedule')}><span>03</span><b>活動時程</b><small>查看兩日大概行程時間</small><ArrowUpRight/></button><button onClick={()=>link('#map')}><span>04</span><b>章節座標</b><small>開啟兩日點位與合作導覽路線</small><ArrowUpRight/></button><button onClick={()=>window.location.assign('./?page=puzzles')}><span>05</span><b>謎題手稿</b><small>輸入答案並翻閱手稿</small><ArrowUpRight/></button></div></section></main>
  </div>
 }
 
@@ -138,9 +163,10 @@ function App(){
  if(page==='info') return <InfoPage/>;
  if(page==='puzzles') return <PuzzlePage/>;
  if(page==='schedule') return <SchedulePage/>;
+ if(page==='guide') return <GameGuidePage/>;
  return <>
   <header><button className="brand" onClick={()=>go('top')}><span>翻閱1938</span><i>待續</i></button>
-   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
+   <nav className={menu?'open':''}><button onClick={()=>window.location.assign('./?page=info')}>參加者資訊</button><button onClick={()=>window.location.assign('./?page=guide')}>調查任務</button><button onClick={()=>go('journey')}>兩日章節</button><button onClick={()=>window.location.assign('./?page=schedule')}>活動時程</button><button onClick={()=>window.location.assign('./?page=puzzles')}>謎題手稿</button><button onClick={()=>go('map')}>路線地圖</button><button className="seal" onClick={()=>go('journey')}>進入調查</button></nav>
    <button className="menu" aria-label="選單" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
   </header>
   <main id="top">
