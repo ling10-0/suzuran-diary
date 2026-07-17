@@ -8,12 +8,17 @@
 .municipal-site .office-identity h1{font-size:34px}
 .municipal-site .office-date{min-width:210px;padding:11px 15px}
 .office-portal-nav{
- display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:stretch;width:min(1440px,96%);margin:12px auto 0;
+ display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:stretch;gap:0;width:min(1440px,96%);margin:12px auto 0;
  border:1px solid var(--office-ink);background:var(--office-paper-light);box-shadow:2px 3px 0 rgba(45,33,23,.16)
 }
 .office-portal-nav button{min-width:0;padding:12px 9px;border:0;border-right:1px solid var(--office-rule);background:transparent;font:12px 'Noto Serif TC';white-space:nowrap;cursor:pointer}
 .office-portal-nav button:last-child{border-right:0}
 .office-portal-nav button:hover,.office-portal-nav button.active{color:#f4ead1;background:var(--office-red)}
+.office-mobile-menu{display:none}
+.notice-list.no-stamps article{grid-template-columns:90px minmax(0,1fr) 90px;padding-right:18px}
+.story-popup span{display:block;margin-top:4px;color:#756650;font-size:10px}
+.historic-tooltip{padding:3px 6px!important;color:#3b291e!important;border:1px solid #8c7756!important;border-radius:0!important;background:#f1e4c2!important;box-shadow:none!important;font:9px 'Noto Serif TC',serif!important}
+.historic-tooltip:before{border-top-color:#8c7756!important}
 
 .newspaper-journal-page{
  --gazette-ink:#2d2117;--gazette-paper:#ead9ad;--gazette-red:#8f251d;--gazette-rule:#55442f;
@@ -102,7 +107,17 @@
 }
 @media(max-width:800px){
  .municipal-site .office-header{min-height:88px;padding:12px 5vw}.municipal-site .office-seal-mark{width:54px;height:54px;font-size:11px}.municipal-site .office-identity{gap:11px}.municipal-site .office-identity h1{font-size:25px}.municipal-site .office-date{display:none}
- .office-portal-nav{position:sticky;top:0;z-index:900;width:100%;margin:0;border-left:0;border-right:0;box-shadow:none}.office-portal-nav button{flex-basis:112px;padding:11px 12px;font-size:11px}
+ .office-portal-nav{display:none}
+ .municipal-site .office-mobile-menu{order:2}
+ .office-mobile-menu{position:sticky;top:0;z-index:900;display:block;width:100%;margin:0;border-top:1px solid var(--office-rule);border-bottom:2px solid var(--office-rule);background:var(--office-paper-light)}
+ .office-mobile-menu summary{display:flex;align-items:center;justify-content:space-between;min-height:46px;padding:0 18px;color:#f4ead1;background:var(--office-ink);font:13px 'Noto Serif TC';letter-spacing:.12em;cursor:pointer;list-style:none}
+ .office-mobile-menu summary::-webkit-details-marker{display:none}
+ .office-mobile-menu>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--office-rule)}
+ .office-mobile-menu button{min-height:46px;padding:9px 8px;border:0;border-right:1px solid var(--office-rule);border-bottom:1px solid var(--office-rule);color:var(--office-ink);background:transparent;font:12px 'Noto Serif TC';cursor:pointer}
+ .office-mobile-menu button:nth-child(even){border-right:0}
+ .office-mobile-menu button:last-child{grid-column:1/-1;border-bottom:0}
+ .notice-list.no-stamps article{grid-template-columns:70px minmax(0,1fr);padding-right:12px}
+ .historic-tooltip{font-size:7px!important;padding:2px 4px!important;opacity:.88}
  .newspaper-journal-page main{width:100%;margin:0;padding:14px;box-shadow:none}
  .gazette-hero{grid-template-columns:1fr 92px;min-height:230px}.gazette-mast h1{font-size:46px}.gazette-mast>*{padding:15px 9px}.gazette-mast small{font-size:8px}.gazette-mast b{font-size:12px}
  .gazette-meta{padding:8px 4px}.gazette-meta span,.gazette-meta time{font-size:9px}.gazette-meta strong{font-size:8px}
