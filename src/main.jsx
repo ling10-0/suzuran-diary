@@ -65,7 +65,7 @@ function PuzzlePage(){
  const home=()=>window.location.assign('./');
  return <div className="puzzle-page">
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 回到首頁</button></header>
-  <main><section className="puzzle-page-hero"><img className="puzzle-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h1>解謎・翻閱本島人手稿</h1><p>答案藏在走讀現場。輸入正確暗號後，手稿將會解鎖；解鎖後仍可自由切換題目與手稿內容。</p></section>
+  <main><section className="puzzle-page-hero"><img className="puzzle-character" src="./assets/decor-person-front.webp" alt="" aria-hidden="true"/><p className="eyebrow">UNLOCK THE MANUSCRIPTS</p><h1>解謎・翻閱本島人手稿</h1><p><span className="puzzle-lead-primary">答案藏在走讀現場，輸入正確暗號後，手稿將會解鎖；</span><span className="puzzle-lead-secondary">解鎖後仍可自由切換題目與手稿內容。</span></p></section>
   <section className="puzzles puzzle-page-content"><div className="puzzle-list">{puzzles.map((p,i)=><Puzzle key={p.label+i} item={p} index={i}/>)}</div></section></main>
  </div>
 }
@@ -104,7 +104,7 @@ function RoutePage({chapter,index}){
  return <div className={'route-page route-day-'+(index+1)}>
   <header className="route-nav"><button className="brand" onClick={back}><span>翻閱1938</span><i>待續</i></button><button className="route-back" onClick={back}><ArrowLeft size={18}/> 回到兩日章節</button></header>
   <main>
-   <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>沿著章節順序走進臺中舊城，共有 <b>{chapter.points.length}</b> 個可走地點。</p></div><img className="route-character" src={index===0?'./assets/decor-person-walk.webp':'./assets/decor-person-front.webp'} alt="" aria-hidden="true"/><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
+   <section className="route-hero"><div><p className="eyebrow">{chapter.date} · WALKING ROUTE</p><h1>{index===0?'第一日':'第二日'}路線</h1><p>依章節順序走進臺中舊城，共 <b>{chapter.points.length}</b> 個地點</p></div><img className="route-character" src={index===0?'./assets/decor-person-walk.webp':'./assets/decor-person-front.webp'} alt="" aria-hidden="true"/><div className="route-day-mark"><small>CHAPTER</small><b>0{index+1}</b><span>1938</span></div></section>
    <section className="route-page-list" aria-label={(index===0?'第一日':'第二日')+'可走地點'}>{chapter.points.map((point,i)=><article className="route-stop" key={point.name}><div className="route-sequence"><span>{String(i+1).padStart(2,'0')}</span><i></i></div><div className="route-stop-copy"><p>第 {i+1} 站</p><h2>{point.name}</h2><a href={mapsUrl(point.name)} target="_blank" rel="noreferrer">在地圖中尋找 <ExternalLink size={15}/></a></div></article>)}</section>
    <section className="route-finish"><p className="eyebrow">END OF ROUTE · CONTINUE THE STORY</p><h2><span>走完路線</span><span>回到謎題解鎖手稿</span></h2><button onClick={()=>window.location.assign('./?page=puzzles')}>前往謎題手稿 <ArrowUpRight size={18}/></button></section>
   </main>
