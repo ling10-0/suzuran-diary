@@ -26,6 +26,10 @@ footer button {
   align-self: center;
 }
 
+.route-finish h2 span + span::before {
+  content: '，';
+}
+
 .participant-info-hero h1 {
   margin-bottom: 38px;
 }
@@ -811,5 +815,110 @@ footer button {
     height: 74%;
     max-width: 58%;
     opacity: 0.11;
+  }
+}
+
+/* Mobile typography: prevent isolated characters and Safari text inflation */
+@media (max-width: 800px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  h1,
+  h2,
+  h3 {
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+
+  .puzzle-page-hero h1 {
+    max-width: none;
+    margin: 14px 0 18px;
+    font-size: clamp(22px, 6.9vw, 27px);
+    line-height: 1.25;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+  }
+
+  .puzzle-page-hero > p:last-child,
+  .participant-info-hero > p:last-child,
+  .schedule-hero-copy > p:last-child,
+  .section-head > p,
+  .mapcopy > p:not(.eyebrow),
+  .puzzle-page .puzzle-body > p {
+    text-wrap: pretty;
+  }
+
+  .puzzle-page-hero > p:last-child {
+    max-width: 30em;
+    font-size: 12.5px;
+    line-height: 1.85;
+  }
+
+  .puzzle-page .puzzle-title h3 {
+    font-size: clamp(20px, 5.7vw, 22px);
+    line-height: 1.4;
+  }
+
+  .route-stop-copy h2 {
+    font-size: clamp(18px, 5.3vw, 21px);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .route-finish {
+    padding: 58px 7vw 68px;
+  }
+
+  .route-finish h2 {
+    margin: 18px 0 32px;
+    font-size: clamp(27px, 8.2vw, 33px);
+    line-height: 1.45;
+    letter-spacing: -0.025em;
+  }
+
+  .route-finish h2 span {
+    display: block;
+  }
+
+  .route-finish h2 span + span {
+    margin-top: 3px;
+  }
+
+  .route-finish h2 span + span::before {
+    content: '';
+  }
+
+  .route-finish button {
+    width: 100%;
+    max-width: 260px;
+    justify-content: space-between;
+    font-size: 16px;
+  }
+
+  .participant-info-hero h1 {
+    font-size: clamp(36px, 10.5vw, 42px);
+  }
+
+  .schedule-hero h1 {
+    font-size: clamp(34px, 10vw, 40px);
+  }
+
+  .section-head h2,
+  .mapcopy h2 {
+    font-size: clamp(30px, 8.7vw, 34px);
+    line-height: 1.3;
+  }
+
+  .cardcopy h3 {
+    font-size: clamp(19px, 5.5vw, 22px);
+    line-height: 1.4;
+  }
+
+  .schedule-event h3 {
+    font-size: clamp(14px, 4vw, 16px);
+    line-height: 1.5;
+    text-wrap: pretty;
   }
 }
