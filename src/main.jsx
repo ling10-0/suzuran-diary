@@ -8,6 +8,7 @@ import './puzzle.css';
 import './campaign.css';
 import './refinements.css';
 import './office.css';
+import './newspaper.css';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',lat:24.1411747,lng:120.6794953},{name:'柳美術館',lat:24.1419249,lng:120.6777138},{name:'柳川古道',lat:24.1423566,lng:120.6775796},{name:'第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -113,6 +114,127 @@ function PuzzlePage(){
  </div>
 }
 
+function buildPersonalEnding(reflection,item,index,unlockedCount){
+ const text=reflection.trim();
+ const themes=[
+  {words:['人','居民','店家','相遇','故事'],line:'你記住的並不只是街道，而是仍在街角生活的人。'},
+  {words:['建築','房子','市場','街道','空間'],line:'你從牆面、屋簷與市場的聲音裡，讀出了城市留下的筆跡。'},
+  {words:['記憶','歷史','1938','以前','過去'],line:'你沒有把過去當成答案，而是把它當成仍可繼續追問的記憶。'},
+  {words:['食物','味道','吃','香味'],line:'你用味道記住了這趟調查，也替老城保存了一種最日常的證詞。'},
+  {words:['改變','未來','保存','繼續'],line:'你看見城市一直改變，也選擇替下一段故事留下位置。'}
+ ];
+ const matched=themes.find(theme=>theme.words.some(word=>text.includes(word)));
+ const opening=matched?.line||'你沿著今日的街道，讀見了另一個年代仍未寫完的段落。';
+ const detail=text?`你留下「${text.slice(0,42)}${text.length>42?'……':''}」，這句話已編入本次調查記錄。`:'即使尚未寫下完整答案，你停留與觀看的片刻，也已成為這座城的新註記。';
+ const progress=unlockedCount>=puzzles.length?'七份案卷均已受理；你不再只是調查員，也是這份城市記憶的續寫者。':`目前已有 ${unlockedCount} 份案卷完成受理，仍有一些聲音等待你回來翻閱。`;
+ return `${opening}${detail}${progress}——第 ${index+1} 號案卷・${item.label}`;
+}
+
+function resizePhoto(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error('read'));
+  reader.onload=()=>{
+   const image=new Image();
+   image.onerror=()=>reject(new Error('image'));
+   image.onload=()=>{
+    const max=1200;
+    const scale=Math.min(1,max/Math.max(image.width,image.height));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.round(image.width*scale);
+    canvas.height=Math.round(image.height*scale);
+    canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+    resolve(canvas.toDataURL('image/jpeg',.78));
+   };
+   image.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+
+function FieldJournal({item,index,unlockedCount}){
+ const unlockKey='suzuran-office-unlocked-'+index;
+ const recordKey='suzuran-field-record-'+index;
+ const initialRecord=()=>{
+  try{return JSON.parse(window.localStorage.getItem(recordKey))||{reflection:'',photo:'',ending:''}}catch{return {reflection:'',photo:'',ending:''}}
+ };
+ const [solved,setSolved]=useState(()=>window.localStorage.getItem(unlockKey)==='1');
+ const [value,setValue]=useState('');
+ const [error,setError]=useState(false);
+ const [record,setRecord]=useState(initialRecord);
+ const [photoError,setPhotoError]=useState('');
+ const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
+ const submit=async event=>{
+  event.preventDefault();
+  const ok=await hashAnswer(value)===item.hash;
+  setError(!ok);
+  if(ok){setSolved(true);window.localStorage.setItem(unlockKey,'1')}
+ };
+ const addPhoto=async event=>{
+  const file=event.target.files?.[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){setPhotoError('請選擇照片檔案。');return}
+  setPhotoError('');
+  try{saveRecord({...record,photo:await resizePhoto(file)})}catch{setPhotoError('照片無法讀取，請換一張再試。')}
+ };
+ const createEnding=()=>saveRecord({...record,ending:buildPersonalEnding(record.reflection,item,index,unlockedCount)});
+ return <article className={'gazette-case '+(solved?'is-open':'is-locked')}>
+  <header className="gazette-case-head">
+   <div className="gazette-issue"><small>臺中市報附錄</small><b>第 {String(index+1).padStart(3,'0')} 號</b></div>
+   <div><p>{item.code}・照會記錄</p><h2>{item.label}</h2></div>
+   <div className="gazette-status">{solved?'受理済':'未受理'}</div>
+  </header>
+  <div className="gazette-columns">
+   <section className="gazette-query">
+    <h3>登記字號照會</h3>
+    <p>{item.hint}</p>
+    {!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>受理番號</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder="請輸入調查所得字號"/><button type="submit">送付照會</button></div>{error&&<small>查無此案號，請確認登記內容。</small>}</form>}
+    {solved&&<p className="gazette-approved">本件照合完了，准予閱覽附載手稿。</p>}
+   </section>
+   <section className="gazette-manuscript">
+    <h3>{solved?'本島人手稿・殘頁':'附載手稿・封緘中'}</h3>
+    {solved?<><BookOpen/><p>{item.manuscript}</p><footer>昭和十三年・臺中市街調查資料</footer></>:<div className="gazette-sealed"><LockKeyhole/><span>須經登記字號照合始得展閱</span></div>}
+   </section>
+  </div>
+  <section className="field-record">
+   <div className="field-record-heading"><div><small>FIELD NOTE / 私人附箋</small><h3>我的走讀記錄</h3></div><span>本欄僅保存於目前裝置</span></div>
+   <div className="field-record-grid">
+    <div className="photo-entry">
+     {record.photo?<img src={record.photo} alt={'第 '+(index+1)+' 號走讀記錄'}/>:<div><b>寫真貼付欄</b><span>可放入現場照片、街景或小組合照</span></div>}
+     <label><input type="file" accept="image/*" onChange={addPhoto}/>{record.photo?'更換寫真':'選擇寫真'}</label>
+     {record.photo&&<button onClick={()=>saveRecord({...record,photo:''})}>移除</button>}
+     {photoError&&<small>{photoError}</small>}
+    </div>
+    <div className="reflection-entry">
+     <label htmlFor={'reflection-'+index}>調查後記</label>
+     <textarea id={'reflection-'+index} value={record.reflection} onChange={event=>saveRecord({...record,reflection:event.target.value,ending:''})} placeholder="今天哪個人、地方、聲音或味道讓你停下來？"/>
+     <button onClick={createEnding}>編製我的結語 <ArrowUpRight size={16}/></button>
+    </div>
+   </div>
+   {record.ending&&<div className="personal-ending"><small>個人調查結語・編製済</small><p>{record.ending}</p><i>閱</i></div>}
+  </section>
+ </article>
+}
+
+function NewspaperJournalPage(){
+ const home=()=>window.location.assign('./');
+ const [unlockedCount,setUnlockedCount]=useState(()=>puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
+ useEffect(()=>{
+  const refresh=()=>setUnlockedCount(puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
+  window.addEventListener('storage',refresh);
+  const timer=window.setInterval(refresh,700);
+  return()=>{window.removeEventListener('storage',refresh);window.clearInterval(timer)}
+ },[]);
+ return <div className="newspaper-journal-page">
+  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 返回市役所</button></header>
+  <main>
+   <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
+   <section className="gazette-guidance"><b>照會心得</b><p>於走讀現場取得登記字號後，逐件送付照會。受理完成者得閱覽附載手稿，並可貼付寫真、記錄調查後記及編製個人結語。</p><span>照片與文字不會送往主辦單位</span></section>
+   <section className="gazette-case-list">{puzzles.map((item,index)=><FieldJournal key={item.label+index} item={item} index={index} unlockedCount={unlockedCount}/>)}</section>
+  </main>
+ </div>
+}
+
 function StoryMap({onDayChange,onModeChange}){
  const mapNode=useRef(null); const mapInstance=useRef(null); const [filter,setFilter]=useState('days');
  useEffect(()=>{
@@ -196,6 +318,7 @@ function MunicipalHome(){
  return <div className="municipal-site">
   <header className="office-header"><div className="office-identity"><div className="office-seal-mark">臺中<br/>市役所</div><div><p>昭和十三年度・臨時公示板</p><h1>臺中市役所</h1><span>臺中州臺中市・庶務課文書係</span></div></div><div className="office-date"><small>告示更新</small><b>昭和十三年八月十三日</b><span>庶務秘第七二號</span></div></header>
   <div className="office-ticker"><b>新着</b><div><span>市街巡查ニ關スル臨時調查員ヲ命ズ　</span><span>未綴込文書七件・照會受付中　</span><span>第四市場ニ於テ終章報告會ヲ執行ス</span></div></div>
+  <nav className="office-portal-nav" aria-label="本日新到公告"><b>本日新到公告</b><button onClick={()=>scroll('new-notices')}>最新通達</button><button onClick={()=>scroll('patrol')}>巡迴路線</button><button onClick={()=>scroll('roster')}>職員編制</button><button onClick={()=>open('./?page=puzzles')}>登記照會</button><button onClick={()=>scroll('office-map')}>管內配置圖</button><button onClick={()=>open('./?page=info')}>洽詢須知</button></nav>
   <div className="office-shell">
    <aside className="office-sidebar"><section><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、巡回路線公告</button><button onClick={()=>scroll('roster')}>三、職員編制表</button><button onClick={()=>open('./?page=puzzles')}>四、受理番號照會</button><button onClick={()=>scroll('office-map')}>五、市街配置圖</button><button onClick={()=>open('./?page=schedule')}>六、當日執務時刻</button><button onClick={()=>open('./?page=info')}>七、庶務課案內</button></section><section className="office-counter"><h2>本日洽公人數</h2><strong>{visits}</strong><p>本月累計　〇九一三件</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。登記字號不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
    <main className="office-main">
@@ -216,7 +339,7 @@ function App(){
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
  if(page==='info') return <InfoPage/>;
- if(page==='puzzles') return <PuzzlePage/>;
+ if(page==='puzzles') return <NewspaperJournalPage/>;
  if(page==='schedule') return <SchedulePage/>;
  if(page==='guide') return <GameGuidePage/>;
  return <MunicipalHome/>
