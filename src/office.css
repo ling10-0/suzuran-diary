@@ -501,7 +501,7 @@
 .table-head,
 .table-row {
   display: grid;
-  grid-template-columns: 55px 1.05fr 1.35fr 1.45fr 54px;
+  grid-template-columns: 55px 1.05fr 1.35fr 1.45fr;
 }
 
 .table-head {
@@ -535,14 +535,6 @@
 
 .table-row strong {
   font-size: 13px;
-}
-
-.table-row i {
-  width: 25px;
-  height: 25px;
-  margin: auto;
-  border: 1px dashed var(--office-red);
-  border-radius: 50%;
 }
 
 .patrol-day-block + .patrol-day-block {
@@ -586,7 +578,7 @@
 
 .place-version .table-head,
 .place-version .table-row {
-  grid-template-columns: 55px minmax(180px,1.15fr) minmax(230px,1.55fr) 54px;
+  grid-template-columns: 55px minmax(180px,1.15fr) minmax(230px,1.55fr);
 }
 
 .route-attachments {
@@ -1099,7 +1091,7 @@
   .place-version .table-row {
     position: relative;
     display: grid;
-    grid-template-columns: 42px minmax(0,1fr) 34px;
+    grid-template-columns: 42px minmax(0,1fr);
     min-width: 0;
     min-height: 0;
     padding: 13px 8px;
@@ -1127,13 +1119,6 @@
     grid-column: 2;
     font-size: 10px;
     line-height: 1.7;
-  }
-
-  .place-version .table-row i {
-    grid-column: 3;
-    grid-row: 1/3;
-    width: 23px;
-    height: 23px;
   }
 
   .route-attachments {
