@@ -66,6 +66,18 @@
 .gazette-approved{color:var(--gazette-red);font-weight:700}
 .gazette-manuscript>svg{float:right;margin:0 0 10px 16px;color:var(--gazette-red)}
 .gazette-manuscript footer{margin-top:20px;padding-top:10px;border-top:1px solid var(--gazette-rule);font-size:10px;text-align:right}
+.document-reader{clear:both}
+.document-tabs{display:grid;grid-template-columns:1fr 1fr;margin-bottom:22px;border:1px solid var(--gazette-ink)}
+.document-tabs button{min-height:44px;padding:10px 8px;border:0;border-right:1px solid var(--gazette-ink);color:var(--gazette-ink);background:transparent;font:600 12px 'Noto Serif TC';letter-spacing:.1em;cursor:pointer}
+.document-tabs button:last-child{border-right:0}
+.document-tabs button.active{color:#f1e1b9;background:var(--gazette-ink)}
+.document-copy{position:relative;padding:20px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.13)}
+.document-copy>svg{position:absolute;right:18px;top:18px;color:var(--gazette-red)}
+.document-copy>small{display:block;max-width:calc(100% - 42px);color:#756650;font-size:10px;letter-spacing:.08em}
+.document-copy h4{margin:8px 0 18px;padding-bottom:8px;border-bottom:3px double var(--gazette-rule);font-size:20px}
+.document-copy p{margin:0 0 14px;font-size:13px;line-height:2;text-align:justify}
+.document-copy.island{border-color:var(--gazette-red)}
+.document-copy.island h4{color:var(--gazette-red)}
 .gazette-sealed{display:grid;place-items:center;gap:15px;min-height:190px;color:#796c58}
 .gazette-sealed svg{width:36px;height:36px}
 .field-record{padding:25px 28px 30px;border-top:3px double var(--gazette-ink);background:rgba(246,233,199,.44)}
@@ -124,6 +136,9 @@
  .gazette-guidance{grid-template-columns:82px 1fr}.gazette-guidance span{display:none}.gazette-guidance>*{padding:10px}.gazette-guidance p{font-size:10px}
  .gazette-case-head{grid-template-columns:105px 1fr 62px}.gazette-case-head>div{padding:9px}.gazette-issue b{font-size:11px}.gazette-case-head h2{font-size:17px}.gazette-status{font-size:10px}
  .gazette-columns{grid-template-columns:1fr}.gazette-query{border-right:0;border-bottom:1px solid var(--gazette-rule)}.gazette-query,.gazette-manuscript{padding:20px}
+ .document-tabs{position:sticky;top:0;z-index:2;margin:-2px 0 16px;background:var(--gazette-paper)}
+ .document-tabs button{min-height:48px;font-size:11px}
+ .document-copy{padding:16px 14px}.document-copy h4{font-size:18px}.document-copy p{font-size:12px;line-height:1.9}
  .field-record{padding:20px}.field-record-heading{align-items:start;flex-direction:column;gap:5px}.field-record-grid{grid-template-columns:1fr}.photo-entry{max-width:360px}
  .gazette-query form>div{flex-direction:column}.gazette-query form button{min-height:44px;border-left:1px solid var(--gazette-ink);border-top:0}
  .case-day-group>header{align-items:flex-start;gap:8px;padding:12px}.case-day-group>header div{display:block}.case-day-group>header h2{margin-top:3px;font-size:19px}.case-day-group>header>span{font-size:9px}

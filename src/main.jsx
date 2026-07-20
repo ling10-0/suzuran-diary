@@ -9,6 +9,7 @@ import './campaign.css';
 import './refinements.css';
 import './office.css';
 import './newspaper.css';
+import {caseDocuments} from './caseDocuments.js';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',historic:'臺中驛構內產業區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',historic:'新富町市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',historic:'新富町工場',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',historic:'市役所前金融街',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',historic:'榮町金融街',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳美術館',historic:'柳川沿岸街屋',lat:24.1419249,lng:120.6777138},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -189,7 +190,10 @@ function FieldJournal({item,index,unlockedCount}){
  const [value,setValue]=useState('');
  const [error,setError]=useState(false);
  const [record,setRecord]=useState(initialRecord);
+ const [documentView,setDocumentView]=useState('travel');
  const [photoError,setPhotoError]=useState('');
+ const document=caseDocuments[index];
+ const documentReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
  const submit=async event=>{
   event.preventDefault();
@@ -220,8 +224,20 @@ function FieldJournal({item,index,unlockedCount}){
     {solved&&<p className="gazette-approved">本件照合完了，准予閱覽附載手稿。</p>}
    </section>
    <section className="gazette-manuscript">
-    <h3>{solved?'本島人手稿・殘頁':'附載手稿・封緘中'}</h3>
-    {solved?<><BookOpen/><p>{item.manuscript}</p><footer>昭和十三年・臺中市街調查資料</footer></>:<div className="gazette-sealed"><LockKeyhole/><span>須經登記字號照合始得展閱</span></div>}
+    <h3>{documentReady?'雙版本城市記錄':solved?'待全案辦結':'附載手稿・封緘中'}</h3>
+    {documentReady?<div className="document-reader">
+      <div className="document-tabs" role="tablist" aria-label="切換城市記錄版本">
+       <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
+       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} onClick={()=>setDocumentView('island')}>本島人手稿</button>
+      </div>
+      <div className={'document-copy '+documentView} role="tabpanel">
+       <BookOpen/>
+       <small>{document.title}</small>
+       <h4>{documentView==='travel'?'內地人遊記':'本島人手稿'}</h4>
+       {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+       <footer>{documentView==='travel'?'市役所遊覽資料・公開稿':'昭和十三年・臺中市街生活記錄'}</footer>
+      </div>
+     </div>:<div className="gazette-sealed"><LockKeyhole/><span>{solved?'特殊手稿須待十三件案件全數受理後開封':'須經登記字號照合始得展閱'}</span></div>}
    </section>
   </div>
   <section className="field-record">
@@ -261,7 +277,7 @@ function NewspaperJournalPage({caseIndex}){
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>
   <main>
    <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
-   <section className="gazette-guidance"><b>案件說明</b><p>選擇一件調查案件，輸入走讀現場取得的答案。查核完成後，可閱覽手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>照片與文字只保存在目前裝置</span></section>
+   <section className="gazette-guidance"><b>案件說明</b><p>選擇一件調查案件，輸入走讀現場取得的答案。查核完成後，可對照內地人遊記與本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>照片與文字只保存在目前裝置</span></section>
    {selected===null
     ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1').length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
     :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount}/></section></>}
