@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {ArrowDown, ArrowLeft, ArrowUpRight, AtSign, CalendarDays, Clock, MapPin, Menu, X, LockKeyhole, Unlock, BookOpen, ExternalLink, Instagram} from 'lucide-react';
+import {ArrowDown, ArrowLeft, ArrowUpRight, AtSign, CalendarDays, Clock, MapPin, X, LockKeyhole, Unlock, BookOpen, ExternalLink, Instagram} from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
@@ -193,7 +193,7 @@ function FieldJournal({item,index,unlockedCount}){
  const [documentView,setDocumentView]=useState('travel');
  const [photoError,setPhotoError]=useState('');
  const document=caseDocuments[index];
- const documentReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
+ const islandManuscriptReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
  const submit=async event=>{
   event.preventDefault();
@@ -221,14 +221,14 @@ function FieldJournal({item,index,unlockedCount}){
     <h3>{item.taskTitle}</h3>
     <p>{item.hint}</p>
     {!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
-    {solved&&<p className="gazette-approved">本件照合完了，准予閱覽附載手稿。</p>}
+    {solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}
    </section>
    <section className="gazette-manuscript">
-    <h3>{documentReady?'雙版本城市記錄':solved?'待全案辦結':'附載手稿・封緘中'}</h3>
-    {documentReady?<div className="document-reader">
+    <h3>{islandManuscriptReady?'雙版本城市記錄':'內地人遊記・公開閱覽'}</h3>
+    <div className="document-reader">
       <div className="document-tabs" role="tablist" aria-label="切換城市記錄版本">
        <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
-       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} onClick={()=>setDocumentView('island')}>本島人手稿</button>
+       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':solved?'本島人手稿・待全案辦結':'本島人手稿・封緘中'}</button>
       </div>
       <div className={'document-copy '+documentView} role="tabpanel">
        <BookOpen/>
@@ -237,7 +237,7 @@ function FieldJournal({item,index,unlockedCount}){
        {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
        <footer>{documentView==='travel'?'市役所遊覽資料・公開稿':'昭和十三年・臺中市街生活記錄'}</footer>
       </div>
-     </div>:<div className="gazette-sealed"><LockKeyhole/><span>{solved?'特殊手稿須待十三件案件全數受理後開封':'須經登記字號照合始得展閱'}</span></div>}
+     </div>
    </section>
   </div>
   <section className="field-record">
@@ -277,7 +277,7 @@ function NewspaperJournalPage({caseIndex}){
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>
   <main>
    <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
-   <section className="gazette-guidance"><b>案件說明</b><p>選擇一件調查案件，輸入走讀現場取得的答案。查核完成後，可對照內地人遊記與本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>照片與文字只保存在目前裝置</span></section>
+   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>照片與文字只保存在目前裝置</span></section>
    {selected===null
     ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1').length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
     :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount}/></section></>}
@@ -369,10 +369,8 @@ function MunicipalHome(){
  const open=target=>window.location.assign(target); const scroll=id=>{setActiveSection(id);document.getElementById(id)?.scrollIntoView({behavior:'smooth'})};
  return <div className="municipal-site">
   <header className="office-header"><div className="office-identity"><div className="office-seal-mark">臺中<br/>市役所</div><div><p>昭和十三年度・臨時公示板</p><h1>臺中市役所</h1><span>臺中州臺中市・庶務課文書係</span></div></div><div className="office-date"><small>告示更新</small><b>昭和十三年八月十三日</b><span>庶務秘第七二號</span></div></header>
-  <nav className="office-portal-nav" aria-label="市役所公示板導覽"><button className={activeSection==='new-notices'?'active':''} onClick={()=>scroll('new-notices')}>最新通達</button><button className={activeSection==='patrol'?'active':''} onClick={()=>scroll('patrol')}>巡迴路線</button><button className={activeSection==='roster'?'active':''} onClick={()=>scroll('roster')}>職員編制</button><button onClick={()=>open('./?page=puzzles')}>調查案件</button><button className={activeSection==='office-map'?'active':''} onClick={()=>scroll('office-map')}>管內配置圖</button><button onClick={()=>open('./?page=schedule')}>執務時刻</button><button onClick={()=>open('./?page=info')}>洽詢須知</button></nav>
-  <details className="office-mobile-menu"><summary>公示板選單 <Menu size={18}/></summary><div><button onClick={()=>scroll('new-notices')}>最新通達</button><button onClick={()=>scroll('patrol')}>巡迴路線</button><button onClick={()=>scroll('roster')}>職員編制</button><button onClick={()=>open('./?page=puzzles')}>調查案件</button><button onClick={()=>scroll('office-map')}>管內配置圖</button><button onClick={()=>open('./?page=schedule')}>執務時刻</button><button onClick={()=>open('./?page=info')}>洽詢須知</button></div></details>
   <div className="office-shell">
-   <aside className="office-sidebar"><section><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、兩日巡回路線</button><button onClick={()=>scroll('roster')}>三、職員編制表</button><button onClick={()=>scroll('office-map')}>四、市街配置圖</button></section><section className="office-counter"><h2>本日登入人數</h2><strong>{visits}</strong><p>本機到訪次數</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。案件答案不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
+   <aside className="office-sidebar"><section className="office-directory"><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、兩日巡回路線</button><button onClick={()=>scroll('roster')}>三、職員編制表</button><button onClick={()=>open('./?page=puzzles')}>四、調查案件</button><button onClick={()=>scroll('office-map')}>五、市街配置圖</button><button onClick={()=>open('./?page=schedule')}>六、執務時刻</button><button onClick={()=>open('./?page=info')}>七、洽詢須知</button></section><section className="office-counter"><h2>本日登入人數</h2><strong>{visits}</strong><p>本機到訪次數</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。案件答案不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
    <main className="office-main">
     <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list no-stamps"><article><time>八月十三日</time><div><small>庶務秘第七二號</small><h3>臨時調查員任命及市街巡查要領</h3><p>因市役所舊簿冊出現缺頁，命受理學生編為見習調查員，依指定區域採集民生日常及商號紀錄。</p></div><button onClick={()=>open('./?page=guide')}>公告本文</button></article><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>兩日巡回路線及配置變更</h3><p>本次巡查分兩日共十七處，應依公告順序完成查錄；各點詳見配置圖及附屬路線頁。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>十三件調查案件開放查核</h3><p>現地所得答案可於案件目錄逐件查核。內容相符者，准予閱覽附屬公告及未綴込文書。</p></div><button onClick={()=>open('./?page=puzzles')}>案件目錄</button></article></div></section>
     <section className="patrol-notice office-paper" id="patrol"><div className="document-head"><div><small>臺中市役所　巡查第十九號</small><h2>兩日市街巡回路線公告</h2><p>昭和十三年八月十三日</p></div><div className="document-stamp">巡查<br/>指定</div></div><p className="document-intro">臨時調查員之巡查地點，分兩日依左列次序辦理。各處並非競速通過之關卡；應就現場用途、人物生活及異動痕跡詳實記入調查簿。</p>{dailyPatrolRoutes.map(group=><div className="patrol-day-block" key={group.day}><div className="patrol-day-title"><b>附圖{group.day===1?'甲':'乙'}</b><h3>{group.label}</h3><button onClick={()=>open('./?day='+group.day)}>開啟詳細路線 <ArrowUpRight size={15}/></button></div><div className="patrol-table place-version"><div className="table-head"><span>順序</span><span>巡查地點</span><span>勤務摘要</span><span>核章</span></div>{group.points.map(route=><div className="table-row" key={group.day+'-'+route.no}><b>{route.no}</b><strong>{route.name}</strong><span>{route.duty}</span><i></i></div>)}</div></div>)}</section>
