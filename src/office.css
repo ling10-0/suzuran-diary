@@ -913,14 +913,15 @@
     flex-direction: column;
     width: 100%;
     margin: 0;
-    gap: 0;
+    gap: 12px;
   }
 
   .office-sidebar {
     position: static;
     order: 0;
-    width: 100%;
-    gap: 0;
+    width: calc(100% - 28px);
+    margin: 14px auto 0;
+    gap: 12px;
   }
 
   .office-sidebar > section {
@@ -929,8 +930,9 @@
 
   .office-sidebar > section.office-directory {
     display: grid;
-    border: 0;
-    border-bottom: 2px solid var(--office-rule);
+    overflow: hidden;
+    border: 1px solid var(--office-rule);
+    box-shadow: 2px 3px 0 rgba(53,42,29,.14);
   }
 
   .office-directory h2 {
@@ -957,7 +959,11 @@
   }
 
   .office-directory button:last-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
+  }
+
+  .office-directory button:nth-last-child(-n+2) {
+    border-bottom: 0;
   }
 
   .office-sidebar .office-counter {
@@ -965,8 +971,9 @@
     grid-template-columns: 1fr auto auto;
     align-items: center;
     padding: 0;
-    border: 0;
-    border-bottom: 2px solid var(--office-rule);
+    overflow: hidden;
+    border: 1px solid var(--office-rule);
+    box-shadow: 2px 3px 0 rgba(53,42,29,.14);
     text-align: left;
   }
 
@@ -994,7 +1001,7 @@
   }
 
   .office-main > section {
-    margin: 12px 10px;
+    margin: 0 14px 14px;
   }
 
   .office-title-row {
