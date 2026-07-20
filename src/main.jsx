@@ -362,6 +362,36 @@ function SchedulePage(){
  </div>
 }
 
+function OfficeEntryPage({onComplete}){
+ const [name,setName]=useState('');
+ const [welcome,setWelcome]=useState(false);
+ const submit=event=>{
+  event.preventDefault();
+  const cleanName=name.trim().slice(0,20);
+  if(!cleanName)return;
+  window.localStorage.setItem('suzuran-investigator-name',cleanName);
+  setName(cleanName);
+  setWelcome(true);
+ };
+ return <main className="office-entry-page">
+  <section className="office-entry-card">
+   <header><small>昭和十三年度・臨時調查員受付</small><b>臺中市役所</b><span>庶務課文書係</span></header>
+   {!welcome?<form onSubmit={submit}>
+    <p>進入市役所公示板前，請先完成見習調查員登記。</p>
+    <label htmlFor="investigator-name">姓名或綽號</label>
+    <input id="investigator-name" value={name} onChange={event=>setName(event.target.value)} maxLength="20" autoComplete="nickname" placeholder="請輸入姓名或綽號" autoFocus/>
+    <button type="submit" disabled={!name.trim()}>送交登記</button>
+    <small>名稱只會保存在目前使用的裝置。</small>
+   </form>:<div className="office-entry-welcome">
+    <span>登記受理</span>
+    <h1>{name}，歡迎來到臺中舊城區</h1>
+    <p>讓我們一起走進街區，開始續寫你的導覽遊記吧。</p>
+    <button onClick={()=>onComplete(name)}>進入臺中市役所</button>
+   </div>}
+  </section>
+ </main>
+}
+
 function MunicipalHome(){
  const [mapMode,setMapMode]=useState('both'); const [active,setActive]=useState(0);
  const [activeSection,setActiveSection]=useState('new-notices');
@@ -372,21 +402,23 @@ function MunicipalHome(){
   <div className="office-shell">
    <aside className="office-sidebar"><section className="office-directory"><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、兩日巡回路線</button><button onClick={()=>scroll('roster')}>三、職員編制表</button><button onClick={()=>open('./?page=puzzles')}>四、調查案件</button><button onClick={()=>scroll('office-map')}>五、市街配置圖</button><button onClick={()=>open('./?page=schedule')}>六、執務時刻</button><button onClick={()=>open('./?page=info')}>七、洽詢須知</button></section><section className="office-counter"><h2>本日登入人數</h2><strong>{visits}</strong><p>本機到訪次數</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。案件答案不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
    <main className="office-main">
-    <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list no-stamps"><article><time>八月十三日</time><div><small>庶務秘第七二號</small><h3>臨時調查員任命及市街巡查要領</h3><p>因市役所舊簿冊出現缺頁，命受理學生編為見習調查員，依指定區域採集民生日常及商號紀錄。</p></div><button onClick={()=>open('./?page=guide')}>公告本文</button></article><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>兩日巡回路線及配置變更</h3><p>本次巡查分兩日共十七處，應依公告順序完成查錄；各點詳見配置圖及附屬路線頁。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>十三件調查案件開放查核</h3><p>現地所得答案可於案件目錄逐件查核。內容相符者，准予閱覽附屬公告及未綴込文書。</p></div><button onClick={()=>open('./?page=puzzles')}>案件目錄</button></article></div></section>
+    <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list no-stamps"><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>兩日巡回路線及配置變更</h3><p>本次巡查分兩日共十七處，應依公告順序完成查錄；各點詳見配置圖及附屬路線頁。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>十三件調查案件開放查核</h3><p>現地所得答案可於案件目錄逐件查核。內容相符者，准予閱覽附屬公告及未綴込文書。</p></div><button onClick={()=>open('./?page=puzzles')}>案件目錄</button></article></div></section>
     <section className="patrol-notice office-paper" id="patrol"><div className="document-head"><div><small>臺中市役所　巡查第十九號</small><h2>兩日市街巡回路線公告</h2><p>昭和十三年八月十三日</p></div><div className="document-stamp">巡查<br/>指定</div></div><p className="document-intro">臨時調查員之巡查地點，分兩日依左列次序辦理。各處並非競速通過之關卡；應就現場用途、人物生活及異動痕跡詳實記入調查簿。</p>{dailyPatrolRoutes.map(group=><div className="patrol-day-block" key={group.day}><div className="patrol-day-title"><b>附圖{group.day===1?'甲':'乙'}</b><h3>{group.label}</h3><button onClick={()=>open('./?day='+group.day)}>開啟詳細路線 <ArrowUpRight size={15}/></button></div><div className="patrol-table place-version"><div className="table-head"><span>順序</span><span>巡查地點</span><span>勤務摘要</span><span>核章</span></div>{group.points.map(route=><div className="table-row" key={group.day+'-'+route.no}><b>{route.no}</b><strong>{route.name}</strong><span>{route.duty}</span><i></i></div>)}</div></div>)}</section>
     <section className="staff-board" id="roster"><div className="office-title-row"><p>劇情用編制資料</p><h2>市役所職員編制表</h2><span>庶務課保管・部外秘</span></div><table><thead><tr><th>所屬</th><th>官職</th><th>氏名</th><th>摘要</th></tr></thead><tbody>{officeStaff.map(person=><tr key={person.unit+person.name} className={person.name==='鈴蘭'?'staff-anomaly':''}><td>{person.unit}</td><td>{person.title}</td><td>{person.name}</td><td>{person.note}</td></tr>)}</tbody></table><p className="roster-footnote">※ 本表為活動情境之虛構資料。職稱用字參照當時官署慣例；人名與異動紀錄非真實史料。</p></section>
     <section className="office-map-board" id="office-map"><div className="office-title-row"><p>附圖・市街配置</p><h2>巡查區域配置圖</h2><span>縮尺及現況以現地為準</span></div><div className="office-map-layout"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="map-register"><h3>配置圖取扱欄</h3><dl><div><dt>現在表示</dt><dd>{mapMode==='guide'?'案內係巡回路線':mapMode==='both'?'兩日巡查總圖':chapters[active].date+' 詳圖'}</dd></div><div><dt>圖面番號</dt><dd>中市庶圖 第〇七號</dd></div><div><dt>保管係</dt><dd>庶務課 文書係</dd></div><div><dt>閱覽</dt><dd>見習調查員限</dd></div></dl><button onClick={()=>open('./?page=schedule')}>當日執務時刻ヲ見る</button></div></div></section>
    </main>
    <aside className="office-rightbar"><section><h2>執務狀態</h2><p><b>受付</b><span>午前九時開始</span></p><p><b>巡查</b><span>兩日十七處</span></p><p><b>案件</b><span>十三件待查</span></p><p><b>終章</b><span>第四市場</span></p></section><section className="office-clipping"><h2>係員備忘</h2><p>「正式紀錄」與「人們記得的事」若有出入，兩者均須留下。</p><span>— 文書係頁緣註記</span></section><section><h2>官方聯絡板</h2><p className="rightbar-explain">活動異動、集合提醒與最新公告，以主辦單位發布內容為準。</p><button onClick={()=>open('./?page=info')}>開啟聯絡資訊</button></section></aside>
   </div>
-  <footer className="office-footer"><p>本公示板由臺中市役所庶務課文書係維持管理。連結錯誤及文書缺落請向係員申告。</p><p>昭和十三年度臨時公示板　最佳閱覽幅員 1024px 以上　最終更新 08月13日 17時40分</p><small>本頁為《翻閱1938：那些待續的章節》活動情境網站，所列職員與公文均屬虛構。</small></footer>
+  <footer className="office-footer"><small>本頁為《翻閱1938：那些待續的章節》活動情境網站，所列職員與公文均屬虛構。</small></footer>
  </div>
 }
 
 function App(){
  const params=new URLSearchParams(window.location.search); const day=Number(params.get('day')); const page=params.get('page'); const caseNumber=Number(params.get('case'));
  const [menu,setMenu]=useState(false); const [active,setActive]=useState(0); const [mapMode,setMapMode]=useState('both');
+ const [investigatorName,setInvestigatorName]=useState(()=>window.localStorage.getItem('suzuran-investigator-name')||'');
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
+ if(!investigatorName) return <OfficeEntryPage onComplete={setInvestigatorName}/>;
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
  if(page==='info') return <InfoPage/>;
  if(page==='puzzles') return <NewspaperJournalPage caseIndex={caseNumber?caseNumber-1:null}/>;

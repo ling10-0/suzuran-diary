@@ -19,6 +19,119 @@
   border-radius: 0;
 }
 
+.office-entry-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  color: #2d2117;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(84,62,36,.09) 0 1px, transparent 1.5px) 0 0 / 7px 7px,
+    #cdbc96;
+  font-family: 'Noto Serif TC', serif;
+}
+
+.office-entry-card {
+  width: min(620px, 100%);
+  border: 5px double #3e3428;
+  background: #f1e4c3;
+  box-shadow: 10px 12px 0 rgba(45,33,23,.18);
+}
+
+.office-entry-card > header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 18px;
+  padding: 18px 22px;
+  color: #f1e4c3;
+  background: #3e3428;
+}
+
+.office-entry-card > header small,
+.office-entry-card > header span {
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+.office-entry-card > header b {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  font-size: 23px;
+  letter-spacing: .15em;
+}
+
+.office-entry-card form,
+.office-entry-welcome {
+  display: grid;
+  gap: 16px;
+  padding: 42px;
+}
+
+.office-entry-card form p,
+.office-entry-welcome p {
+  margin: 0 0 8px;
+  line-height: 1.9;
+}
+
+.office-entry-card label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.office-entry-card input {
+  min-height: 52px;
+  padding: 11px 14px;
+  border: 1px solid #594733;
+  border-radius: 0;
+  color: #2d2117;
+  background: rgba(255,255,255,.28);
+  font: 17px 'Noto Serif TC', serif;
+}
+
+.office-entry-card button {
+  min-height: 50px;
+  border: 0;
+  color: #f1e4c3;
+  background: #8f251d;
+  font: 700 14px 'Noto Serif TC', serif;
+  letter-spacing: .14em;
+  cursor: pointer;
+}
+
+.office-entry-card button:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+
+.office-entry-card form > small {
+  color: #725f49;
+  font-size: 10px;
+  text-align: center;
+}
+
+.office-entry-welcome {
+  padding-block: 58px;
+  text-align: center;
+}
+
+.office-entry-welcome > span {
+  justify-self: center;
+  padding: 8px 14px;
+  color: #8f251d;
+  border: 4px double #8f251d;
+  font-size: 12px;
+  font-weight: 900;
+  transform: rotate(-3deg);
+}
+
+.office-entry-welcome h1 {
+  margin: 8px 0 0;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.45;
+}
+
 .office-header {
   position: relative;
   display: flex;
@@ -918,15 +1031,28 @@
   }
 
   .document-head h2 {
-    font-size: 27px;
-    line-height: 1.45;
+    font-size: 24px;
+    line-height: 1.4;
+    letter-spacing: .04em;
+  }
+
+  .document-head {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .document-head > div:first-child {
+    min-width: 0;
   }
 
   .document-stamp {
-    width: 62px;
-    height: 62px;
+    width: 50px;
+    height: 50px;
     flex: 0 0 auto;
-    font-size: 12px;
+    margin: 4px 4px 0 0;
+    border-width: 3px;
+    font-size: 10px;
+    transform: rotate(3deg);
   }
 
   .patrol-day-title {
@@ -1025,7 +1151,27 @@
   }
 
   .office-footer {
-    padding: 20px 18px;
+    padding: 14px 18px;
+  }
+
+  .office-entry-page {
+    padding: 14px;
+  }
+
+  .office-entry-card > header {
+    grid-template-columns: 1fr;
+    padding: 15px 17px;
+  }
+
+  .office-entry-card > header b {
+    grid-row: auto;
+    grid-column: auto;
+    font-size: 20px;
+  }
+
+  .office-entry-card form,
+  .office-entry-welcome {
+    padding: 32px 22px;
   }
 
   .office-subpage .puzzle-page-hero h1 {
