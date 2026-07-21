@@ -261,8 +261,36 @@ function FieldJournal({item,index,unlockedCount}){
  </article>
 }
 
+function NewsroomEntry({onComplete}){
+ const [newsroom,setNewsroom]=useState('');
+ const [error,setError]=useState('');
+ const submit=event=>{
+  event.preventDefault();
+  const next=newsroom.trim();
+  if(!next){setError('請填入領隊指定的報社名稱。');return}
+  window.localStorage.setItem('suzuran-newsroom',next);
+  onComplete(next);
+ };
+ return <div className="newspaper-journal-page newsroom-entry-page">
+  <header className="route-nav"><button className="brand" onClick={()=>window.location.assign('./')}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={()=>window.location.assign('./')}><ArrowLeft size={18}/> 返回市役所</button></header>
+  <main><section className="newsroom-entry">
+   <p className="eyebrow">PRESS REGISTRATION / 報社登記</p>
+   <h1>請報明所屬報社</h1>
+   <p>進入調查案件前，請填入同組共用的報社名稱。請全組使用完全相同的名稱，以便後續啟用共用紀錄。</p>
+   <form onSubmit={submit}>
+    <label htmlFor="newsroom-name">報社／組別名稱</label>
+    <input id="newsroom-name" value={newsroom} onChange={event=>{setNewsroom(event.target.value);setError('')}} placeholder="例如：臺中市報第一組" maxLength="30" autoFocus />
+    <button type="submit">登記後進入案件目錄 <ArrowUpRight size={17}/></button>
+    {error&&<small>{error}</small>}
+   </form>
+   <footer>現階段的個人照片與文字仍僅保存於本機；跨手機共用紀錄將於資料庫啟用後開放。</footer>
+  </section></main>
+ </div>
+}
+
 function NewspaperJournalPage({caseIndex}){
  const home=()=>window.location.assign('./');
+ const [newsroom,setNewsroom]=useState(()=>window.localStorage.getItem('suzuran-newsroom')||'');
  const [unlockedCount,setUnlockedCount]=useState(()=>puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
  useEffect(()=>{
   const refresh=()=>setUnlockedCount(puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
@@ -274,11 +302,12 @@ function NewspaperJournalPage({caseIndex}){
  const openCase=index=>window.location.assign('./?page=puzzles&case='+(index+1));
  const goIndex=()=>window.location.assign('./?page=puzzles');
  const dayGroups=[1,2].map(day=>({day,items:puzzles.map((item,index)=>({...item,index})).filter(item=>item.day===day)}));
+ if(!newsroom)return <NewsroomEntry onComplete={setNewsroom}/>;
  return <div className={'newspaper-journal-page '+(selected===null?'journal-index-page':'journal-case-page')}>
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>
   <main>
    <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
-   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>照片與文字只保存在目前裝置</span></section>
+   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>紀錄暫存於目前裝置</span></section>
    {selected===null
     ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1').length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
     :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount}/></section></>}
@@ -397,7 +426,7 @@ function OfficeEntryPage({onComplete}){
      <i aria-hidden="true">→</i>
      <p><small>內地式登記名</small><b>{profile.japaneseName}</b></p>
     </div>
-    <h1>{profile.japaneseName}，歡迎來到臺中舊城區</h1>
+    <h1><span>{profile.japaneseName}，</span><span>歡迎來到臺中舊城區</span></h1>
     <p>{profile.matched?`依「${profile.originalSurname}」姓改姓對照，本所登記為「${profile.japaneseSurname}」。`:`本次對照資料未收錄「${profile.originalSurname}」姓，暫以通用內地式姓氏「${profile.japaneseSurname}」登記，並保留原名一字。`}</p>
     <p>讓我們一起走進街區，開始續寫你的導覽遊記吧。</p>
     <button onClick={acceptName}>以此名進入臺中市役所</button>

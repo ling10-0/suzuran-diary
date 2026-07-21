@@ -149,11 +149,21 @@
 }
 
 .office-entry-welcome h1 {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: .2em;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 8px 0 0;
   font-size: clamp(28px, 5vw, 36px);
   line-height: 1.35;
   white-space: nowrap;
+}
+
+.office-entry-welcome h1 span {
+  display: block;
 }
 
 .office-name-certificate {
@@ -1244,10 +1254,13 @@
   }
 
   .office-entry-welcome h1 {
-    font-size: clamp(25px, 8.4vw, 34px);
-    line-height: 1.35;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: clamp(24px, 7.2vw, 28px);
+    line-height: 1.3;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .office-entry-card input {
