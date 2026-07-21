@@ -91,6 +91,7 @@
 .travel-dialogue p{display:grid;grid-template-columns:4.6em 1fr;gap:8px;margin:0 0 9px;text-align:left}
 .travel-dialogue b{color:var(--gazette-red);font-size:12px;font-weight:700;white-space:nowrap}
 .travel-dialogue span{font-size:13px;line-height:1.85}
+.case-dialogue{margin-top:28px}
 .document-copy.island{border-color:var(--gazette-red)}
 .document-copy.island h4{color:var(--gazette-red)}
 .gazette-sealed{display:grid;place-items:center;gap:15px;min-height:190px;color:#796c58}

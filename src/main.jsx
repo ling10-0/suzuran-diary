@@ -225,6 +225,10 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
     <p>{item.hint}</p>
     {!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
     {solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}
+    {document.dialogue?.length>0&&<section className="travel-dialogue case-dialogue" aria-label="現場短對話">
+     <small>現場短對話・採訪筆記</small>
+     {document.dialogue.map(([speaker,line],dialogueIndex)=><p key={dialogueIndex}><b>{speaker}</b><span>{line}</span></p>)}
+    </section>}
    </section>
    <section className="gazette-manuscript">
     <h3>{islandManuscriptReady?'雙版本城市記錄':'內地人遊記・公開閱覽'}</h3>
@@ -238,10 +242,6 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
        <small>{document.title}</small>
        <h4>{documentView==='travel'?'內地人遊記':'本島人手稿'}</h4>
        {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
-       {documentView==='travel'&&document.dialogue?.length>0&&<section className="travel-dialogue" aria-label="現場短對話">
-        <small>現場短對話・採訪筆記</small>
-        {document.dialogue.map(([speaker,line],dialogueIndex)=><p key={dialogueIndex}><b>{speaker}</b><span>{line}</span></p>)}
-       </section>}
        <footer>{documentView==='travel'?'市役所遊覽資料・公開稿':'昭和十三年・臺中市街生活記錄'}</footer>
       </div>
      </div>
