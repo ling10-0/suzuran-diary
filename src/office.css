@@ -127,6 +127,12 @@
   text-align: center;
 }
 
+.office-entry-error {
+  color: #8f251d;
+  font-size: 12px;
+  text-align: center;
+}
+
 .office-entry-welcome {
   padding-block: 58px;
   text-align: center;
@@ -146,6 +152,53 @@
   margin: 8px 0 0;
   font-size: clamp(28px, 6vw, 44px);
   line-height: 1.45;
+}
+
+.office-name-certificate {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 3px double #594733;
+  background: rgba(255,255,255,.18);
+}
+
+.office-name-certificate p {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.office-name-certificate small {
+  color: #725f49;
+  font-size: 10px;
+  letter-spacing: .14em;
+}
+
+.office-name-certificate del,
+.office-name-certificate b {
+  font-size: 22px;
+  text-decoration-thickness: 1px;
+}
+
+.office-name-certificate b {
+  color: #8f251d;
+}
+
+.office-name-certificate i {
+  color: #8f251d;
+  font-style: normal;
+  font-size: 22px;
+}
+
+.office-entry-card .office-entry-revise {
+  min-height: 0;
+  padding: 5px;
+  color: #725f49;
+  background: transparent;
+  font-size: 11px;
+  text-decoration: underline;
 }
 
 .office-header {
@@ -1192,6 +1245,21 @@
     min-height: 48px;
     padding: 10px 12px;
     font-size: 16px;
+  }
+
+  .office-name-certificate {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .office-name-certificate i {
+    transform: rotate(90deg);
+  }
+
+  .office-name-certificate del,
+  .office-name-certificate b {
+    font-size: 20px;
   }
 
   .office-subpage .puzzle-page-hero h1 {

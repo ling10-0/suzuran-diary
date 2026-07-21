@@ -10,6 +10,7 @@ import './refinements.css';
 import './office.css';
 import './newspaper.css';
 import {caseDocuments} from './caseDocuments.js';
+import {createJapaneseName} from './japaneseName.js';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',historic:'臺中驛構內產業區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',historic:'新富町市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',historic:'新富町工場',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',historic:'市役所前金融街',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',historic:'榮町金融街',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳美術館',historic:'柳川沿岸街屋',lat:24.1419249,lng:120.6777138},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -364,29 +365,44 @@ function SchedulePage(){
 
 function OfficeEntryPage({onComplete}){
  const [name,setName]=useState('');
- const [welcome,setWelcome]=useState(false);
+ const [profile,setProfile]=useState(null);
+ const [error,setError]=useState('');
  const submit=event=>{
   event.preventDefault();
-  const cleanName=name.trim().slice(0,20);
-  if(!cleanName)return;
-  window.localStorage.setItem('suzuran-investigator-name',cleanName);
-  setName(cleanName);
-  setWelcome(true);
+  const nextProfile=createJapaneseName(name);
+  if(nextProfile.error){setError(nextProfile.error);return}
+  setName(nextProfile.realName);
+  setProfile(nextProfile);
+ };
+ const acceptName=()=>{
+  window.localStorage.setItem('suzuran-investigator-real-name',profile.realName);
+  window.localStorage.setItem('suzuran-investigator-name',profile.japaneseName);
+  window.localStorage.setItem('suzuran-name-system-version','2');
+  onComplete(profile.japaneseName);
  };
  return <main className="office-entry-page">
   <section className="office-entry-card">
-   <header><small>昭和十三年度・臨時調查員受付</small><b>臺中市役所</b><span>庶務課文書係</span></header>
-   {!welcome?<form onSubmit={submit}>
-    <p>進入市役所公示板前，請先完成見習調查員登記。</p>
-    <label htmlFor="investigator-name">姓名或綽號</label>
-    <input id="investigator-name" value={name} onChange={event=>setName(event.target.value)} maxLength="20" autoComplete="nickname" placeholder="請輸入姓名或綽號" autoFocus/>
-    <button type="submit" disabled={!name.trim()}>送交登記</button>
-    <small>名稱只會保存在目前使用的裝置。</small>
+   <header><small>昭和十三年度・臨時調查員改姓名受付</small><b>臺中市役所</b><span>庶務課・戶籍係</span></header>
+   {!profile?<form onSubmit={submit}>
+    <p>進入市役所公示板前，請先以真實姓名辦理見習調查員登記。</p>
+    <label htmlFor="investigator-name">真實姓名</label>
+    <input id="investigator-name" value={name} onChange={event=>{setName(event.target.value);setError('')}} maxLength="20" autoComplete="name" placeholder="請輸入完整姓名" autoFocus/>
+    <button type="submit" disabled={!name.trim()}>送交改姓名審查</button>
+    {error&&<strong className="office-entry-error">{error}</strong>}
+    <small>姓名僅儲存於目前使用的裝置，不會上傳。</small>
    </form>:<div className="office-entry-welcome">
-    <span>登記受理</span>
-    <h1>{name}，歡迎來到臺中舊城區</h1>
+    <span>改姓名受理</span>
+    <div className="office-name-certificate">
+     <p><small>原姓名</small><del>{profile.realName}</del></p>
+     <i aria-hidden="true">→</i>
+     <p><small>內地式登記名</small><b>{profile.japaneseName}</b></p>
+    </div>
+    <h1>{profile.japaneseName}，歡迎來到臺中舊城區</h1>
+    <p>{profile.matched?`依「${profile.originalSurname}」姓改姓對照，本所登記為「${profile.japaneseSurname}」。`:'本次對照資料未收錄此姓，暫以原姓名登記。'}</p>
     <p>讓我們一起走進街區，開始續寫你的導覽遊記吧。</p>
-    <button onClick={()=>onComplete(name)}>進入臺中市役所</button>
+    <button onClick={acceptName}>以此名進入臺中市役所</button>
+    <button className="office-entry-revise" onClick={()=>setProfile(null)}>更正原姓名</button>
+    <small>此處依活動採用的日治時期改姓對照資料進行情境演算，非真實戶籍變更或正式命名服務。</small>
    </div>}
   </section>
  </main>
@@ -415,7 +431,7 @@ function MunicipalHome(){
 function App(){
  const params=new URLSearchParams(window.location.search); const day=Number(params.get('day')); const page=params.get('page'); const caseNumber=Number(params.get('case'));
  const [menu,setMenu]=useState(false); const [active,setActive]=useState(0); const [mapMode,setMapMode]=useState('both');
- const [investigatorName,setInvestigatorName]=useState(()=>window.localStorage.getItem('suzuran-investigator-name')||'');
+ const [investigatorName,setInvestigatorName]=useState(()=>window.localStorage.getItem('suzuran-name-system-version')==='2'?(window.localStorage.getItem('suzuran-investigator-name')||''):'');
  const go=id=>{document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setMenu(false)};
  if(!investigatorName) return <OfficeEntryPage onComplete={setInvestigatorName}/>;
  if(day===1||day===2) return <RoutePage chapter={chapters[day-1]} index={day-1}/>;
