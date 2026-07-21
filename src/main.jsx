@@ -11,6 +11,7 @@ import './office.css';
 import './newspaper.css';
 import {caseDocuments} from './caseDocuments.js';
 import {createJapaneseName} from './japaneseName.js';
+import {loadNewsroomProgress, saveNewsroomProgress} from './sharedProgress.js';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',historic:'臺中驛構內產業區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',historic:'新富町市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',historic:'新富町工場',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',historic:'市役所前金融街',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',historic:'榮町金融街',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳美術館',historic:'柳川沿岸街屋',lat:24.1419249,lng:120.6777138},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -181,13 +182,13 @@ function resizePhoto(file){
  });
 }
 
-function FieldJournal({item,index,unlockedCount}){
+function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
  const unlockKey='suzuran-office-unlocked-'+index;
  const recordKey='suzuran-field-record-'+index;
  const initialRecord=()=>{
   try{return JSON.parse(window.localStorage.getItem(recordKey))||{reflection:'',photo:'',ending:''}}catch{return {reflection:'',photo:'',ending:''}}
  };
- const [solved,setSolved]=useState(()=>window.localStorage.getItem(unlockKey)==='1');
+ const [solved,setSolved]=useState(()=>sharedSolved||window.localStorage.getItem(unlockKey)==='1');
  const [value,setValue]=useState('');
  const [error,setError]=useState(false);
  const [record,setRecord]=useState(initialRecord);
@@ -195,13 +196,14 @@ function FieldJournal({item,index,unlockedCount}){
  const [photoError,setPhotoError]=useState('');
  const document=caseDocuments[index];
  const islandManuscriptReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
+ useEffect(()=>{if(sharedSolved)setSolved(true)},[sharedSolved]);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
  const submit=async event=>{
   event.preventDefault();
   const submittedHash=await hashAnswer(value);
   const ok=(item.hashes||[item.hash]).includes(submittedHash);
   setError(!ok);
-  if(ok){setSolved(true);window.localStorage.setItem(unlockKey,'1')}
+  if(ok){setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}
  };
  const addPhoto=async event=>{
   const file=event.target.files?.[0];
@@ -292,13 +294,22 @@ function NewsroomEntry({onComplete}){
 function NewspaperJournalPage({caseIndex}){
  const home=()=>window.location.assign('./');
  const [newsroom,setNewsroom]=useState(()=>window.localStorage.getItem('suzuran-newsroom')||'');
- const [unlockedCount,setUnlockedCount]=useState(()=>puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
+ const [sharedProgress,setSharedProgress]=useState(null);
+ const [progressError,setProgressError]=useState('');
+ const refreshProgress=async()=>{
+  try{setSharedProgress(await loadNewsroomProgress(newsroom));setProgressError('')}catch{setProgressError('共同進度暫時無法連線，已改以本機進度顯示。')}
+ };
  useEffect(()=>{
-  const refresh=()=>setUnlockedCount(puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length);
-  window.addEventListener('storage',refresh);
-  const timer=window.setInterval(refresh,700);
-  return()=>{window.removeEventListener('storage',refresh);window.clearInterval(timer)}
- },[]);
+  if(!newsroom)return;
+  refreshProgress();
+  const timer=window.setInterval(refreshProgress,10000);
+  return()=>window.clearInterval(timer)
+ },[newsroom]);
+ const isSolved=index=>sharedProgress?sharedProgress.includes(index):window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1';
+ const unlockedCount=sharedProgress?sharedProgress.length:puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length;
+ const markSharedSolved=async index=>{
+  try{await saveNewsroomProgress(newsroom,index);setSharedProgress(current=>Array.from(new Set([...(current||[]),index])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
+ };
  const selected=Number.isInteger(caseIndex)&&caseIndex>=0&&caseIndex<puzzles.length?caseIndex:null;
  const openCase=index=>window.location.assign('./?page=puzzles&case='+(index+1));
  const goIndex=()=>window.location.assign('./?page=puzzles');
@@ -308,10 +319,11 @@ function NewspaperJournalPage({caseIndex}){
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>
   <main>
    <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
-   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>紀錄暫存於目前裝置</span></section>
+   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>解謎進度由同組共用</span></section>
+   {progressError&&<p className="shared-progress-error">{progressError}</p>}
    {selected===null
-    ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1').length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=window.localStorage.getItem('suzuran-office-unlocked-'+item.index)==='1';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
-    :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount}/></section></>}
+    ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
+    :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount} sharedSolved={isSolved(selected)} onSharedSolved={markSharedSolved}/></section></>}
   </main>
  </div>
 }

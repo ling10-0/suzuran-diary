@@ -42,6 +42,7 @@
 .gazette-guidance b{color:#f2e4c2;background:var(--gazette-ink);text-align:center}
 .gazette-guidance p{font-size:12px;line-height:1.8}
 .gazette-guidance span{font-size:10px;border-left:1px solid var(--gazette-rule)}
+.shared-progress-error{margin:-12px 0 16px;color:var(--gazette-red);font-size:11px}
 .newsroom-entry-page main{width:min(720px,94%)}
 .newsroom-entry{display:grid;gap:20px;padding:48px;border:4px double var(--gazette-ink);background:rgba(244,229,190,.5)}
 .newsroom-entry>*{margin:0}.newsroom-entry .eyebrow{font:11px 'DM Mono';letter-spacing:.16em;color:var(--gazette-red)}
