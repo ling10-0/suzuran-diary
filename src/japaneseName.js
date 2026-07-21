@@ -51,6 +51,7 @@ const surnameRules = {
 };
 
 const compoundSurnames = ['歐陽','司馬','上官','諸葛'];
+const fallbackSurnames = ['高橋','佐藤','鈴木','田中','伊藤','渡邊','中村','山本','小林','吉田'];
 
 function stableIndex(text,length){
   let hash=2166136261;
@@ -68,7 +69,11 @@ export function createJapaneseName(rawName){
   const givenName=realName.slice(originalSurname.length);
   const candidates=surnameRules[originalSurname];
   if(!candidates){
-    return {realName,originalSurname,givenName,japaneseSurname:originalSurname,japaneseName:realName,matched:false};
+    const japaneseSurname=fallbackSurnames[stableIndex(realName,fallbackSurnames.length)];
+    // Keep one character from the person's given name so the assigned name
+    // still feels connected to their original registration.
+    const japaneseGivenName=(givenName||realName.slice(-1))[0];
+    return {realName,originalSurname,givenName,japaneseSurname,japaneseName:japaneseSurname+japaneseGivenName,matched:false};
   }
   const japaneseSurname=candidates[stableIndex(realName,candidates.length)];
   return {realName,originalSurname,givenName,japaneseSurname,japaneseName:japaneseSurname+givenName,matched:true};

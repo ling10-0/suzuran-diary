@@ -398,7 +398,7 @@ function OfficeEntryPage({onComplete}){
      <p><small>內地式登記名</small><b>{profile.japaneseName}</b></p>
     </div>
     <h1>{profile.japaneseName}，歡迎來到臺中舊城區</h1>
-    <p>{profile.matched?`依「${profile.originalSurname}」姓改姓對照，本所登記為「${profile.japaneseSurname}」。`:'本次對照資料未收錄此姓，暫以原姓名登記。'}</p>
+    <p>{profile.matched?`依「${profile.originalSurname}」姓改姓對照，本所登記為「${profile.japaneseSurname}」。`:`本次對照資料未收錄「${profile.originalSurname}」姓，暫以通用內地式姓氏「${profile.japaneseSurname}」登記，並保留原名一字。`}</p>
     <p>讓我們一起走進街區，開始續寫你的導覽遊記吧。</p>
     <button onClick={acceptName}>以此名進入臺中市役所</button>
     <button className="office-entry-revise" onClick={()=>setProfile(null)}>更正原姓名</button>
