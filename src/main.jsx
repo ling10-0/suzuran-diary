@@ -279,7 +279,8 @@ function NewsroomEntry({onComplete}){
    <p>進入調查案件前，請填入同組共用的報社名稱。請全組使用完全相同的名稱，以便後續啟用共用紀錄。</p>
    <form onSubmit={submit}>
     <label htmlFor="newsroom-name">報社／組別名稱</label>
-    <input id="newsroom-name" value={newsroom} onChange={event=>{setNewsroom(event.target.value);setError('')}} placeholder="例如：臺中市報第一組" maxLength="30" autoFocus />
+    <input id="newsroom-name" list="newsroom-list" value={newsroom} onChange={event=>{setNewsroom(event.target.value);setError('')}} placeholder="請選擇或填入報社名稱" maxLength="30" autoFocus />
+    <datalist id="newsroom-list"><option value="臺中日日新報"/><option value="曉鐘通信社"/><option value="柳川新聞社"/><option value="鈴蘭報社"/></datalist>
     <button type="submit">登記後進入案件目錄 <ArrowUpRight size={17}/></button>
     {error&&<small>{error}</small>}
    </form>
