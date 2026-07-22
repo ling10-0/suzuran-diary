@@ -72,6 +72,7 @@
 .gazette-query input{min-width:0;flex:1;padding:12px;border:1px solid var(--gazette-ink);background:rgba(255,255,255,.15);font:14px 'Noto Serif TC'}
 .gazette-query form button{padding:0 16px;border:1px solid var(--gazette-ink);border-left:0;color:#efe0ba;background:var(--gazette-ink);cursor:pointer}
 .gazette-query form small{display:block;margin-top:8px;color:var(--gazette-red)}
+.pending-case-notice{margin-top:24px;padding:14px 16px;border:1px dashed var(--gazette-red);color:var(--gazette-red);background:rgba(143,37,29,.045);font-size:12px;line-height:1.9}
 .gazette-approved{color:var(--gazette-red);font-weight:700}
 .gazette-manuscript>svg{float:right;margin:0 0 10px 16px;color:var(--gazette-red)}
 .gazette-manuscript footer{margin-top:20px;padding-top:10px;border-top:1px solid var(--gazette-rule);font-size:10px;text-align:right}
@@ -145,6 +146,12 @@
 .side-quest-brief .travel-dialogue{margin-top:18px;background:rgba(255,255,255,.1)}
 .side-quest-unlock{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin:0 20px 20px;padding:10px 14px;border:1px solid var(--gazette-ink);color:#f2e4c2;background:var(--gazette-ink);font:11px 'Noto Serif TC';letter-spacing:.05em;cursor:pointer}
 .side-quest-unlock:disabled{opacity:.55;cursor:wait}
+.side-quest-question{margin:0 20px 20px;padding:16px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.12)}
+.side-quest-question>p{margin:0 0 13px;font-size:12px;font-weight:700;line-height:1.8}
+.side-quest-question>div{display:grid;gap:8px}.side-quest-question label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;align-items:start;font-size:11px;line-height:1.7;cursor:pointer}.side-quest-question input{margin-top:4px;accent-color:var(--gazette-red)}
+.side-quest-question>small{display:block;margin:10px 0 0;color:var(--gazette-red)}
+.side-quest-question .side-quest-unlock{width:100%;margin:15px 0 0}
+.side-quest-pending{display:flex;align-items:center;gap:8px;margin:0 20px 20px;padding:13px 14px;border:1px dashed var(--gazette-red);color:var(--gazette-red);font-size:11px;letter-spacing:.05em}
 .side-quest-record{position:relative;align-self:stretch;min-width:0;max-width:calc(100% - 40px);width:auto;margin:0 20px 20px;padding:16px;overflow:hidden;border:2px solid var(--gazette-red);background:rgba(143,37,29,.06)}
 .side-quest-record>header{position:static;inset:auto;z-index:auto;display:grid;grid-template-columns:1fr;justify-content:start;align-items:start;gap:6px;width:auto;height:auto;min-height:0;margin:0 0 14px;padding:0 0 11px;color:inherit;border:0;border-bottom:3px double var(--gazette-red);background:transparent;box-shadow:none;transform:none}
 .side-quest-record>header small{color:var(--gazette-red);font-size:9px;letter-spacing:.14em}.side-quest-record>header strong{min-width:0;font-size:13px;line-height:1.65;overflow-wrap:anywhere}
@@ -186,7 +193,7 @@
  .gazette-query form>div{flex-direction:column}.gazette-query form button{min-height:44px;border-left:1px solid var(--gazette-ink);border-top:0}
  .case-day-group>header{align-items:flex-start;gap:8px;padding:12px}.case-day-group>header div{display:block}.case-day-group>header h2{margin-top:3px;font-size:19px}.case-day-group>header>span{font-size:9px}
  .case-directory-grid{grid-template-columns:1fr}.case-file{grid-template-columns:42px minmax(0,1fr) 18px;min-height:128px;padding:16px 12px;border-right:0}.case-file>span{width:36px;height:36px}.case-file h3{font-size:17px}.case-file p{font-size:10px}.case-file>b{right:13px}
- .side-quest-archive>header{grid-template-columns:1fr;gap:10px;padding:18px 15px}.side-quest-archive>header h2{font-size:22px}.side-quest-archive>header p{font-size:10px}.side-quest-grid{grid-template-columns:1fr}.side-quest-card,.side-quest-card:nth-child(even),.side-quest-card:nth-last-child(-n+2){border-right:0;border-bottom:1px solid var(--gazette-rule)}.side-quest-card:last-child{border-bottom:0}.side-quest-card-head{grid-template-columns:46px minmax(0,1fr) 32px;padding:16px 13px 12px}.side-quest-card-head h3{font-size:16px}.side-quest-brief{padding:0 13px 15px}.side-quest-unlock,.side-quest-record{max-width:calc(100% - 26px);margin-left:13px;margin-right:13px}
+ .side-quest-archive>header{grid-template-columns:1fr;gap:10px;padding:18px 15px}.side-quest-archive>header h2{font-size:22px}.side-quest-archive>header p{font-size:10px}.side-quest-grid{grid-template-columns:1fr}.side-quest-card,.side-quest-card:nth-child(even),.side-quest-card:nth-last-child(-n+2){border-right:0;border-bottom:1px solid var(--gazette-rule)}.side-quest-card:last-child{border-bottom:0}.side-quest-card-head{grid-template-columns:46px minmax(0,1fr) 32px;padding:16px 13px 12px}.side-quest-card-head h3{font-size:16px}.side-quest-brief{padding:0 13px 15px}.side-quest-unlock,.side-quest-record,.side-quest-question,.side-quest-pending{max-width:calc(100% - 26px);margin-left:13px;margin-right:13px}
  .case-pager{grid-template-columns:1fr 1fr;gap:8px}.case-pager>span{grid-column:1/-1;grid-row:1;text-align:center}.case-pager button{
   grid-row:2;
   width:100%;

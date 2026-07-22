@@ -9,40 +9,25 @@ import './campaign.css';
 import './refinements.css';
 import './office.css';
 import './newspaper.css';
-import {caseDocuments} from './caseDocuments.js';
-import {documentUpdates, sideQuests} from './stationDocuments.js';
+import {sideQuests} from './sideQuestCases.js';
+import {mainlineCases} from './mainlineCases.js';
 import {createJapaneseName} from './japaneseName.js';
 import {loadNewsroomProgress, saveNewsroomProgress} from './sharedProgress.js';
 
 const chapters = [
-  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'從舊報紙與街角暗號開始，認識鈴蘭通り的人們。收集散落線索，找出第一段未完的記憶。',place:'臺中舊城・第一章',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'文化部文化資產園區',historic:'臺中驛構內產業區',lat:24.1330547,lng:120.6805222},{name:'臺中市第三公有零售市場',historic:'新富町市場',lat:24.1331583,lng:120.6830965},{name:'富興工廠1962文創聚落',historic:'新富町工場',lat:24.135119,lng:120.683746},{name:'合作金庫銀行 台中分行',historic:'市役所前金融街',lat:24.1378939,lng:120.6800847},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'三信商業銀行 台中分行',historic:'榮町金融街',lat:24.1393276,lng:120.679735},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳美術館',historic:'柳川沿岸街屋',lat:24.1419249,lng:120.6777138},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
-  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'解開最後一道謎題，翻閱一份不曾被收進史書的本島人手稿。',place:'臺中舊城・第二章',tone:'blue',points:[{name:'中山綠橋',historic:'綠川橋',lat:24.1378842,lng:120.6831311},{name:'台中市第四信用合作社',historic:'鈴蘭通信用組合',lat:24.1390204,lng:120.6819297},{name:'中央書局',historic:'大正町書店街',lat:24.1408452,lng:120.6811557},{name:'全安堂台灣台中太陽餅博物館',historic:'舊城菓子商街',lat:24.1397217,lng:120.6824917},{name:'綠空鐵道1908',historic:'臺中驛鐵道路廊',lat:24.1354544,lng:120.6821701},{name:'歷史建築臺中第四市場',historic:'東町第四市場',lat:24.140556,lng:120.6933848}]}
+  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'由驛前工坊出發，沿市場、公署與河道採集人們的生活記錄。',place:'臺中舊城・第一日主線',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'臺中市第三公有零售市場',historic:'敷島町第三市場',lat:24.1331583,lng:120.6830965},{name:'南園酒家／精養軒舊址',historic:'精養軒',lat:24.1362,lng:120.6798},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'臺中郵局',historic:'臺中郵便局',lat:24.1383,lng:120.6766},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
+  {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'由橋與書局重新閱讀城市，最後沿鐵道前往第四市場完成聯合發刊。',place:'臺中舊城・第二日主線',tone:'blue',points:[{name:'中山綠橋',historic:'綠川橋',lat:24.1378842,lng:120.6831311},{name:'中央書局',historic:'寶町中央書局',lat:24.1408452,lng:120.6811557},{name:'綠空鐵道1908',historic:'臺中驛鐵道路廊',lat:24.1354544,lng:120.6821701},{name:'歷史建築臺中第四市場',historic:'東町第四市場',lat:24.140556,lng:120.6933848}]}
 ];
 
-const puzzles = [
-  {day:1,type:'flora',code:'庶務秘第〇一號',taskTitle:'花名簿核對',inputLabel:'花名',hint:'第一巡查區的暗號。低垂、潔白，街區曾以它為名。',hash:'08b4a3e523f2e56e43260f12c68b6dc3fb71d692d56062b891b661b5b3621b84',label:'第一號案件',manuscript:'臨時公告：鈴蘭通り的布簾仍隨風掀動。請記錄門牌、商號與每一扇門後的生活；城市的名字不只寫在地圖上，也由居住其中的人共同留下。'},
-  {day:1,type:'year',code:'庶務秘第〇二號',taskTitle:'年代卷宗查核',inputLabel:'西元年份',hint:'請登記本次卷宗所屬的西元年份。',hash:'bd6303e3a1e73659f04940eed53dd9581a57ec3200b03d385790457d78637ee5',label:'第二號案件',manuscript:'補遺通知：本卷宗原應歸入昭和十三年度。檔案所缺並非日期，而是做飯、工作、相愛與等待的人。請勿只抄錄事件，務必記下生活。'},
-  {day:1,type:'district',code:'巡查第〇三號',taskTitle:'舊町方位辨識',inputLabel:'舊町名',hint:'由1916工坊出發後，所處舊町區的方位名稱。',hash:'723fa34d842a6b71af4085c2ba528dd9e3aa12140f2137b1ad737f38aec6c92d',label:'第三號案件',manuscript:'巡查附記：驛前南側的倉庫、鐵道與工場構成城市入口。公文只記載用途，調查員應另行補錄工人移動與貨物流向。'},
-  {day:1,type:'market',code:'商工第〇四號',taskTitle:'市場區名登記',inputLabel:'舊町名',hint:'第三市場與富興工廠所在的舊町名。',hash:'a7d883bc14476d7364d8ebde566f144755b6d84ce6b29982c961b9a70f3578ea',label:'第四號案件',manuscript:'商工課便箋：市場不是一張攤位名冊。叫賣聲、秤重的手勢與熟客間的招呼，才是每日真正運轉的帳簿。'},
-  {day:1,type:'office',code:'文書第〇五號',taskTitle:'發令機關查核',inputLabel:'機關名稱',hint:'本次命令由哪一座公署發出？',hash:'d8db5c63f4b9a0361c6ae243a0ea628e11397511e8c1cb06bf254a5f8404f2ea',label:'第五號案件',manuscript:'未決裁稿：市役所保存城市的正式紀錄，卻也製造空白。若表格沒有欄位容納某人的聲音，那便由調查員寫在頁緣。'},
-  {day:1,type:'commerce',code:'金融第〇六號',taskTitle:'商業街區核對',inputLabel:'舊町名',hint:'三信與永生蔘藥行一帶的舊町名。',hash:'d83cfa92e275094c99cfab727b640ce800d69e7a2798cfa2ec0438a24d1b3691',label:'第六號案件',manuscript:'異動備忘：金融街的帳冊記得數字，藥行的抽屜記得氣味。兩者都在保存信用，只是使用了不同的方法。'},
-  {day:1,type:'river',code:'河川第〇七號',taskTitle:'河道名稱確認',inputLabel:'河川名稱',hint:'流經市場西側、也是末段巡查地名的水路。',hash:'c6da77165300a8289bb52e28761d44a463616b63ee24e2377590c9d8fa57ad3e',label:'第七號案件',manuscript:'結案前附記：河道帶走昨日的聲音，也把故事送往下一處。請將本次巡查所得寫成一頁，交由後來的人繼續閱覽。'},
-  {day:2,type:'bridge',code:'土木第〇八號',taskTitle:'橋梁名錄核對',inputLabel:'橋梁名稱',hint:'第二日第一站，橫跨綠川、連接舊城記憶的橋名。',hash:'3d23ce199662275df1a256971c82cddbba842feed281c043952c5142cd1a776c',label:'第八號案件',manuscript:'橋梁巡查記：橋不只是跨越河道的構造，也讓不同時代的人在同一條路上擦肩。請記下你從橋面看見的城市方向。'},
-  {day:2,type:'finance',code:'金融第〇九號',taskTitle:'信用組合名簿查核',inputLabel:'機構名稱',hint:'以冰品重新開門、前身為地方信用合作社的第二日站點。',hashes:['15ef220273253f14c6be2c00b8d00ef7a791c6652b069a97aac5501ec08ccb37','dc5a1a9a53b4f2dd78330c0e8c2d04983d85fb9f2e841e325708bdbc0b19674d'],label:'第九號案件',manuscript:'金融簿冊附記：建築的用途會改變，但櫃檯、金庫與人們等待的姿態，仍可能替往日留下形狀。'},
-  {day:2,type:'book',code:'文教第〇十號',taskTitle:'書店名錄補登',inputLabel:'書店名稱',hint:'曾是文化交流的重要場所，今日仍以閱讀連結城市的書店。',hash:'f7a46d7e25b2b52f1259e90ad9d79046cd37b4bb3383449c8fdb3645f50e27c6',label:'第十號案件',manuscript:'文教課殘頁：書頁把不在場的人帶回眼前。城市若有共同的記憶，總有人曾在書店裡讀到另一種生活。'},
-  {day:2,type:'food',code:'商工第十一號',taskTitle:'地方物產登記',inputLabel:'物產名稱',hint:'全安堂建築中展示、也是臺中代表性的傳統糕餅。',hash:'68fb1855e34927f7a24c5745c69fb0c34f5d7e389b97211c4fbb7d8671c03c67',label:'第十一號案件',manuscript:'物產課便箋：味道比公文更容易被記住。配方、店舖與包裝都會改變，但一口熟悉的甜味仍能叫人辨認故鄉。'},
-  {day:2,type:'rail',code:'鐵道第十二號',taskTitle:'鐵道年份查核',inputLabel:'年份',hint:'綠空鐵道名稱中保存的四位數年份。',hash:'2a95383fa0ae197e26d33aa51e81f00f7b7643834e3fd3687fac06fe6642a250',label:'第十二號案件',manuscript:'鐵道課附記：列車離站後，軌道仍替城市保留方向。請沿著線形辨認產業、遷移與日常生活曾經如何相遇。'},
-  {day:2,type:'finale',code:'終章第十三號',taskTitle:'終點市場確認',inputLabel:'市場名稱',hint:'兩日巡查的終點，也是小組發表與待續章節揭示之處。',hashes:['9f44b93d45a2140f60159d00b335d66c3ada229aa9307a62a28ed621237ca0bf','5d6980ba60af9ae958f3eab2b08678027b997213a560c36b7c1db4c144dc9407'],label:'第十三號案件',manuscript:'終章核准稿：市場收納的不只是交易，也收納相遇、手藝與地方的口音。請把兩日所見說給彼此聽，替城市留下仍可續寫的一頁。'}
-];
+const puzzles = mainlineCases;
 
 const patrolRoute = [
-  {no:'壹',district:'驛前南側巡查區',coverage:'1916工坊／文化資產園區',duty:'核對鐵道、倉庫及產業遺構'},
-  {no:'貳',district:'新富町巡查區',coverage:'第三市場／富興工廠',duty:'查錄市場商號與工場用途'},
-  {no:'參',district:'市役所前巡查區',coverage:'合作金庫／臺中市役所',duty:'領取文書並核對公署配置'},
-  {no:'肆',district:'鈴蘭通巡查區',coverage:'第四信用合作社／中央書局',duty:'查訪通り沿線店家與案內標示'},
-  {no:'伍',district:'榮町巡查區',coverage:'三信銀行／永生蔘藥行',duty:'記錄金融與民生商業往來'},
-  {no:'陸',district:'柳川市場巡查區',coverage:'柳美術館／柳川古道／第二市場',duty:'沿河道採集市場生活紀錄'},
-  {no:'柒',district:'東町終點巡查區',coverage:'綠空鐵道／歷史建築第四市場',duty:'彙整調查簿並辦理終章發表'}
+  {no:'壹',district:'驛前巡查區',coverage:'1916工坊／第三市場',duty:'核對產業、手作與市場生活'},
+  {no:'貳',district:'精養軒巡查區',coverage:'精養軒舊址／臺中市役所',duty:'查錄宴飲接待與公署文書'},
+  {no:'參',district:'郵便巡查區',coverage:'臺中郵局／蔘藥三連棟',duty:'記錄郵遞、商號與民生往來'},
+  {no:'肆',district:'柳川市場巡查區',coverage:'柳川古道／第二市場',duty:'沿河道採集市場生活紀錄'},
+  {no:'伍',district:'綠川文教巡查區',coverage:'中山綠橋／中央書局',duty:'辨認橋梁與閱讀生活'},
+  {no:'陸',district:'東町終章巡查區',coverage:'綠空鐵道／第四市場',duty:'彙整調查簿並辦理聯合發刊'}
 ];
 
 const dailyPatrolRoutes = [
@@ -61,7 +46,7 @@ const dailyPatrolRoutes = [
     points:chapters[1].points.map((point,index)=>({
       no:String(index+1).padStart(2,'0'),
       name:point.name,
-      duty:index<2?'辨認橋梁及地方金融建築':index<4?'查錄書店與地方物產記憶':index===4?'沿鐵道空間追查城市變遷':'彙整調查簿並辦理終章發表'
+      duty:index<2?'辨認橋梁與閱讀生活':index===2?'沿鐵道空間追查城市變遷':'彙整調查簿並辦理終章聯合發刊'
     }))
   }
 ];
@@ -73,7 +58,7 @@ const officeStaff = [
   {unit:'文書係',title:'屬',name:'陳 文彬',note:'昭和十三年八月異動'},
   {unit:'案內係',title:'雇',name:'鈴蘭',note:'名簿旁註：未到'},
   {unit:'商工係',title:'雇',name:'許 金水',note:'市場調查'},
-  {unit:'臨時調查掛',title:'見習調查員',name:'本案受命學生',note:'七區巡查・未結案'}
+  {unit:'臨時調查掛',title:'見習調查員',name:'本案受命學生',note:'六區巡查・未結案'}
 ];
 
 const guidedTour = [
@@ -184,25 +169,26 @@ function resizePhoto(file){
 }
 
 function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
- const unlockKey='suzuran-office-unlocked-'+index;
- const recordKey='suzuran-field-record-'+index;
+ const unlockKey='suzuran-main-v2-unlocked-'+index;
+ const recordKey='suzuran-main-v2-field-record-'+index;
  const initialRecord=()=>{
   try{return JSON.parse(window.localStorage.getItem(recordKey))||{reflection:'',photo:'',ending:''}}catch{return {reflection:'',photo:'',ending:''}}
  };
- const [solved,setSolved]=useState(()=>sharedSolved||window.localStorage.getItem(unlockKey)==='1');
+ const [solved,setSolved]=useState(()=>item.direct||sharedSolved||window.localStorage.getItem(unlockKey)==='1');
  const [value,setValue]=useState('');
  const [error,setError]=useState(false);
  const [record,setRecord]=useState(initialRecord);
  const [documentView,setDocumentView]=useState('travel');
  const [photoError,setPhotoError]=useState('');
- const document={...caseDocuments[index],...(documentUpdates[index]||{})};
- const islandManuscriptReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
+ const document=item;
+ const islandManuscriptReady=item.direct||solved;
  useEffect(()=>{if(sharedSolved)setSolved(true)},[sharedSolved]);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
  const submit=async event=>{
   event.preventDefault();
+  if(item.pending||item.direct)return;
   const submittedHash=await hashAnswer(value);
-  const ok=(item.hashes||[item.hash]).includes(submittedHash);
+  const ok=(item.hashes||[]).includes(submittedHash);
   setError(!ok);
   if(ok){setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}
  };
@@ -214,18 +200,20 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
   try{saveRecord({...record,photo:await resizePhoto(file)})}catch{setPhotoError('照片無法讀取，請換一張再試。')}
  };
  const createEnding=()=>saveRecord({...record,ending:buildPersonalEnding(record.reflection,item,index,unlockedCount)});
- return <article className={'gazette-case case-type-'+item.type+' '+(solved?'is-open':'is-locked')}>
+ return <article className={'gazette-case case-type-'+item.type+' '+(islandManuscriptReady?'is-open':'is-locked')}>
   <header className="gazette-case-head">
    <div className="gazette-issue"><small>臺中市報附錄</small><b>第 {String(index+1).padStart(3,'0')} 號</b></div>
    <div><p>{item.code}・第 {item.day} 日調查記錄</p><h2>{item.label}</h2></div>
-   <div className="gazette-status">{solved?'受理済':'未受理'}</div>
+   <div className="gazette-status">{item.direct?'公開':item.pending?'封緘':solved?'受理済':'未受理'}</div>
   </header>
   <div className="gazette-columns">
    <section className="gazette-query">
     <h3>{item.taskTitle}</h3>
     <p>{item.hint}</p>
-    {!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
-    {solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}
+    {item.direct&&<p className="gazette-approved">本件無須輸入答案，可直接對照兩種城市記錄。</p>}
+    {item.pending&&<p className="pending-case-notice">現場題目尚未發給，文書暫保持封緘；取得題目後將補上查核欄。</p>}
+    {!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
+    {!item.direct&&!item.pending&&solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}
     {document.dialogue?.length>0&&<section className="travel-dialogue case-dialogue" aria-label="現場短對話">
      <small>現場短對話・採訪筆記</small>
      {document.dialogue.map(([speaker,line],dialogueIndex)=><p key={dialogueIndex}><b>{speaker}</b><span>{line}</span></p>)}
@@ -236,7 +224,7 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
     <div className="document-reader">
       <div className="document-tabs" role="tablist" aria-label="切換城市記錄版本">
        <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
-       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':solved?'本島人手稿・待全案辦結':'本島人手稿・封緘中'}</button>
+       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':item.pending?'本島人手稿・題目待發':'本島人手稿・封緘中'}</button>
       </div>
       <div className={'document-copy '+documentView} role="tabpanel">
        <BookOpen/>
@@ -298,10 +286,21 @@ function NewsroomEntry({onComplete}){
 
 function SideQuestArchive({isUnlocked,onUnlock}){
  const [working,setWorking]=useState(null);
+ const [answers,setAnswers]=useState({});
+ const [errors,setErrors]=useState({});
  const unlock=async quest=>{
+  if(quest.pending)return;
+  if(quest.answerHashes?.length){
+   const submittedHash=await hashAnswer(answers[quest.id]||'');
+   if(!quest.answerHashes.includes(submittedHash)){
+    setErrors(current=>({...current,[quest.id]:'照合內容不符，請重新查證現場線索。'}));
+    return;
+   }
+  }
   setWorking(quest.id);
   await onUnlock(quest.id);
   setWorking(null);
+  setErrors(current=>({...current,[quest.id]:''}));
  };
  return <section className="side-quest-archive" aria-labelledby="side-quest-heading">
   <header>
@@ -320,7 +319,9 @@ function SideQuestArchive({isUnlocked,onUnlock}){
      {quest.dialogue?.length>0&&<section className="travel-dialogue" aria-label="支線現場短對話"><small>現場短對話・採訪筆記</small>{quest.dialogue.map(([speaker,line],lineIndex)=><p key={lineIndex}><b>{speaker}</b><span>{line}</span></p>)}</section>}
     </div>
     {!unlocked
-     ?<button className="side-quest-unlock" disabled={working===quest.id} onClick={()=>unlock(quest)}>{working===quest.id?'辦理中…':'已完成現場查證，辦理開封'} <ArrowUpRight size={16}/></button>
+     ?quest.pending
+      ?<div className="side-quest-pending"><LockKeyhole size={15}/> 題目待發・本件封緘中</div>
+      :<div className="side-quest-question"><p>{quest.question}</p><div>{quest.options?.map(option=><label key={option.value}><input type="radio" name={'side-'+quest.id} value={option.value} checked={answers[quest.id]===option.value} onChange={()=>{setAnswers(current=>({...current,[quest.id]:option.value}));setErrors(current=>({...current,[quest.id]:''}))}}/><span>{option.label}</span></label>)}</div>{errors[quest.id]&&<small>{errors[quest.id]}</small>}<button className="side-quest-unlock" disabled={working===quest.id} onClick={()=>unlock(quest)}>{working===quest.id?'辦理中…':'送交支線查核'} <ArrowUpRight size={16}/></button></div>
      :<section className="side-quest-record"><header><small>開封済・補充記錄</small><strong>{quest.tag}</strong></header>{quest.record.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}<footer>本件支線已登錄於「{quest.place}」調查附卷。</footer></section>}
    </article>})}
   </div>
@@ -341,11 +342,13 @@ function NewspaperJournalPage({caseIndex}){
   const timer=window.setInterval(refreshProgress,10000);
   return()=>window.clearInterval(timer)
  },[newsroom]);
- const isSolved=index=>(sharedProgress?.includes(index)??false)||window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1';
+ const mainProgressId=index=>1000+index;
+ const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v2-unlocked-'+index)==='1';
  const isSideUnlocked=id=>(sharedProgress?.includes(id)??false)||window.localStorage.getItem('suzuran-side-unlocked-'+id)==='1';
  const unlockedCount=puzzles.filter((_,index)=>isSolved(index)).length;
  const markSharedSolved=async index=>{
-  try{await saveNewsroomProgress(newsroom,index);setSharedProgress(current=>Array.from(new Set([...(current||[]),index])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
+  const progressId=mainProgressId(index);
+  try{await saveNewsroomProgress(newsroom,progressId);setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
  };
  const unlockSideQuest=async id=>{
   window.localStorage.setItem('suzuran-side-unlocked-'+id,'1');
@@ -364,7 +367,7 @@ function NewspaperJournalPage({caseIndex}){
    <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>解謎進度由同組共用</span></section>
    {progressError&&<p className="shared-progress-error">{progressError}</p>}
    {selected===null
-    ?<><section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section><SideQuestArchive isUnlocked={isSideUnlocked} onUnlock={unlockSideQuest}/></>
+    ?<><section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件可閱</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);const status=item.direct?'直接閱覽':item.pending?'題目待發':solved?'已解鎖':'未查核';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{status}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section><SideQuestArchive isUnlocked={isSideUnlocked} onUnlock={unlockSideQuest}/></>
     :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount} sharedSolved={isSolved(selected)} onSharedSolved={markSharedSolved}/></section></>}
   </main>
  </div>
@@ -502,11 +505,11 @@ function MunicipalHome(){
   <div className="office-shell">
    <aside className="office-sidebar"><section className="office-directory"><h2>公示板目錄</h2><button onClick={()=>scroll('new-notices')}>一、本日新到公告</button><button onClick={()=>scroll('patrol')}>二、兩日巡回路線</button><button onClick={()=>open('./?page=puzzles')}>三、調查案件</button><button onClick={()=>scroll('office-map')}>四、市街配置圖</button><button onClick={()=>open('./?page=schedule')}>五、執務時刻</button><button onClick={()=>open('./?page=info')}>六、洽詢須知</button></section><section className="office-counter"><h2>本日登入人數</h2><strong>{visits}</strong><p>本機到訪次數</p></section><section className="office-small-notice"><h2>洽詢須知</h2><p>巡查者須攜帶調查簿。案件答案不明者，請於現地重新核對，不得逕向文書係索取。</p></section></aside>
    <main className="office-main">
-    <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list no-stamps"><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>兩日巡回路線及配置變更</h3><p>本次巡查分兩日共十七處，應依公告順序完成查錄；各點詳見配置圖及附屬路線頁。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>十三件調查案件開放查核</h3><p>現地所得答案可於案件目錄逐件查核。內容相符者，准予閱覽附屬公告及未綴込文書。</p></div><button onClick={()=>open('./?page=puzzles')}>案件目錄</button></article></div></section>
+    <section className="office-welcome" id="new-notices"><div className="office-title-row"><p>臺中市役所告示</p><h2>本日新到公告</h2><span>揭示期間：昭和十三年八月</span></div><div className="notice-list no-stamps"><article><time>八月十三日</time><div><small>巡查第十九號</small><h3>兩日巡回路線及配置變更</h3><p>本次主線含十件採訪，另設綠空鐵道及第四市場兩處終章路線；應依公告順序完成查錄。</p></div><button onClick={()=>scroll('patrol')}>路線公告</button></article><article><time>八月十四日</time><div><small>文書秘第二號</small><h3>十件主線調查記錄開放查核</h3><p>主線與補充支線分卷辦理；現地題目尚未發給者保持封緘，不與支線內容混列。</p></div><button onClick={()=>open('./?page=puzzles')}>案件目錄</button></article></div></section>
     <section className="patrol-notice office-paper" id="patrol"><div className="document-head"><div><small>臺中市役所　巡查第十九號</small><h2>兩日市街巡回路線公告</h2><p>昭和十三年八月十三日</p></div><div className="document-stamp">巡查<br/>指定</div></div><p className="document-intro">臨時調查員之巡查地點，分兩日依左列次序辦理。各處並非競速通過之關卡；應就現場用途、人物生活及異動痕跡詳實記入調查簿。</p>{dailyPatrolRoutes.map(group=><div className="patrol-day-block" key={group.day}><div className="patrol-day-title"><b>附圖{group.day===1?'甲':'乙'}</b><h3>{group.label}</h3><button onClick={()=>open('./?day='+group.day)}>開啟詳細路線 <ArrowUpRight size={15}/></button></div><div className="patrol-table place-version"><div className="table-head"><span>順序</span><span>巡查地點</span><span>勤務摘要</span></div>{group.points.map(route=><div className="table-row" key={group.day+'-'+route.no}><b>{route.no}</b><strong>{route.name}</strong><span>{route.duty}</span></div>)}</div></div>)}</section>
     <section className="office-map-board" id="office-map"><div className="office-title-row"><p>附圖・市街配置</p><h2>巡查區域配置圖</h2><span>縮尺及現況以現地為準</span></div><div className="office-map-layout"><StoryMap onDayChange={setActive} onModeChange={setMapMode}/><div className="map-register"><h3>配置圖取扱欄</h3><dl><div><dt>現在表示</dt><dd>{mapMode==='guide'?'案內係巡回路線':mapMode==='both'?'兩日巡查總圖':chapters[active].date+' 詳圖'}</dd></div><div><dt>圖面番號</dt><dd>中市庶圖 第〇七號</dd></div><div><dt>保管係</dt><dd>庶務課 文書係</dd></div><div><dt>閱覽</dt><dd>見習調查員限</dd></div></dl><button onClick={()=>open('./?page=schedule')}>當日執務時刻ヲ見る</button></div></div></section>
    </main>
-   <aside className="office-rightbar"><section><h2>執務狀態</h2><p><b>受付</b><span>午前九時開始</span></p><p><b>巡查</b><span>兩日十七處</span></p><p><b>案件</b><span>十三件待查</span></p><p><b>終章</b><span>第四市場</span></p></section><section className="office-clipping"><h2>係員備忘</h2><p>「正式紀錄」與「人們記得的事」若有出入，兩者均須留下。</p><span>— 文書係頁緣註記</span></section><section><h2>官方聯絡板</h2><p className="rightbar-explain">活動異動、集合提醒與最新公告，以主辦單位發布內容為準。</p><button onClick={()=>open('./?page=info')}>開啟聯絡資訊</button></section></aside>
+   <aside className="office-rightbar"><section><h2>執務狀態</h2><p><b>受付</b><span>午前九時開始</span></p><p><b>主線</b><span>十件採訪</span></p><p><b>支線</b><span>四件封緘</span></p><p><b>終章</b><span>第四市場</span></p></section><section className="office-clipping"><h2>係員備忘</h2><p>「正式紀錄」與「人們記得的事」若有出入，兩者均須留下。</p><span>— 文書係頁緣註記</span></section><section><h2>官方聯絡板</h2><p className="rightbar-explain">活動異動、集合提醒與最新公告，以主辦單位發布內容為準。</p><button onClick={()=>open('./?page=info')}>開啟聯絡資訊</button></section></aside>
   </div>
   <footer className="office-footer"><small>本頁為《翻閱1938：那些待續的章節》活動情境網站，所列職員與公文均屬虛構。</small></footer>
  </div>
