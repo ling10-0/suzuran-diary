@@ -231,6 +231,13 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
        <small>{document.title}</small>
        <h4>{documentView==='travel'?'內地人遊記':'本島人手稿'}</h4>
        {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+        {documentView==='travel' && document.travelImage && (
+  <img
+    className="travel-document-image"
+    src={document.travelImage}
+    alt={document.title}
+  />
+)}
        <footer>{documentView==='travel'?'市役所遊覽資料・公開稿':'昭和十三年・臺中市街生活記錄'}</footer>
       </div>
      </div>
