@@ -10,6 +10,7 @@ import './refinements.css';
 import './office.css';
 import './newspaper.css';
 import {caseDocuments} from './caseDocuments.js';
+import {documentUpdates, sideQuests} from './stationDocuments.js';
 import {createJapaneseName} from './japaneseName.js';
 import {loadNewsroomProgress, saveNewsroomProgress} from './sharedProgress.js';
 
@@ -194,7 +195,7 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
  const [record,setRecord]=useState(initialRecord);
  const [documentView,setDocumentView]=useState('travel');
  const [photoError,setPhotoError]=useState('');
- const document=caseDocuments[index];
+ const document={...caseDocuments[index],...(documentUpdates[index]||{})};
  const islandManuscriptReady=solved&&(index!==puzzles.length-1||unlockedCount>=puzzles.length);
  useEffect(()=>{if(sharedSolved)setSolved(true)},[sharedSolved]);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
@@ -295,6 +296,37 @@ function NewsroomEntry({onComplete}){
  </div>
 }
 
+function SideQuestArchive({isUnlocked,onUnlock}){
+ const [working,setWorking]=useState(null);
+ const unlock=async quest=>{
+  setWorking(quest.id);
+  await onUnlock(quest.id);
+  setWorking(null);
+ };
+ return <section className="side-quest-archive" aria-labelledby="side-quest-heading">
+  <header>
+   <div><small>SUPPLEMENTARY FILES / 補充調查</small><h2 id="side-quest-heading">時間錯位支線</h2></div>
+   <p>下列地點藏有不屬於1938年的線索。向隊輔領取時差封套、完成現場查證後，才可開封補充紀錄。</p>
+  </header>
+  <div className="side-quest-grid">
+   {sideQuests.map((quest,questIndex)=>{const unlocked=isUnlocked(quest.id);return <article className={'side-quest-card '+(unlocked?'is-unlocked':'is-locked')} key={quest.id}>
+    <div className="side-quest-card-head">
+     <span>支線 {String(questIndex+1).padStart(2,'0')}</span>
+     <div><small>{quest.place}</small><h3>{quest.title}</h3></div>
+     <i aria-label={unlocked?'已解鎖':'未解鎖'}>{unlocked?<Unlock/>:<LockKeyhole/>}</i>
+    </div>
+    <div className="side-quest-brief">
+     <b>現場查證要領</b><p>{quest.prompt}</p>
+     {quest.dialogue?.length>0&&<section className="travel-dialogue" aria-label="支線現場短對話"><small>現場短對話・採訪筆記</small>{quest.dialogue.map(([speaker,line],lineIndex)=><p key={lineIndex}><b>{speaker}</b><span>{line}</span></p>)}</section>}
+    </div>
+    {!unlocked
+     ?<button className="side-quest-unlock" disabled={working===quest.id} onClick={()=>unlock(quest)}>{working===quest.id?'辦理中…':'已完成現場查證，辦理開封'} <ArrowUpRight size={16}/></button>
+     :<section className="side-quest-record"><header><small>開封済・補充記錄</small><strong>{quest.tag}</strong></header>{quest.record.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}<footer>本件支線已登錄於「{quest.place}」調查附卷。</footer></section>}
+   </article>})}
+  </div>
+ </section>
+}
+
 function NewspaperJournalPage({caseIndex}){
  const home=()=>window.location.assign('./');
  const [newsroom,setNewsroom]=useState(()=>window.localStorage.getItem('suzuran-newsroom')||'');
@@ -309,10 +341,16 @@ function NewspaperJournalPage({caseIndex}){
   const timer=window.setInterval(refreshProgress,10000);
   return()=>window.clearInterval(timer)
  },[newsroom]);
- const isSolved=index=>sharedProgress?sharedProgress.includes(index):window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1';
- const unlockedCount=sharedProgress?sharedProgress.length:puzzles.filter((_,index)=>window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1').length;
+ const isSolved=index=>(sharedProgress?.includes(index)??false)||window.localStorage.getItem('suzuran-office-unlocked-'+index)==='1';
+ const isSideUnlocked=id=>(sharedProgress?.includes(id)??false)||window.localStorage.getItem('suzuran-side-unlocked-'+id)==='1';
+ const unlockedCount=puzzles.filter((_,index)=>isSolved(index)).length;
  const markSharedSolved=async index=>{
   try{await saveNewsroomProgress(newsroom,index);setSharedProgress(current=>Array.from(new Set([...(current||[]),index])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
+ };
+ const unlockSideQuest=async id=>{
+  window.localStorage.setItem('suzuran-side-unlocked-'+id,'1');
+  setSharedProgress(current=>Array.from(new Set([...(current||[]),id])));
+  try{await saveNewsroomProgress(newsroom,id);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}
  };
  const selected=Number.isInteger(caseIndex)&&caseIndex>=0&&caseIndex<puzzles.length?caseIndex:null;
  const openCase=index=>window.location.assign('./?page=puzzles&case='+(index+1));
@@ -326,7 +364,7 @@ function NewspaperJournalPage({caseIndex}){
    <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>解謎進度由同組共用</span></section>
    {progressError&&<p className="shared-progress-error">{progressError}</p>}
    {selected===null
-    ?<section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section>
+    ?<><section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件完成</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{solved?'已解鎖':'未查核'}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section><SideQuestArchive isUnlocked={isSideUnlocked} onUnlock={unlockSideQuest}/></>
     :<><nav className="case-pager" aria-label="案件切換"><button disabled={selected===0} onClick={()=>openCase(selected-1)}><ArrowLeft size={16}/> 上一件</button><span>第 {selected+1}／{puzzles.length} 件・DAY 0{puzzles[selected].day}</span><button disabled={selected===puzzles.length-1} onClick={()=>openCase(selected+1)}>下一件 <ArrowUpRight size={16}/></button></nav><section className="gazette-case-list"><FieldJournal item={puzzles[selected]} index={selected} unlockedCount={unlockedCount} sharedSolved={isSolved(selected)} onSharedSolved={markSharedSolved}/></section></>}
   </main>
  </div>
