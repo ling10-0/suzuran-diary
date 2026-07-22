@@ -654,7 +654,7 @@ footer button {
   bottom: 0;
   width: 46%;
   height: 64%;
-  background: url('/assets/decor-city-hall.png') right bottom / contain no-repeat;
+  background: url('/assets/draw/shiyakushodraw.PNG') right bottom / contain no-repeat;
   opacity: 0.13;
   pointer-events: none;
 }
@@ -692,7 +692,7 @@ footer button {
   right: -18px;
   width: 285px;
   height: 315px;
-  background: url('/assets/decor-lily-teal.webp') center / contain no-repeat;
+  background: url('/assets/draw/altlilyofthevalley.png') center / contain no-repeat;
   opacity: 0.38;
   transform: rotate(-8deg);
   pointer-events: none;
@@ -716,7 +716,7 @@ footer button {
   bottom: -7%;
   width: 53%;
   height: 80%;
-  background: url('/assets/decor-city-hall.png') right bottom / contain no-repeat;
+  background: url('/assets/draw/shiyakushodraw.PNG') right bottom / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -733,7 +733,7 @@ footer button {
   bottom: -7%;
   width: 53%;
   height: 80%;
-  background: url('/assets/decor-city-hall.png') right bottom / contain no-repeat;
+  background: url('/assets/draw/shiyakushodraw.PNG') right bottom / contain no-repeat;
   opacity: 0.16;
   pointer-events: none;
 }
@@ -1062,7 +1062,7 @@ footer button {
   bottom: -8%;
   width: 55%;
   height: 82%;
-  background: url('/assets/decor-city-hall.png') right bottom / contain no-repeat;
+  background: url('/assets/draw/shiyakushodraw.PNG') right bottom / contain no-repeat;
   opacity: 0.15;
 }
 
