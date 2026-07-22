@@ -238,7 +238,6 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
     alt={document.title}
   />
 )}
-       <footer>{documentView==='travel'?'市役所遊覽資料・公開稿':'昭和十三年・臺中市街生活記錄'}</footer>
       </div>
      </div>
    </section>
