@@ -48,7 +48,7 @@ const secondMarket = {
 
 export const mainlineCases = [
   {...documentUpdates[1],day:1,type:'craft',code:'庶務秘第〇一號',taskTitle:'拾光琉璃',inputLabel:'無須查核',hint:'完成琉璃手作後，可直接翻閱兩種城市記錄。',label:'1916工坊',direct:true},
-  {...documentUpdates[0],day:1,type:'market',code:'商工第〇二號',taskTitle:'第三市場',inputLabel:'現場答案',label:'第三市場',pending:true},
+  {...documentUpdates[0],travelImage:'/suzuran-diary/assets/travel/third.jpg',day:1,type:'market',code:'商工第〇二號',taskTitle:'第三市場',inputLabel:'現場答案',label:'第三市場',pending:true},
   {...southGarden,day:1,type:'food',code:'商工第〇三號',taskTitle:'精養軒舊址',inputLabel:'現場答案',label:'南園酒家／精養軒舊址',pending:true},
   {...documentUpdates[4],day:1,type:'office',code:'庶務秘第〇四號',taskTitle:'市役所',inputLabel:'現場答案',label:'臺中市役所',pending:true},
   {...postOffice,day:1,type:'postal',code:'郵便第〇五號',taskTitle:'郵局',inputLabel:'現場答案',label:'臺中郵局',pending:true},
