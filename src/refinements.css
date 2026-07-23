@@ -1538,7 +1538,7 @@ footer button {
 /* Two-day schedule header: adjusted document seal and illustrations */
 @media (min-width: 801px) {
   .schedule-hero-notice {
-    right: 48%;
+    right: 42%;
     top: 30%;
     width: 128px;
     padding: 11px 9px 10px;
@@ -1551,8 +1551,8 @@ footer button {
 
   .schedule-hero::after {
     background: url('/assets/draw/trainstation.png') right bottom / contain no-repeat;
-    right: 30%;
-    bottom: -25%;
+    right: 20%;
+    bottom: 35%;
     width: 150%;
     height: 150%;
     opacity: 0.35;
