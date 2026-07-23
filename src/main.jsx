@@ -32,22 +32,28 @@ const patrolRoute = [
 
 const dailyPatrolRoutes = [
   {
-    day:1,
-    label:'第一日・驛前至柳川',
-    points:chapters[0].points.map((point,index)=>({
-      no:String(index+1).padStart(2,'0'),
-      name:point.name,
-      duty:index<2?'核對驛站、鐵道與產業遺構':index<6?'查錄市場、公署及商業用途':'記錄金融街、河道與市場生活'
-    }))
+    day: 1,
+    label: '第一日・驛前至柳川',
+    points: [
+      {no:'01', name:'1916工坊', duty:'完成琉璃手作，採集工藝現場'},
+      {no:'02', name:'臺中市第三公有零售市場', duty:'追查市場遷址，記錄採買日常'},
+      {no:'03', name:'南園酒家／精養軒舊址', duty:'採訪酒家宴飲，觀察城市交際'},
+      {no:'04', name:'臺中市役所', duty:'翻查市役所資料，理解城市治理'},
+      {no:'05', name:'臺中郵局', duty:'追蹤郵件傳遞，記錄消息往來'},
+      {no:'06', name:'永生蔘藥行三連棟', duty:'走讀街屋商行，採集藥材買賣'},
+      {no:'07', name:'柳川古道', duty:'沿水路前行，記錄河道與城市生活'},
+      {no:'08', name:'第二市場', duty:'走進六角樓，觀察城中消費與人流'}
+    ]
   },
   {
-    day:2,
-    label:'第二日・綠川至第四市場',
-    points:chapters[1].points.map((point,index)=>({
-      no:String(index+1).padStart(2,'0'),
-      name:point.name,
-      duty:index<2?'辨認橋梁與閱讀生活':index===2?'沿鐵道空間追查城市變遷':'彙整調查簿並辦理終章聯合發刊'
-    }))
+    day: 2,
+    label: '第二日・綠川至第四市場',
+    points: [
+      {no:'01', name:'新盛橋', duty:'跨越鐵道，記錄抵達與通行'},
+      {no:'02', name:'中央書局', duty:'走進書店，採訪閱讀與新知'},
+      {no:'03', name:'綠空鐵道1908', duty:'循舊鐵道前行，對照城市變遷'},
+      {no:'04', name:'歷史建築臺中第四市場', duty:'編輯採用稿件，完成遊記發表'}
+    ]
   }
 ];
 
