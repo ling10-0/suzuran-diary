@@ -648,6 +648,19 @@ footer button {
   }
 }
 
+/* Keep the participant-information header as compact as the two-day schedule header. */
+@media (min-width: 801px) {
+  .participant-info-hero {
+    box-sizing: border-box;
+    min-height: 455px;
+    padding: 88px 9vw 48px;
+  }
+
+  .participant-info-hero h1 {
+    margin: 12px 0 20px;
+  }
+}
+
 /* Illustration assets supplied by the project team */
 .participant-info-hero::before {
   content: '';
