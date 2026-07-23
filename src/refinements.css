@@ -32,6 +32,8 @@ footer button {
 
 .participant-info-hero h1 {
   margin-bottom: 38px;
+
+  
 }
 
 .participant-info-hero > p:last-child {
@@ -1596,6 +1598,9 @@ footer button {
     width: 285px;
     height: 335px;
     opacity: 0.12;
+}
+  .schedule-hero-notice b {
+  white-space: nowrap;
 }
   }
 }
