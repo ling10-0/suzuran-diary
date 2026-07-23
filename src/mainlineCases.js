@@ -31,6 +31,19 @@ const postOffice = {
   dialogue:[['記者','只寫「柳川邊會修傘的阿伯」，也送得到？'],['郵差','你們報社地址寫得很完整，信還不是常常送錯人。'],['鈴蘭','他說得有道理。'],['記者','妳應該站在委託人這邊。'],['鈴蘭','我站在信能送到的那邊。']]
 };
 
+const cooperativeBank = {
+  title:'第四章｜合作金庫舊址：書架還在門牌以前',
+  travel:[
+    '臺中州立圖書館新館落成於昭和四年（1929），館內設有書庫、一般閱覽室、婦人閱覽室、兒童閱覽室及新聞雜誌閱覽室，可供市民閱讀報刊與圖書。入館者依閱覽規則取用資料，館內保持安靜，讀畢後將報刊放回原處。',
+    '圖書館除收藏書籍外，也推廣地方圖書館事業與社會教育活動。旅客行經市街時，可由館舍立面與往來讀者看見臺中文教設施的發展；若遇雨天，更適合入內閱報、休息與查詢各地消息。'
+  ],
+  island:[
+    '我常在圖書館的閱覽室裡抄報上的消息；館員不讓我們把書桌搬到窗邊，說那裡留給讀得更久的人。',
+    '傍晚收館前，借閱證和報紙都要歸回原位。我把今天沒抄完的題目記在紙角，明天再來找答案。'
+  ],
+  dialogue:[['記者','這裡的書這麼多，能不能把一整排都借回報社？'],['鈴蘭','可以。只要你先找到一間比報社還大的書房。'],['館員','還有一個願意替你搬書的人。'],['記者','那我先借一張椅子。'],['鈴蘭','椅子可以，別把閱覽室的安靜也借走。']]
+};
+
 const secondMarket = {
   title:'第八章｜第二市場：最後留下的一碗湯',
   travel:[
@@ -52,9 +65,9 @@ export const mainlineCases = [
   {...southGarden,travelImage:'/suzuran-diary/assets/travel/change.jpg',day:1,type:'food',code:'商工第〇三號',taskTitle:'精養軒舊址',inputLabel:'現場答案',label:'南園酒家／精養軒舊址',pending:true},
   {...documentUpdates[4],travelImage:'/suzuran-diary/assets/travel/shiyakusho.jpg',day:1,type:'office',code:'庶務秘第〇四號',taskTitle:'市役所',inputLabel:'現場答案',label:'臺中市役所',pending:true},
   {...postOffice,travelImage:'/suzuran-diary/assets/travel/post.jpg',day:1,type:'postal',code:'郵便第〇五號',taskTitle:'郵局',inputLabel:'現場答案',label:'臺中郵局',pending:true},
-  {...documentUpdates[5],travelImage:'/suzuran-diary/assets/travel/chinesemedicine.png',day:1,type:'commerce',code:'商工第〇六號',taskTitle:'蔘藥三連棟',inputLabel:'現場答案',label:'蔘藥三連棟',pending:true},
+  {...cooperativeBank,travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:1,type:'commerce',code:'商工第〇六號',taskTitle:'合作金庫舊址',inputLabel:'現場答案',label:'合作金庫舊址',pending:true},
   {...documentUpdates[6],travelImage:'/suzuran-diary/assets/travel/yanagawa.jpg',day:1,type:'river',code:'河川第〇七號',taskTitle:'柳川古道',inputLabel:'現場答案',label:'柳川古道',pending:true},
   {...secondMarket,travelImage:'/suzuran-diary/assets/travel/second.jpg',day:1,type:'market',code:'商工第〇八號',taskTitle:'第二市場',inputLabel:'無須查核',label:'第二市場',direct:true},
-  {...documentUpdates[8],travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:2,type:'bridge',code:'土木第〇九號',taskTitle:'中山綠橋',inputLabel:'無須查核',label:'中山綠橋',direct:true},
-  {...documentUpdates[10],travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:2,type:'book',code:'文教第〇十號',taskTitle:'中央書局',inputLabel:'無須查核',label:'中央書局',direct:true}
+  {...documentUpdates[8],travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:2,type:'bridge',code:'土木第〇九號',taskTitle:'中山綠橋',inputLabel:'現場答案',hint:'中山綠橋跨越哪一條水道？',hashes:['369435c8f8c8d6ee2d1a650bcacb0a3ccb09c51294761874daf6675fb69c7d83'],label:'中山綠橋',pending:false},
+  {...documentUpdates[10],travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:2,type:'book',code:'文教第〇十號',taskTitle:'中央書局',inputLabel:'現場答案',hint:'中央書局供應哪一種出版品？可輸入「報紙」或「雜誌」。',hashes:['78d80cd2d39e7c63eaf36b511461e5359fefb6e78e50f2aa108e5c26a68b6e40','056a44f8c974afee13bca915c8b5ff7f909ac74da1c50f326f7b3f1bc2164f6a'],label:'中央書局',pending:false}
 ];

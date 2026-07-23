@@ -15,7 +15,7 @@ import {createJapaneseName} from './japaneseName.js';
 import {loadNewsroomProgress, saveNewsroomProgress} from './sharedProgress.js';
 
 const chapters = [
-  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'由驛前工坊出發，沿市場、公署與河道採集人們的生活記錄。',place:'臺中舊城・第一日主線',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'臺中市第三公有零售市場',historic:'敷島町第三市場',lat:24.1331583,lng:120.6830965},{name:'南園酒家／精養軒舊址',historic:'精養軒',lat:24.1362,lng:120.6798},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'臺中郵局',historic:'臺中郵便局',lat:24.1383,lng:120.6766},{name:'永生蔘藥行三連棟',historic:'榮町藥種商街',lat:24.1411747,lng:120.6794953},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
+  {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'由驛前工坊出發，沿市場、公署與河道採集人們的生活記錄。',place:'臺中舊城・第一日主線',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'臺中市第三公有零售市場',historic:'敷島町第三市場',lat:24.1331583,lng:120.6830965},{name:'南園酒家／精養軒舊址',historic:'精養軒',lat:24.1362,lng:120.6798},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'臺中郵局',historic:'臺中郵便局',lat:24.1383,lng:120.6766},{name:'合作金庫舊址',historic:'臺中州立圖書館',lat:24.1411747,lng:120.6794953},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
   {date:'DAY / 02',year:'1938',tag:'記憶回收',title:'替故事寫下待續',text:'由橋與書局重新閱讀城市，最後沿鐵道前往第四市場完成聯合發刊。',place:'臺中舊城・第二日主線',tone:'blue',points:[{name:'中山綠橋',historic:'綠川橋',lat:24.1378842,lng:120.6831311},{name:'中央書局',historic:'寶町中央書局',lat:24.1408452,lng:120.6811557},{name:'綠空鐵道1908',historic:'臺中驛鐵道路廊',lat:24.1354544,lng:120.6821701},{name:'歷史建築臺中第四市場',historic:'東町第四市場',lat:24.140556,lng:120.6933848}]}
 ];
 
@@ -24,7 +24,7 @@ const puzzles = mainlineCases;
 const patrolRoute = [
   {no:'壹',district:'驛前巡查區',coverage:'1916工坊／第三市場',duty:'核對產業、手作與市場生活'},
   {no:'貳',district:'精養軒巡查區',coverage:'精養軒舊址／臺中市役所',duty:'查錄宴飲接待與公署文書'},
-  {no:'參',district:'郵便巡查區',coverage:'臺中郵局／蔘藥三連棟',duty:'記錄郵遞、商號與民生往來'},
+  {no:'參',district:'郵便巡查區',coverage:'臺中郵局／合作金庫舊址',duty:'記錄郵遞與閱讀生活'},
   {no:'肆',district:'柳川市場巡查區',coverage:'柳川古道／第二市場',duty:'沿河道採集市場生活紀錄'},
   {no:'伍',district:'綠川文教巡查區',coverage:'中山綠橋／中央書局',duty:'辨認橋梁與閱讀生活'},
   {no:'陸',district:'東町終章巡查區',coverage:'綠空鐵道／第四市場',duty:'彙整調查簿並辦理聯合發刊'}
