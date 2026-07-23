@@ -233,8 +233,6 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
        <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':item.pending?'本島人手稿・題目待發':'本島人手稿・封緘中'}</button>
       </div>
       <div className={'document-copy '+documentView} role="tabpanel">
-       <BookOpen/>
-       <img className="document-ornament" src={documentView==='travel'?'./assets/draw/book1.png':'./assets/draw/book2.png'} alt="" aria-hidden="true"/>
        <small>{document.title}</small>
        <h4>{documentView==='travel'?'內地人遊記':'本島人手稿'}</h4>
        {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
