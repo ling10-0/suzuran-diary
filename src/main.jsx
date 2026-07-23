@@ -458,7 +458,7 @@ function SchedulePage(){
  const home=()=>window.location.assign('./');
  return <div className="schedule-page">
   <header className="route-nav"><button className="brand" onClick={home}><span>臺中市役所</span><i>時刻</i></button><button className="route-back" onClick={home}><ArrowLeft size={18}/> 公示板へ戻る</button></header>
-  <main><section className="schedule-hero"><div className="schedule-hero-copy"><p className="eyebrow">昭和十三年度・臨時調查掛</p><h1>兩日執務時刻表</h1><p>左記為預定執務時刻。現地情況有變時，依帶隊係員之指示辦理。</p></div><div className="schedule-hero-notice" aria-hidden="true"><small>昭和十三年</small><b>八月十三日<br/>至 十四日</b><span>臨時巡查</span></div><img className="schedule-character" src="./assets/draw/woman.PNG" alt="" aria-hidden="true"/></section>
+  <main><section className="schedule-hero"><div className="schedule-hero-copy"><p className="eyebrow">昭和十三年度・臨時調查掛</p><h1>兩日執務時刻表</h1><p>左記為預定執務時刻。現地情況有變時，依帶隊係員之指示辦理。</p></div><div className="schedule-hero-notice" aria-hidden="true"><small>昭和十三年</small><b>八月十三日至十四日</b><span>臨時巡查</span></div><img className="schedule-character" src="./assets/draw/woman.PNG" alt="" aria-hidden="true"/></section>
   <section className="schedule-body">{schedules.map((schedule,index)=><article className={'schedule-day schedule-day-'+(index+1)} key={schedule.day}><div className="schedule-day-head"><div><p className="eyebrow">{schedule.label}</p><h2>{schedule.day}</h2></div><span>1938</span></div><ol>{schedule.items.map((item,itemIndex)=><li key={item.time+item.title}><div className="schedule-time"><Clock size={17}/><time>{item.time}</time></div><div className="schedule-event"><small>{String(itemIndex+1).padStart(2,'0')}</small><h3>{item.title}</h3></div></li>)}</ol></article>)}</section></main>
  </div>
 }
