@@ -65,7 +65,7 @@ export const mainlineCases = [
   {...southGarden,travelImage:'/suzuran-diary/assets/travel/change.jpg',day:1,type:'food',code:'商工第〇三號',taskTitle:'精養軒舊址',inputLabel:'現場答案',label:'南園酒家／精養軒舊址',pending:true},
   {...documentUpdates[4],travelImage:'/suzuran-diary/assets/travel/shiyakusho.jpg',day:1,type:'office',code:'庶務秘第〇四號',taskTitle:'市役所',inputLabel:'現場答案',label:'臺中市役所',pending:true},
   {...postOffice,travelImage:'/suzuran-diary/assets/travel/post.jpg',day:1,type:'postal',code:'郵便第〇五號',taskTitle:'郵局',inputLabel:'現場答案',label:'臺中郵局',pending:true},
-  {...cooperativeBank,travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:1,type:'commerce',code:'商工第〇六號',taskTitle:'合作金庫舊址',inputLabel:'現場答案',label:'合作金庫舊址',pending:true},
+  {...cooperativeBank,travelImage:'/suzuran-diary/assets/travel/library.jpg',day:1,type:'commerce',code:'商工第〇六號',taskTitle:'合作金庫舊址',inputLabel:'現場答案',label:'合作金庫舊址',pending:true},
   {...documentUpdates[6],travelImage:'/suzuran-diary/assets/travel/yanagawa.jpg',day:1,type:'river',code:'河川第〇七號',taskTitle:'柳川古道',inputLabel:'現場答案',label:'柳川古道',pending:true},
   {...secondMarket,travelImage:'/suzuran-diary/assets/travel/second.jpg',day:1,type:'market',code:'商工第〇八號',taskTitle:'第二市場',inputLabel:'無須查核',label:'第二市場',direct:true},
   {...documentUpdates[8],travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:2,type:'bridge',code:'土木第〇九號',taskTitle:'中山綠橋',inputLabel:'現場答案',hint:'中山綠橋跨越哪一條水道？',hashes:['369435c8f8c8d6ee2d1a650bcacb0a3ccb09c51294761874daf6675fb69c7d83'],label:'中山綠橋',pending:false},
