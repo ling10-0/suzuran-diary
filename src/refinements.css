@@ -1585,11 +1585,11 @@ footer button {
 
   .schedule-hero::after {
     background: url('/assets/draw/trainstation.png') right bottom / contain no-repeat;
-    right: -2%;
-    bottom: -5%;
-    width: 94%;
-    height: 58%;
-    opacity: 0.2;
+    right: 20%;
+    bottom: -20%;
+    width: 150%;
+    height: 150%;
+    opacity: 0.3;
   }
 
   .schedule-hero::before {
