@@ -1538,9 +1538,9 @@ footer button {
 /* Two-day schedule header: adjusted document seal and illustrations */
 @media (min-width: 801px) {
   .schedule-hero-notice {
-    right: 60%;
+    right: 52%;
     top: 30%;
-    width: 128px;
+    width: 110px;
     padding: 12px 10px 11px;
   }
 
