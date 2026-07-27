@@ -72,17 +72,65 @@ const secondMarket = {
   dialogue:[['記者','如果那個人今天沒來，這碗湯怎麼辦？'],['老闆娘','我喝掉。'],['記者','那妳不是每天都要多煮一碗？'],['老闆娘','對啊，不然怎麼知道他今天有沒有好好下工？']]
 };
 
+const puzzleData = {
+  thirdMarket:{
+    question:'第三市場的遷址紀錄中，哪一份草稿完全正確？',
+    questionDetails:['史料問答：第三市場最初設立於哪一個地區？A 櫻町／B 敷島町／C 榮町／D 新富町。','草稿甲：開設於櫻町，後遷敷島町（代號5）；乙：開設於敷島町，後遷櫻町（代號1）；丙：櫻町舊址，現址敷島町（代號8）；丁：舊名櫻町消費市場，遷後仍在敷島町（代號3）。','輸入順序：錯誤草稿代號－第一份正確草稿代號－最後一份正確草稿代號。'],
+    questionHint:'先判斷櫻町與敷島町誰是起點。',hashes:['40536b1571ad83f35c64aee67a6b44037b1f97e3fde3887b35ac3277a964cd6f']
+  },
+  southGarden:{
+    question:'南園酒家舊址的用途與採訪頁碼應如何登記？',
+    questionDetails:['史料問答：此建築後來曾作為哪一機構？A 出張所／B 郵便局／C 公學校／D 診療所。','頁碼卡：甲10:00 公司地方業務（4）；乙10:15 用餐（7）；丙10:30 上課（2）；丁10:45 寄包裹（9）。','先填符合建築用途的頁碼，再將其餘頁碼由小到大排列。'],
+    hashes:['0e7d00dc3ca9311bdd81ddaecb241df7c57f55f1053551abea7c8eef9416fe33']
+  },
+  cooperative:{
+    question:'合作金庫立面的四瓣浮雕，應由哪兩份紀錄共同證明？',
+    questionDetails:['史料問答：四瓣浮雕的用途為何？A 銀行識別／B 建築裝飾／C 圖書分類／D 排水孔。','甲：文字與名稱識別；乙：浮雕與尖拱反覆出現；丙：孔洞用於排水；丁：用途改變後立面裝飾仍保留。','選出同時成立的兩項，依標號由小到大輸入。'],
+    hashes:['f694a50165c8615e34b37728439386e46625fc32738f397b0105ba4440607bc4']
+  },
+  cityHall:{
+    question:'市役所入口柱式的查核檔案是哪一份？',
+    questionDetails:['史料問答：入口柱身的主要特徵為何？A 平滑無飾／B 垂直凹槽／C 馬賽克／D 木雕。','比對現場與檔案卡後，只有乙檔 P-26 的描述正確。','輸入方式：檔案頁碼＋正確選項位置（A=1、B=2、C=3、D=4）。'],
+    hashes:['7151b154728c4420a30192c0ab416fa7bc111f8f01119afb415a7227ed613834']
+  },
+  postOffice:{
+    question:'郵資不足的郵件，應如何完成收件登記？',
+    questionDetails:['史料問答：臺灣最早發行欠資郵票的年份為何？','甲：已付4、欠資4、未補繳，收件章1；乙：已付2、欠資4、收件人補繳2，收件章6；丙：未付、無地址退回，收件章8。','輸入順序：年份＋正確收件章＋補繳金額。'],
+    hashes:['5c88f0a303294c0f6b69cb8463aa514d5eb295adcde53cab8e7e79a0d8c3367e']
+  },
+  liuchuan:{
+    question:'柳川裝置的回收圖樣應如何拼回？',
+    questionDetails:['史料問答：柳川心形裝置以何種材料製成？A 回收瓶蓋／B 木片／C 磁磚／D 鐵罐。','拼圖正確位置：左上丙、右上甲、左下丁、右下乙；背面數字依序為8、1、4、6。','依左上、右上、左下、右下輸入四位數。'],
+    hashes:['5f79862754fe8972b61dc6809658ec5b545298116187140dab3144057e5f1e13']
+  },
+  secondMarket:{
+    question:'六角樓中的採買動線，哪一項敘述正確？',
+    questionDetails:['出口順時針編為1至6。阿伯從1進，依序到2、4、6；阿姨從3進，只買一樣並由最近出口離開；跑堂從5進，送湯後必須回中央。','選項：A 阿伯從1出去／B 阿姨不可能從6出去／C 跑堂不需經過中央／D 中央是圓形噴水池。','輸入順序：出口邊數＋阿伯最後抵達的位置＋正確選項位置。'],
+    hashes:['d4d02ff3f5592c2deac61ed7f27bef0b3a99e0754e0388eab3cde11b4c59b925']
+  },
+  bridge:{
+    question:'新盛橋與中山綠橋的舊今地圖應如何照合？',
+    questionDetails:['舊圖標示「新盛橋」，今日導覽標示「中山綠橋」；兩者位於同一座橋的位置。','拼圖背面：甲1、乙4、丙5、丁8；正確位置為左上丙、右上甲、右下丁、左下乙。','依左上、右上、右下、左下輸入四位數。'],
+    hashes:['4e61d2f4be59b642fe6af5e369aeff463b122ab8a9d455687fba0bb909346103']
+  },
+  bookstore:{
+    question:'中央書局哪一份草稿可送印？',
+    questionDetails:['甲：只售官方指定日文教科書（代號5）；乙：提供漢文書籍、報刊，也讓讀者交流（代號8）；丙：替政府保管戶籍與稅務資料（代號3）；丁：主要承接廣告與商業包裝（代號6）。','正確草稿為乙。索引條：漢文書籍4／報刊1／讀者交流8。','依索引條順序輸入三位數。'],
+    hashes:['798b88ba5b3e5c7aa797385bf6bda432847e967b77e876ae2e5c1ad3fa45b744']
+  }
+};
+
 export const mainlineCases = [
-  {...documentUpdates[1],day:1,type:'craft',code:'庶務秘第〇一號',taskTitle:'拾光琉璃',inputLabel:'無須查核',hint:'完成琉璃手作後，可直接翻閱兩種城市記錄。',label:'1916工坊',direct:true},
-  {...documentUpdates[0],travelImage:'/suzuran-diary/assets/travel/third.jpg',day:1,type:'market',code:'商工第〇二號',taskTitle:'第三市場',inputLabel:'現場答案',label:'第三市場',pending:true},
-  {...southGarden,travelImage:'/suzuran-diary/assets/travel/change.jpg',day:1,type:'food',code:'商工第〇三號',taskTitle:'精養軒舊址',inputLabel:'現場答案',label:'南園酒家／精養軒舊址',pending:true},
-  {...documentUpdates[4],travelImage:'/suzuran-diary/assets/travel/shiyakusho.jpg',day:1,type:'office',code:'庶務秘第〇四號',taskTitle:'市役所',inputLabel:'現場答案',label:'臺中市役所',pending:true},
-  {...postOffice,travelImage:'/suzuran-diary/assets/travel/post.jpg',day:1,type:'postal',code:'郵便第〇五號',taskTitle:'郵局',inputLabel:'現場答案',label:'臺中郵局',pending:true},
-  {...cooperativeBank,travelImage:'/suzuran-diary/assets/travel/library.jpg',day:1,type:'commerce',code:'商工第〇六號',taskTitle:'合作金庫',inputLabel:'現場答案',label:'合作金庫舊址',pending:true},
-  {...documentUpdates[6],travelImage:'/suzuran-diary/assets/travel/yanagawa.jpg',day:1,type:'river',code:'河川第〇七號',taskTitle:'柳川古道',inputLabel:'現場答案',label:'柳川古道',pending:true},
-  {...secondMarket,travelImage:'/suzuran-diary/assets/travel/second.jpg',day:1,type:'market',code:'商工第〇八號',taskTitle:'第二市場',inputLabel:'無須查核',label:'第二市場',direct:true},
-  {...documentUpdates[8],travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:2,type:'bridge',code:'土木第〇九號',taskTitle:'中山綠橋',inputLabel:'現場答案',hint:'中山綠橋跨越哪一條水道？',hashes:['369435c8f8c8d6ee2d1a650bcacb0a3ccb09c51294761874daf6675fb69c7d83'],label:'中山綠橋',pending:false},
-  {...documentUpdates[10],travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:2,type:'book',code:'文教第〇十號',taskTitle:'中央書局',inputLabel:'現場答案',hint:'中央書局供應哪一種出版品？可輸入「報紙」或「雜誌」。',hashes:['78d80cd2d39e7c63eaf36b511461e5359fefb6e78e50f2aa108e5c26a68b6e40','056a44f8c974afee13bca915c8b5ff7f909ac74da1c50f326f7b3f1bc2164f6a'],label:'中央書局',pending:false}
+  {...documentUpdates[1],mainlandIndex:0,day:1,type:'craft',code:'庶務秘第〇一號',taskTitle:'拾光琉璃',inputLabel:'無須查核',hint:'完成琉璃手作後，可直接翻閱兩種城市記錄。',label:'1916工坊',direct:true},
+  {...documentUpdates[0],...puzzleData.thirdMarket,mainlandIndex:1,travelImage:'/suzuran-diary/assets/travel/third.jpg',day:1,type:'market',code:'商工第〇二號',taskTitle:'第三市場',inputLabel:'三位登記字號',hint:'依市場遷址史料與四份草稿，找出正確登記字號。',label:'第三市場',pending:false},
+  {...southGarden,...puzzleData.southGarden,mainlandIndex:2,travelImage:'/suzuran-diary/assets/travel/change.jpg',day:1,type:'food',code:'商工第〇三號',taskTitle:'精養軒舊址',inputLabel:'四位登記字號',hint:'比對建築用途與採訪頁碼，完成四位登記字號。',label:'南園酒家／精養軒舊址',pending:false},
+  {...cooperativeBank,...puzzleData.cooperative,mainlandIndex:5,travelImage:'/suzuran-diary/assets/travel/library.jpg',day:1,type:'commerce',code:'商工第〇四號',taskTitle:'合作金庫',inputLabel:'兩位登記字號',hint:'從立面浮雕與用途紀錄中，選出兩份同時成立的證據。',label:'合作金庫舊址',pending:false},
+  {...documentUpdates[4],...puzzleData.cityHall,mainlandIndex:3,travelImage:'/suzuran-diary/assets/travel/shiyakusho.jpg',day:1,type:'office',code:'庶務秘第〇五號',taskTitle:'市役所',inputLabel:'三位登記字號',hint:'比對入口柱式與檔案頁碼，完成查核。',label:'臺中市役所',pending:false},
+  {...postOffice,...puzzleData.postOffice,mainlandIndex:4,travelImage:'/suzuran-diary/assets/travel/post.jpg',day:1,type:'postal',code:'郵便第〇六號',taskTitle:'郵局',inputLabel:'六位登記字號',hint:'依欠資郵票年份、收件章與補繳金額完成登記。',label:'臺中郵局',pending:false},
+  {...documentUpdates[6],...puzzleData.liuchuan,mainlandIndex:6,travelImage:'/suzuran-diary/assets/travel/yanagawa.jpg',day:1,type:'river',code:'河川第〇七號',taskTitle:'柳川古道',inputLabel:'四位登記字號',hint:'完成回收圖樣拼圖，依位置讀取背面數字。',label:'柳川古道',pending:false},
+  {...secondMarket,...puzzleData.secondMarket,mainlandIndex:7,travelImage:'/suzuran-diary/assets/travel/second.jpg',day:1,type:'market',code:'商工第〇八號',taskTitle:'第二市場',inputLabel:'三位登記字號',hint:'依六角樓出口與人物動線判斷正確敘述。',label:'第二市場',pending:false},
+  {...documentUpdates[8],...puzzleData.bridge,mainlandIndex:8,travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:2,type:'bridge',code:'土木第〇九號',taskTitle:'新盛橋',inputLabel:'四位登記字號',hint:'照合新盛橋與中山綠橋的舊今地圖，再完成拼圖。',label:'新盛橋／中山綠橋',pending:false},
+  {...documentUpdates[10],...puzzleData.bookstore,mainlandIndex:9,travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:2,type:'book',code:'文教第〇十號',taskTitle:'中央書局',inputLabel:'三位登記字號',hint:'選出可送印的書局草稿，再依索引條讀取代碼。',label:'中央書局',pending:false}
 ];
 
-mainlineCases.forEach((item,index)=>{item.mainland=mainlandManuscripts[index]||item.travel||[]});
+mainlineCases.forEach((item,index)=>{item.mainland=mainlandManuscripts[item.mainlandIndex??index]||item.travel||[]});

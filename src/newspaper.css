@@ -132,6 +132,11 @@
 .case-file small{font-size:9px;letter-spacing:.1em}.case-file h3{margin:6px 0 8px;font-size:18px}.case-file p{margin:0;font-size:11px;line-height:1.75}
 .case-file>b{position:absolute;right:16px;bottom:13px;color:#786b58;font-size:9px}.case-file>svg{align-self:start;margin-top:10px}.case-file.is-open{background:rgba(143,37,29,.08)}.case-file.is-open>b{color:var(--gazette-red)}
 .case-file:hover{background:rgba(143,37,29,.13)}
+.case-question-sheet{margin:22px 0;padding:16px 18px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.13)}
+.case-question-sheet>small{color:var(--gazette-red);font:9px 'DM Mono';letter-spacing:.14em}
+.case-question-sheet h4{margin:8px 0 12px;font-size:15px;line-height:1.7}
+.case-question-sheet p{margin:5px 0;font-size:11px;line-height:1.85}
+.case-question-sheet em{display:block;margin-top:12px;padding-top:10px;border-top:1px solid var(--gazette-rule);color:#756650;font-size:10px;font-style:normal;line-height:1.75}
 .side-quest-archive{position:relative;min-width:0;max-width:100%;margin-top:34px;overflow:hidden;border:4px double var(--gazette-ink);background:rgba(244,229,190,.34)}
 .side-quest-archive>header{position:static;z-index:auto;display:grid;grid-template-columns:minmax(250px,.7fr) 1.3fr;gap:28px;align-items:end;width:auto;height:auto;min-height:0;margin:0;padding:22px 24px;color:inherit;border:0;border-bottom:2px solid var(--gazette-ink);background:transparent;box-shadow:none;transform:none}
 .side-quest-archive>header>*{min-width:0}
@@ -154,7 +159,10 @@
 .side-quest-unlock:disabled{opacity:.55;cursor:wait}
 .side-quest-question{margin:0 20px 20px;padding:16px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.12)}
 .side-quest-question>p{margin:0 0 13px;font-size:12px;font-weight:700;line-height:1.8}
-.side-quest-question>div{display:grid;gap:8px}.side-quest-question label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;align-items:start;font-size:11px;line-height:1.7;cursor:pointer}.side-quest-question input{margin-top:4px;accent-color:var(--gazette-red)}
+.side-quest-question>div{display:grid;gap:8px}.side-quest-question label{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px;align-items:start;font-size:11px;line-height:1.7;cursor:pointer}.side-quest-question input[type="radio"]{margin-top:4px;accent-color:var(--gazette-red)}
+.side-quest-detail{display:block;margin:5px 0;color:#564a3a;font-size:10px;line-height:1.8}
+.side-quest-code{display:block;box-sizing:border-box;width:100%;min-height:46px;margin-top:14px;padding:10px 12px;border:1px solid var(--gazette-ink);border-radius:0;color:var(--gazette-ink);background:rgba(255,255,255,.25);font:14px 'DM Mono';letter-spacing:.08em}
+.side-quest-code:focus{outline:2px solid rgba(143,37,29,.24);outline-offset:2px}
 .side-quest-question>small{display:block;margin:10px 0 0;color:var(--gazette-red)}
 .side-quest-question .side-quest-unlock{width:100%;margin:15px 0 0}
 .side-quest-pending{display:flex;align-items:center;gap:8px;margin:0 20px 20px;padding:13px 14px;border:1px dashed var(--gazette-red);color:var(--gazette-red);font-size:11px;letter-spacing:.05em}
@@ -200,6 +208,7 @@
  .case-day-group>header{align-items:flex-start;gap:8px;padding:12px}.case-day-group>header div{display:block}.case-day-group>header h2{margin-top:3px;font-size:19px}.case-day-group>header>span{font-size:9px}
  .case-directory-grid{grid-template-columns:1fr}.case-file{grid-template-columns:42px minmax(0,1fr) 18px;min-height:128px;padding:16px 12px;border-right:0}.case-file>span{width:36px;height:36px}.case-file h3{font-size:17px}.case-file p{font-size:10px}.case-file>b{right:13px}
  .side-quest-archive>header{grid-template-columns:1fr;gap:10px;padding:18px 15px}.side-quest-archive>header h2{font-size:22px}.side-quest-archive>header p{font-size:10px}.side-quest-grid{grid-template-columns:1fr}.side-quest-card,.side-quest-card:nth-child(even),.side-quest-card:nth-last-child(-n+2){border-right:0;border-bottom:1px solid var(--gazette-rule)}.side-quest-card:last-child{border-bottom:0}.side-quest-card-head{grid-template-columns:46px minmax(0,1fr) 32px;padding:16px 13px 12px}.side-quest-card-head h3{font-size:16px}.side-quest-brief{padding:0 13px 15px}.side-quest-unlock,.side-quest-record,.side-quest-question,.side-quest-pending{max-width:calc(100% - 26px);margin-left:13px;margin-right:13px}
+ .case-question-sheet{margin:18px 0;padding:14px}.case-question-sheet h4{font-size:14px}.case-question-sheet p{font-size:10px}
  .case-pager{grid-template-columns:1fr 1fr;gap:8px}.case-pager>span{grid-column:1/-1;grid-row:1;text-align:center}.case-pager button{
   grid-row:2;
   width:100%;

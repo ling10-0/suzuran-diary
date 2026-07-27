@@ -219,6 +219,12 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
    <section className="gazette-query">
     <h3>{item.taskTitle}</h3>
     <p>{item.hint}</p>
+    {item.question&&<section className="case-question-sheet" aria-label="案件查核資料">
+     <small>案件查核資料</small>
+     <h4>{item.question}</h4>
+     {item.questionDetails?.map((detail,detailIndex)=><p key={detailIndex}>{detail}</p>)}
+     {item.questionHint&&<em>提示：{item.questionHint}</em>}
+    </section>}
     {item.direct&&<p className="gazette-approved">本件無須輸入答案，可直接對照兩種城市記錄。</p>}
     {item.pending&&<p className="pending-case-notice">現場題目尚未發給，文書暫保持封緘；取得題目後將補上查核欄。</p>}
     {!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
@@ -354,7 +360,15 @@ function SideQuestArchive({isUnlocked,onUnlock}){
     {!unlocked
      ?quest.pending
       ?<div className="side-quest-pending"><LockKeyhole size={15}/> 題目待發・本件封緘中</div>
-      :<div className="side-quest-question"><p>{quest.question}</p><div>{quest.options?.map(option=><label key={option.value}><input type="radio" name={'side-'+quest.id} value={option.value} checked={answers[quest.id]===option.value} onChange={()=>{setAnswers(current=>({...current,[quest.id]:option.value}));setErrors(current=>({...current,[quest.id]:''}))}}/><span>{option.label}</span></label>)}</div>{errors[quest.id]&&<small>{errors[quest.id]}</small>}<button className="side-quest-unlock" disabled={working===quest.id} onClick={()=>unlock(quest)}>{working===quest.id?'辦理中…':'送交支線查核'} <ArrowUpRight size={16}/></button></div>
+      :<div className="side-quest-question">
+       <p>{quest.question}</p>
+       {quest.questionDetails?.map((detail,detailIndex)=><span className="side-quest-detail" key={detailIndex}>{detail}</span>)}
+       {quest.answerMode==='code'
+        ?<input className="side-quest-code" type="text" inputMode="numeric" value={answers[quest.id]||''} onChange={event=>{setAnswers(current=>({...current,[quest.id]:event.target.value}));setErrors(current=>({...current,[quest.id]:''}))}} placeholder={quest.inputLabel||'請輸入支線登記字號'}/>
+        :<div>{quest.options?.map(option=><label key={option.value}><input type="radio" name={'side-'+quest.id} value={option.value} checked={answers[quest.id]===option.value} onChange={()=>{setAnswers(current=>({...current,[quest.id]:option.value}));setErrors(current=>({...current,[quest.id]:''}))}}/><span>{option.label}</span></label>)}</div>}
+       {errors[quest.id]&&<small>{errors[quest.id]}</small>}
+       <button className="side-quest-unlock" disabled={working===quest.id} onClick={()=>unlock(quest)}>{working===quest.id?'辦理中…':'送交支線查核'} <ArrowUpRight size={16}/></button>
+      </div>
      :<section className="side-quest-record"><header><small>開封済・補充記錄</small><strong>{quest.tag}</strong></header>{quest.record.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}<footer>本件支線已登錄於「{quest.place}」調查附卷。</footer></section>}
    </article>})}
   </div>
