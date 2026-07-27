@@ -185,10 +185,12 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
  const [value,setValue]=useState('');
  const [error,setError]=useState(false);
  const [record,setRecord]=useState(initialRecord);
- const [documentView,setDocumentView]=useState('travel');
+ const [documentView,setDocumentView]=useState('mainland');
  const [photoError,setPhotoError]=useState('');
  const document=item;
  const islandManuscriptReady=item.direct||solved;
+ const mainlandManuscript=item.mainland||item.travel||[];
+ const activeManuscript=documentView==='mainland'?mainlandManuscript:(item.island||[]);
  useEffect(()=>{if(sharedSolved)setSolved(true)},[sharedSolved]);
  const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
  const submit=async event=>{
@@ -225,10 +227,29 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
      <small>現場短對話・採訪筆記</small>
      {document.dialogue.map(([speaker,line],dialogueIndex)=><p key={dialogueIndex}><b>{speaker}</b><span>{line}</span></p>)}
     </section>}
+     <section className="gazette-travelogue" aria-label="內地人遊記">
+     <div className="document-copy travel">
+      <small>{document.title}</small>
+      <h4>內地人遊記</h4>
+      {(document.travel||[]).map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+      {document.travelImage&&<img className="travel-document-image" src={document.travelImage} alt="相關舊照片" onError={event=>{event.currentTarget.style.display='none'}}/>}
+     </div>
+    </section>
    </section>
-   <section className="gazette-manuscript">
-    <h3>{islandManuscriptReady?'雙版本城市記錄':'內地人遊記・公開閱覽'}</h3>
-    <div className="document-reader">
+    <section className="gazette-manuscript">
+    <div className="manuscript-reader">
+     <h3>{islandManuscriptReady?'調查手稿':'本島人手稿封緘中'}</h3>
+     <div className="document-tabs" role="tablist" aria-label="手稿選擇">
+      <button role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} onClick={()=>setDocumentView('mainland')}>內地人手稿</button>
+      <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':'本島人手稿・封緘中'}</button>
+     </div>
+     <div className={'document-copy '+documentView} role="tabpanel">
+      <small>{document.title}</small>
+      <h4>{documentView==='mainland'?'內地人手稿':'本島人手稿'}</h4>
+      {activeManuscript.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+     </div>
+    </div>
+      <div className="document-reader legacy-reader">
       <div className="document-tabs" role="tablist" aria-label="切換城市記錄版本">
        <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
        <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':item.pending?'本島人手稿・題目待發':'本島人手稿・封緘中'}</button>

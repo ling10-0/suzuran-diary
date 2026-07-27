@@ -96,6 +96,11 @@
 .case-dialogue{margin-top:28px}
 .document-copy.island{border-color:var(--gazette-red)}
 .document-copy.island h4{color:var(--gazette-red)}
+.document-copy.mainland{border-color:#7c5734;background:rgba(126,84,40,.05)}
+.document-copy.mainland h4{color:#6b3f27}
+.gazette-travelogue{margin-top:28px}
+.gazette-travelogue .document-copy{margin:0}
+.legacy-reader{display:none}
 .gazette-sealed{display:grid;place-items:center;gap:15px;min-height:190px;color:#796c58}
 .gazette-sealed svg{width:36px;height:36px}
 .field-record{padding:25px 28px 30px;border-top:3px double var(--gazette-ink);background:rgba(246,233,199,.44)}
