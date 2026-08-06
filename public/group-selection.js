@@ -1,4 +1,18 @@
 (() => {
+  const resetParams = new URLSearchParams(window.location.search);
+  if (resetParams.get('reset') === '1') {
+    Object.keys(window.localStorage)
+      .filter(key => key.startsWith('suzuran-'))
+      .forEach(key => window.localStorage.removeItem(key));
+
+    resetParams.delete('reset');
+    const cleanUrl = window.location.pathname
+      + (resetParams.toString() ? `?${resetParams.toString()}` : '')
+      + window.location.hash;
+    window.location.replace(cleanUrl);
+    return;
+  }
+
   const groups = ['蘭臺', '見山', '迴聲'];
   const groupKey = 'suzuran-newsroom';
   const nameKey = 'suzuran-investigator-name';
