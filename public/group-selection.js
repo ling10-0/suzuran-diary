@@ -82,7 +82,7 @@
     confirm.addEventListener('click', () => {
       if (!groups.includes(selected)) return;
       localStorage.setItem(groupKey, selected);
-      removeOverlay();
+      window.location.reload();
     });
     document.body.appendChild(overlay);
   }
