@@ -1,0 +1,162 @@
+name: Update New Routes
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-new-routes.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-routes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update route and puzzle data
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          main_path = Path('src/main.jsx')
+          main = main_path.read_text(encoding='utf-8')
+
+          chapters = r"""const chapters = [
+  {date:'DAY / 01',year:'1938',tag:'城市巡查',title:'第一日舊城巡查',text:'由1916工坊出發，沿市場、橋通、酒家、圖書館、市役所、書局與柳川完成十站走讀。',place:'臺中舊城・第一日主線',tone:'ochre',points:[
+    {name:'1916工坊',historic:'1916工坊',lat:24.131331,lng:120.681887},
+    {name:'敷島町市場（第三市場）＋榮記餅店',historic:'敷島町市場／榮記餅店',lat:24.1331583,lng:120.6830965},
+    {name:'新盛橋通、櫻橋通（中山綠橋）＋進來涼冬瓜茶',historic:'新盛橋通／櫻橋通',lat:24.1378842,lng:120.6831311},
+    {name:'南園酒家',historic:'南園酒家',lat:24.1362,lng:120.6798},
+    {name:'臺中州立圖書館（合作金庫）',historic:'臺中州立圖書館',lat:24.1411747,lng:120.6794953},
+    {name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},
+    {name:'大正橋通（民權綠橋）',historic:'大正橋通',lat:24.13965,lng:120.68185},
+    {name:'中央書局',historic:'寶町中央書局',lat:24.1408452,lng:120.6811557},
+    {name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},
+    {name:'新富町市場（第二市場）＋鹿港阿甫師肉包',historic:'新富町市場／鹿港阿甫師肉包',lat:24.1424183,lng:120.6791452}
+  ]},
+  {date:'DAY / 02',year:'1938',tag:'鐵道解謎',title:'綠空廊道解謎',text:'第二日不另行安排多站巡查，集中於綠空廊道完成解謎。',place:'臺中舊城・第二日主線',tone:'blue',points:[
+    {name:'綠空廊道',historic:'臺中驛鐵道路廊',lat:24.1354544,lng:120.6821701}
+  ]}
+];
+
+const puzzles = mainlineCases;"""
+
+          main, count = re.subn(
+              r"const chapters = \[.*?\];\n\nconst puzzles = mainlineCases;",
+              chapters,
+              main,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise RuntimeError('chapters block not found')
+
+          route_blocks = r"""const patrolRoute = [
+  {no:'壹',district:'驛前與敷島町',coverage:'1916工坊／第三市場／榮記餅店',duty:'採集工藝與市場生活'},
+  {no:'貳',district:'綠川橋通',coverage:'中山綠橋／進來涼冬瓜茶／南園酒家',duty:'查錄橋通、飲食與宴飲記憶'},
+  {no:'參',district:'公署與文教',coverage:'臺中州立圖書館／臺中市役所／民權綠橋／中央書局',duty:'翻查城市治理與閱讀生活'},
+  {no:'肆',district:'柳川與新富町',coverage:'柳川古道／第二市場／鹿港阿甫師肉包',duty:'沿河道採集市場與飲食紀錄'},
+  {no:'伍',district:'第二日鐵道路廊',coverage:'綠空廊道',duty:'集中完成鐵道解謎'}
+];
+
+const dailyPatrolRoutes = [
+  {
+    day: 1,
+    label: '第一日・舊城十站巡查',
+    points: [
+      {no:'01', name:'1916工坊', duty:'完成琉璃手作，採集工藝現場'},
+      {no:'02', name:'敷島町市場（第三市場）＋榮記餅店', duty:'追查市場遷址與地方餅店記憶'},
+      {no:'03', name:'新盛橋通、櫻橋通（中山綠橋）＋進來涼冬瓜茶', duty:'辨認橋通變遷，採集街區飲食記錄'},
+      {no:'04', name:'南園酒家', duty:'查錄宴飲接待與建築使用'},
+      {no:'05', name:'臺中州立圖書館（合作金庫）', duty:'對照舊圖書館與現存立面'},
+      {no:'06', name:'臺中市役所', duty:'翻查市役所資料，理解城市治理'},
+      {no:'07', name:'大正橋通（民權綠橋）', duty:'辨認舊街道與橋梁名稱'},
+      {no:'08', name:'中央書局', duty:'走進書店，採訪閱讀與新知'},
+      {no:'09', name:'柳川古道', duty:'沿水路前行，記錄河道與城市生活'},
+      {no:'10', name:'新富町市場（第二市場）＋鹿港阿甫師肉包', duty:'觀察六角樓、市場人流與地方飲食'}
+    ]
+  },
+  {
+    day: 2,
+    label: '第二日・綠空廊道',
+    points: [
+      {no:'01', name:'綠空廊道', duty:'於舊鐵道路廊集中完成第二日解謎'}
+    ]
+  }
+];
+
+const officeStaff = ["""
+
+          main, count = re.subn(
+              r"const patrolRoute = \[.*?\];\n\nconst dailyPatrolRoutes = \[.*?\];\n\nconst officeStaff = \[",
+              route_blocks,
+              main,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise RuntimeError('patrol route block not found')
+
+          replacements = {
+              '本次主線含十件採訪，另設綠空鐵道及第四市場兩處終章路線；應依公告順序完成查錄。': '第一日依十處新路線完成走讀；第二日僅於綠空廊道辦理解謎。',
+              '十件主線調查記錄開放查核': '第一日調查案件與第二日綠空廊道案件',
+              '<p><b>主線</b><span>十件採訪</span></p>': '<p><b>主線</b><span>第一日十站</span></p>',
+              '<p><b>終章</b><span>第四市場</span></p>': '<p><b>第二日</b><span>綠空廊道</span></p>',
+          }
+          for old, new in replacements.items():
+              if old not in main:
+                  raise RuntimeError(f'missing main.jsx text: {old}')
+              main = main.replace(old, new, 1)
+
+          main_path.write_text(main, encoding='utf-8')
+
+          cases_path = Path('src/mainlineCases.js')
+          cases = cases_path.read_text(encoding='utf-8')
+
+          cases_array = r"""export const mainlineCases = [
+  {...documentUpdates[1],mainlandIndex:0,day:1,type:'craft',code:'庶務秘第〇一號',taskTitle:'拾光琉璃',inputLabel:'無須查核',hint:'完成琉璃手作後，可直接翻閱兩種城市記錄。',label:'1916工坊',direct:true},
+  {...documentUpdates[0],...puzzleData.thirdMarket,mainlandIndex:1,travelImage:'/suzuran-diary/assets/travel/third.jpg',day:1,type:'market',code:'商工第〇二號',taskTitle:'敷島町市場（第三市場）',inputLabel:'三位登記字號',hint:'依市場遷址史料與四份草稿，找出正確登記字號。',label:'敷島町市場（第三市場）＋榮記餅店',pending:false},
+  {...documentUpdates[8],...puzzleData.bridge,mainlandIndex:8,travelImage:'/suzuran-diary/assets/travel/bridge.jpg',day:1,type:'bridge',code:'土木第〇三號',taskTitle:'新盛橋通、櫻橋通',inputLabel:'四位登記字號',hint:'照合新盛橋與中山綠橋的舊今地圖，再完成拼圖。',label:'新盛橋通、櫻橋通（中山綠橋）＋進來涼冬瓜茶',pending:false},
+  {...southGarden,...puzzleData.southGarden,mainlandIndex:2,travelImage:'/suzuran-diary/assets/travel/change.jpg',day:1,type:'food',code:'商工第〇四號',taskTitle:'南園酒家',inputLabel:'四位登記字號',hint:'比對建築用途與採訪頁碼，完成四位登記字號。',label:'南園酒家',pending:false},
+  {...cooperativeBank,...puzzleData.cooperative,mainlandIndex:5,travelImage:'/suzuran-diary/assets/travel/library.jpg',day:1,type:'commerce',code:'文教第〇五號',taskTitle:'臺中州立圖書館',inputLabel:'兩位登記字號',hint:'從立面浮雕與用途紀錄中，選出兩份同時成立的證據。',label:'臺中州立圖書館（合作金庫）',pending:false},
+  {...documentUpdates[4],...puzzleData.cityHall,mainlandIndex:3,travelImage:'/suzuran-diary/assets/travel/shiyakusho.jpg',day:1,type:'office',code:'庶務秘第〇六號',taskTitle:'臺中市役所',inputLabel:'三位登記字號',hint:'比對入口柱式與檔案頁碼，完成查核。',label:'臺中市役所',pending:false},
+  {...documentUpdates[10],...puzzleData.bookstore,mainlandIndex:9,travelImage:'/suzuran-diary/assets/travel/bookstore.jpg',day:1,type:'book',code:'文教第〇七號',taskTitle:'中央書局',inputLabel:'三位登記字號',hint:'選出可送印的書局草稿，再依索引條讀取代碼。',label:'中央書局',pending:false},
+  {...documentUpdates[6],...puzzleData.liuchuan,mainlandIndex:6,travelImage:'/suzuran-diary/assets/travel/yanagawa.jpg',day:1,type:'river',code:'河川第〇八號',taskTitle:'柳川古道',inputLabel:'四位登記字號',hint:'完成回收圖樣拼圖，依位置讀取背面數字。',label:'柳川古道',pending:false},
+  {...secondMarket,...puzzleData.secondMarket,mainlandIndex:7,travelImage:'/suzuran-diary/assets/travel/second.jpg',day:1,type:'market',code:'商工第〇九號',taskTitle:'新富町市場（第二市場）',inputLabel:'三位登記字號',hint:'依六角樓出口與人物動線判斷正確敘述。',label:'新富町市場（第二市場）＋鹿港阿甫師肉包',pending:false},
+  {
+    title:'第二日｜綠空廊道：鐵道留下的方向',
+    travel:['第二日的調查集中於綠空廊道。請沿舊鐵道路廊觀察軌道、站區與城市空間的變化，題目與查核資料確認後將於此開放。'],
+    island:['本件手稿尚待第二日題目確認後開封。'],
+    mainland:['第二日不再安排多站巡查，所有調查員於綠空廊道集合並完成解謎。'],
+    day:2,type:'rail',code:'鐵道第〇一號',taskTitle:'綠空廊道',inputLabel:'現場答案',hint:'第二日題目整理中，暫保持封緘。',label:'綠空廊道',pending:true
+  }
+];
+
+mainlineCases.forEach"""
+
+          cases, count = re.subn(
+              r"export const mainlineCases = \[.*?\];\n\nmainlineCases\.forEach",
+              cases_array,
+              cases,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise RuntimeError('mainlineCases array not found')
+
+          cases_path.write_text(cases, encoding='utf-8')
+          PY
+
+      - name: Commit route updates
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main.jsx src/mainlineCases.js
+          git commit -m 'Update first-day route and simplify second day'
+          git push
