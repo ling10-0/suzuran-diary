@@ -23,7 +23,6 @@ export function readingGateTransform() {
         " const activeManuscript=documentView==='travel'?(item.travel||[]):documentView==='mainland'?mainlandManuscript:(item.island||[]);",
       );
 
-      // 左欄只保留題目、證物與作答；內地人遊記移到右欄閱讀區。
       next = next.replace(/\n\s*<section className=\"gazette-travelogue\" aria-label=\"內地人遊記\">[\s\S]*?<\/section>\n\s*<\/section>\n\s*<section className=\"gazette-manuscript\">/, '\n   </section>\n    <section className="gazette-manuscript">');
 
       const manuscriptStart = '    <div className="manuscript-reader">';
@@ -34,10 +33,10 @@ export function readingGateTransform() {
         const replacement = `    <div className="manuscript-reader">
      <h3>調查資料</h3>
      <div className="document-tabs reading-tabs four-reading-tabs" role="tablist" aria-label="調查資料選擇">
-      <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
-      <button role="tab" aria-selected={documentView==='journal'} className={documentView==='journal'?'active':''} onClick={()=>setDocumentView('journal')}>我的走讀紀錄</button>
-      <button role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('mainland')}>{readingReady?'內地人手稿':'內地人手稿・封緘中'}</button>
-      <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('island')}>{readingReady?'本島人手稿':'本島人手稿・封緘中'}</button>
+      <button type="button" role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
+      <button type="button" role="tab" aria-selected={documentView==='journal'} className={documentView==='journal'?'active':''} onClick={()=>setDocumentView('journal')}>我的走讀紀錄</button>
+      <button type="button" role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('mainland')}>{readingReady?'內地人手稿':'內地人手稿・封緘中'}</button>
+      <button type="button" role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('island')}>{readingReady?'本島人手稿':'本島人手稿・封緘中'}</button>
      </div>
      {documentView==='travel'
       ?<div className="document-copy travel" role="tabpanel">
@@ -53,13 +52,13 @@ export function readingGateTransform() {
          <div className="photo-entry">
           {record.photo?<img src={record.photo} alt={'第 '+(index+1)+' 號走讀記錄'}/>:<div><b>寫真貼付欄</b><span>可放入現場照片、街景或小組合照</span></div>}
           <label><input type="file" accept="image/*" onChange={addPhoto}/>{record.photo?'更換寫真':'選擇寫真'}</label>
-          {record.photo&&<button onClick={()=>saveRecord({...record,photo:''})}>移除</button>}
+          {record.photo&&<button type="button" onClick={()=>saveRecord({...record,photo:''})}>移除</button>}
           {photoError&&<small>{photoError}</small>}
          </div>
          <div className="reflection-entry">
           <label htmlFor={'reflection-tab-'+index}>調查後記</label>
           <textarea id={'reflection-tab-'+index} value={record.reflection} onChange={event=>saveRecord({...record,reflection:event.target.value,ending:''})} placeholder="今天哪個人、地方、聲音或味道讓你停下來？"/>
-          <button onClick={createEnding}>編製我的結語 <ArrowUpRight size={16}/></button>
+          <button type="button" onClick={createEnding}>編製我的結語 <ArrowUpRight size={16}/></button>
          </div>
         </div>
         {record.ending&&<div className="personal-ending"><small>個人調查結語・編製済</small><p>{record.ending}</p><i>閱</i></div>}
@@ -76,13 +75,11 @@ export function readingGateTransform() {
         next = next.slice(0, startIndex) + replacement + next.slice(endIndex);
       }
 
-      // 舊 reader 完全不顯示，避免重複內容。
       next = next.replace(
         '      <div className="document-reader legacy-reader">',
         '      <div className="document-reader legacy-reader" hidden>',
       );
 
-      // 原本頁面底部的「我的走讀紀錄」移除，改由右側第四格呈現。
       next = next.replace(/\n\s*<section className=\"field-record\">[\s\S]*?<\/section>\n\s*<\/article>/, '\n </article>');
 
       return next === code ? null : {code: next, map: null};
