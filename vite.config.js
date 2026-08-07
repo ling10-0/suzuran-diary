@@ -5,8 +5,9 @@ import {manuscriptTransform} from './scripts/manuscript-transform.mjs';
 import {syncTransform} from './scripts/sync-transform.mjs';
 import {firstPuzzleTransform} from './scripts/first-puzzle-transform.mjs';
 import {finalSyncTransform} from './scripts/final-sync-transform.mjs';
+import {readingGateTransform} from './scripts/reading-gate-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), manuscriptTransform(), syncTransform(), firstPuzzleTransform(), finalSyncTransform(), react()],
+  plugins: [routeTransform(), manuscriptTransform(), syncTransform(), firstPuzzleTransform(), finalSyncTransform(), readingGateTransform(), react()],
   base: './'
 });
