@@ -75,10 +75,12 @@ export function readingGateTransform() {
         next = next.slice(0, startIndex) + replacement + next.slice(endIndex);
       }
 
+      // 舊 reader 僅作相容備援；journal 不是舊資料欄位，因此所有動態 map 必須安全處理，避免 React runtime crash。
       next = next.replace(
         '      <div className="document-reader legacy-reader">',
         '      <div className="document-reader legacy-reader" hidden>',
       );
+      next = next.replace(/document\[documentView\]\.map\(/g, '(document[documentView]||[]).map(');
 
       next = next.replace(/\n\s*<section className=\"field-record\">[\s\S]*?<\/section>\n\s*<\/article>/, '\n </article>');
 
