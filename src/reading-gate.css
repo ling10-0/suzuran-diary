@@ -18,15 +18,149 @@
 }
 
 .embedded-field-record{
-  padding:18px 0 0;
+  display:block !important;
+  position:relative !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:260px;
+  margin:0;
+  padding:20px;
+  box-sizing:border-box;
+  overflow:visible !important;
+  border:1px solid #705c3f;
+  background:rgba(255,255,255,.13);
+  writing-mode:horizontal-tb !important;
+}
+
+.embedded-field-record *{
+  writing-mode:horizontal-tb !important;
+  text-orientation:mixed !important;
 }
 
 .embedded-field-record .field-record-heading{
-  margin-bottom:16px;
+  display:flex !important;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 18px;
+}
+
+.embedded-field-record .field-record-heading h3{
+  margin:5px 0 0;
+  padding:0;
+  border:0;
+  font-size:20px;
+}
+
+.embedded-field-record .field-record-heading small{
+  display:block;
+  font-size:9px;
+  letter-spacing:.14em;
+}
+
+.embedded-field-record .field-record-heading>span{
+  font-size:10px;
+  color:#756650;
 }
 
 .embedded-field-record .field-record-grid{
-  margin-top:0;
+  display:grid !important;
+  grid-template-columns:minmax(180px,260px) minmax(0,1fr);
+  gap:20px;
+  width:100%;
+  margin:0;
+}
+
+.embedded-field-record .photo-entry{
+  display:grid !important;
+  gap:8px;
+  min-width:0;
+}
+
+.embedded-field-record .photo-entry>div{
+  display:grid !important;
+  place-items:center;
+  align-content:center;
+  gap:8px;
+  min-height:170px;
+  aspect-ratio:4/3;
+  border:1px dashed #55442f;
+  background:rgba(255,255,255,.16);
+  text-align:center;
+}
+
+.embedded-field-record .photo-entry>div span{
+  max-width:180px;
+  font-size:10px;
+  line-height:1.6;
+}
+
+.embedded-field-record .photo-entry img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+}
+
+.embedded-field-record .photo-entry label,
+.embedded-field-record .photo-entry button{
+  display:block;
+  padding:9px;
+  border:1px solid #2d2117;
+  background:transparent;
+  font-size:11px;
+  text-align:center;
+  cursor:pointer;
+}
+
+.embedded-field-record .photo-entry label input{
+  display:none;
+}
+
+.embedded-field-record .reflection-entry{
+  display:flex !important;
+  flex-direction:column;
+  min-width:0;
+}
+
+.embedded-field-record .reflection-entry label{
+  margin-bottom:7px;
+  font-size:12px;
+}
+
+.embedded-field-record .reflection-entry textarea{
+  display:block !important;
+  width:100%;
+  min-height:145px;
+  padding:15px;
+  box-sizing:border-box;
+  border:1px solid #55442f;
+  background:rgba(255,255,255,.15);
+  font:14px/1.9 'Noto Serif TC',serif;
+  resize:vertical;
+}
+
+.embedded-field-record .reflection-entry button{
+  align-self:flex-end;
+  display:flex !important;
+  align-items:center;
+  gap:12px;
+  margin-top:10px;
+  padding:10px 14px;
+  border:1px solid #2d2117;
+  color:#f2e4c2;
+  background:#2d2117;
+  cursor:pointer;
+}
+
+.embedded-field-record .personal-ending{
+  display:block !important;
+  position:relative;
+  margin-top:22px;
+  padding:18px 62px 18px 18px;
+  border:2px solid #8f251d;
 }
 
 @media (max-width:700px){
@@ -43,6 +177,21 @@
   }
 
   .embedded-field-record{
-    padding-top:14px;
+    min-height:220px;
+    padding:14px;
+  }
+
+  .embedded-field-record .field-record-heading{
+    display:block !important;
+  }
+
+  .embedded-field-record .field-record-heading>span{
+    display:block;
+    margin-top:6px;
+  }
+
+  .embedded-field-record .field-record-grid{
+    grid-template-columns:1fr !important;
+    gap:16px;
   }
 }
