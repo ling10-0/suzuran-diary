@@ -43,6 +43,11 @@ export function syncTransform() {
         `<span>所屬組別：{newsroom}<br/>解謎進度由同組跨手機共用</span>`,
       );
 
+      next = next.replace(
+        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <main>`,
+        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <div aria-label="目前所屬組別" style={{width:'min(1160px,94%)',margin:'12px auto -18px',padding:'10px 14px',boxSizing:'border-box',border:'1px solid #55442f',background:'#ead9ad',color:'#2d2117',fontSize:'13px',fontWeight:700,letterSpacing:'.08em',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'10px'}}><span>目前組別</span><strong style={{color:'#8f251d',fontSize:'16px'}}>{newsroom}</strong></div>\n  <main>`,
+      );
+
       return next === code ? null : {code: next, map: null};
     },
   };
