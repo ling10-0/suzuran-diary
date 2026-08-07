@@ -9,7 +9,7 @@ export function syncTransform() {
       const newRefresh = ` const refreshProgress=async()=>{\n  try{\n   const remote=await loadNewsroomProgress(newsroom);\n   const local=puzzles.map((_,index)=>window.localStorage.getItem('suzuran-main-v2-unlocked-'+index)==='1'?index:null).filter(Number.isInteger);\n   const missing=local.filter(progressId=>!remote.includes(progressId));\n   if(missing.length) await Promise.all(missing.map(progressId=>saveNewsroomProgress(newsroom,progressId)));\n   setSharedProgress(Array.from(new Set([...remote,...local])));\n   setProgressError('');\n  }catch{setProgressError('共同進度暫時無法連線，已改以本機進度顯示；網路恢復後會自動補同步。')}\n };`;
 
       let next = code.replace(oldRefresh, newRefresh);
-      next = next.replace(" const mainProgressId=index=>1000+index;", " const mainProgressId=index=>index;");
+      next = next.replace(/const mainProgressId=index=>1000\+index;/g, 'const mainProgressId=index=>index;');
 
       next = next.replace(
         " const [newsroom,setNewsroom]=useState(()=>window.localStorage.getItem('suzuran-newsroom')||'');",
@@ -21,10 +21,7 @@ export function syncTransform() {
         "  if(!['蘭臺','見山','迴聲'].includes(next)){setError('請選擇蘭臺、見山或迴聲。');return}",
       );
 
-      next = next.replace(
-        '<h1>請報明所屬報社</h1>',
-        '<h1>請選擇所屬組別</h1>',
-      );
+      next = next.replace('<h1>請報明所屬報社</h1>', '<h1>請選擇所屬組別</h1>');
       next = next.replace(
         '<p>進入調查案件前，請填入同組共用的報社名稱。請全組使用完全相同的名稱，以便後續啟用共用紀錄。</p>',
         '<p>進入調查案件前，請選擇所屬組別。同組使用相同組別後，解謎進度會跨手機同步。</p>',
@@ -38,15 +35,18 @@ export function syncTransform() {
         '<footer>解謎進度會同步到同組裝置；個人照片與文字仍只保存在目前裝置。</footer>',
       );
 
-      next = next.replace(
-        `<span>所屬報社：{newsroom}<br/>解謎進度由同組共用</span>`,
-        `<span>所屬組別：{newsroom}<br/>解謎進度由同組跨手機共用</span>`,
-      );
+      const statusPanel = `<span className="group-sync-status"><b>目前組別｜{newsroom}</b><br/>{sharedProgress===null?'共同進度｜連線中…':'共同進度｜'+sharedProgress.length+' 件已同步'}</span>`;
+      next = next.replace(/<span>所屬報社：\{newsroom\}<br\/>解謎進度由同組共用<\/span>/g, statusPanel);
+      next = next.replace(/<span>所屬組別：\{newsroom\}<br\/>解謎進度由同組跨手機共用<\/span>/g, statusPanel);
 
       next = next.replace(
         `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <main>`,
-        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <div aria-label="目前所屬組別" style={{width:'min(1160px,94%)',margin:'12px auto -18px',padding:'10px 14px',boxSizing:'border-box',border:'1px solid #55442f',background:'#ead9ad',color:'#2d2117',fontSize:'13px',fontWeight:700,letterSpacing:'.08em',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'10px'}}><span>目前組別</span><strong style={{color:'#8f251d',fontSize:'16px'}}>{newsroom}</strong></div>\n  <main>`,
+        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <div className="mobile-group-banner" aria-label="目前所屬組別"><span>目前組別</span><strong>{newsroom}</strong><small>{sharedProgress===null?'共同進度連線中…':sharedProgress.length+' 件已同步'}</small></div>\n  <main>`,
       );
+
+      if (!next.includes("./mobile-group.css")) {
+        next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './mobile-group.css';");
+      }
 
       return next === code ? null : {code: next, map: null};
     },
