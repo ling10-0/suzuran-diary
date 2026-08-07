@@ -1,0 +1,29 @@
+name: Frontend sync build check
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'scripts/**'
+      - 'vite.config.js'
+      - '.github/workflows/frontend-sync-check.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify mobile group and sync UI made it into production bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -R -q '目前組別' dist
+          grep -R -q '共同進度' dist
+          grep -R -q '件已同步' dist
+          echo 'Production bundle contains group and sync status UI.'
