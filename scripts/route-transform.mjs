@@ -89,6 +89,14 @@ export function routeTransform() {
           /const patrolRoute = \[.*?\];\n\nconst dailyPatrolRoutes = \[.*?\];\n\nconst officeStaff = \[/s,
           routes,
         );
+
+        // 支線劇情已自網站移除：刪除資料引用、支線元件、解鎖邏輯與案件頁入口。
+        next = next.replace("import {sideQuests} from './sideQuestCases.js';\n", '');
+        next = next.replace(/\nfunction SideQuestArchive\(\{isUnlocked,onUnlock\}\)\{.*?(?=\nfunction [A-Z])/s, '\n');
+        next = next.replace(/\n const isSideUnlocked=id=>[^;]+;/, '');
+        next = next.replace(/\n const unlockSideQuest=async id=>\{.*?\n \};/s, '');
+        next = next.replace(/<SideQuestArchive isUnlocked=\{isSideUnlocked\} onUnlock=\{unlockSideQuest\}\/>/g, '');
+
         next = next
           .replace('本次主線含十件採訪，另設綠空鐵道及第四市場兩處終章路線；應依公告順序完成查錄。', '第一日依十處新路線完成走讀；第二日僅於綠空廊道辦理解謎。')
           .replace('十件主線調查記錄開放查核', '第一日調查案件與第二日綠空廊道案件')
