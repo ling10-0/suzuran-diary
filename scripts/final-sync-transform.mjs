@@ -25,6 +25,16 @@ export function finalSyncTransform() {
         '<span>所屬組別：{newsroom}<br/>解謎進度由同組跨手機共用</span>',
       );
 
+      // 暫時移除所有關卡內的「現場短對話／採訪筆記」。保留原始資料內容，之後需要可再開回來。
+      next = next.replace(
+        /\{document\.dialogue\?\.length>0&&<section className="travel-dialogue case-dialogue"[\s\S]*?<\/section>\}\n?/g,
+        '',
+      );
+      next = next.replace(
+        /\{quest\.dialogue\?\.length>0&&<section className="travel-dialogue"[\s\S]*?<\/section>\}/g,
+        '',
+      );
+
       return next === code ? null : {code: next, map: null};
     },
   };
