@@ -1,0 +1,145 @@
+.case-evidence-documents {
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid #705c3f;
+  background: rgba(255,255,255,.12);
+}
+
+.case-evidence-documents > header {
+  margin-bottom: 14px;
+}
+
+.case-evidence-documents > header small {
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: .12em;
+  color: #8f251d;
+}
+
+.case-evidence-documents > header h4 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.case-evidence-documents > header p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #705f48;
+}
+
+.case-evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.case-evidence-card {
+  margin: 0;
+  min-width: 0;
+  border: 1px solid #7c674b;
+  background: #efe0b7;
+}
+
+.case-evidence-card figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #7c674b;
+  font-size: 13px;
+}
+
+.case-evidence-card figcaption b {
+  font-size: 14px;
+}
+
+.case-evidence-card figcaption span {
+  flex: none;
+  color: #8f251d;
+  font-size: 11px;
+}
+
+.case-evidence-card a {
+  display: block;
+  padding: 8px;
+}
+
+.case-evidence-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  object-fit: contain;
+  background: #ead9ad;
+}
+
+.case-choice-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.case-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #7b674a;
+  background: rgba(255,255,255,.14);
+  cursor: pointer;
+  line-height: 1.6;
+}
+
+.case-choice input {
+  flex: none;
+  margin-top: 5px;
+}
+
+.case-choice span {
+  min-width: 0;
+}
+
+.case-choice.is-selected {
+  outline: 2px solid #8f251d;
+  outline-offset: -2px;
+  background: rgba(143,37,29,.09);
+}
+
+.case-submit-choice {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+}
+
+.case-submit-choice:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .case-evidence-documents {
+    margin: 18px 0;
+    padding: 12px;
+  }
+
+  .case-evidence-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .case-evidence-card img {
+    max-height: none;
+  }
+
+  .case-evidence-card figcaption {
+    padding: 10px;
+  }
+
+  .case-choice {
+    padding: 14px 12px;
+    font-size: 15px;
+  }
+}
