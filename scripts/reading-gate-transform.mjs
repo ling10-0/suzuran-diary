@@ -28,28 +28,32 @@ export function readingGateTransform() {
       const endIndex = next.indexOf(manuscriptEnd, startIndex);
       if (startIndex !== -1 && endIndex !== -1) {
         const replacement = `    <div className="manuscript-reader">
-     <h3>{readingReady?'解謎資料':'解謎資料封緘中'}</h3>
-     {!readingReady
-      ?<div className="gazette-sealed reading-sealed"><LockKeyhole/><strong>完成本關謎題後開放</strong><p>內地人遊記、內地人手稿與本島人手稿皆於查核完成後開封。</p></div>
-      :<>
-       <div className="document-tabs reading-tabs" role="tablist" aria-label="解謎後資料選擇">
-        <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
-        <button role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} onClick={()=>setDocumentView('mainland')}>內地人手稿</button>
-        <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} onClick={()=>setDocumentView('island')}>本島人手稿</button>
-       </div>
-       <div className={'document-copy '+documentView} role="tabpanel">
+     <h3>{readingReady?'調查資料':'調查資料'}</h3>
+     <div className="document-tabs reading-tabs" role="tablist" aria-label="調查資料選擇">
+      <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
+      <button role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('mainland')}>{readingReady?'內地人手稿':'內地人手稿・封緘中'}</button>
+      <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!readingReady} onClick={()=>setDocumentView('island')}>{readingReady?'本島人手稿':'本島人手稿・封緘中'}</button>
+     </div>
+     {documentView==='travel'
+      ?<div className="document-copy travel" role="tabpanel">
         <small>{document.title}</small>
-        <h4>{documentView==='travel'?'內地人遊記':documentView==='mainland'?'內地人手稿':'本島人手稿'}</h4>
-        {activeManuscript.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
-        {documentView==='travel'&&document.travelImage&&<img className="travel-document-image" src={document.travelImage} alt={document.title} onError={event=>{event.currentTarget.style.display='none'}}/>}
+        <h4>內地人遊記</h4>
+        {(document.travel||[]).map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+        {document.travelImage&&<img className="travel-document-image" src={document.travelImage} alt={document.title} onError={event=>{event.currentTarget.style.display='none'}}/>}
        </div>
-      </>}
+      :readingReady
+       ?<div className={'document-copy '+documentView} role="tabpanel">
+        <small>{document.title}</small>
+        <h4>{documentView==='mainland'?'內地人手稿':'本島人手稿'}</h4>
+        {activeManuscript.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+       </div>
+       :<div className="gazette-sealed reading-sealed"><LockKeyhole/><strong>完成本關謎題後開放</strong><p>內地人手稿與本島人手稿將於查核完成後開封。</p></div>}
     </div>
 `;
         next = next.slice(0, startIndex) + replacement + next.slice(endIndex);
       }
 
-      // 舊 reader 完全不顯示，避免內容在解謎前出現在 DOM 可視區。
+      // 舊 reader 完全不顯示，避免重複內容。
       next = next.replace(
         '      <div className="document-reader legacy-reader">',
         '      <div className="document-reader legacy-reader" hidden>',
