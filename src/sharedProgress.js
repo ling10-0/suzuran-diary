@@ -42,13 +42,13 @@ export async function loadNewsroomProgress(newsroom) {
     throw new Error(`讀取共同進度失敗（${response.status}）${detail ? `：${detail}` : ''}`);
   }
   const rows = await response.json();
-  return [...new Set(rows.map(row => Number(row.case_index)).filter(Number.isFinite))];
+  return [...new Set(rows.map(row => Number(row.case_index)).filter(Number.isInteger))];
 }
 
 export async function saveNewsroomProgress(newsroom, caseIndex) {
   const group = assertNewsroom(newsroom);
   const progressId = Number(caseIndex);
-  if (!Number.isInteger(progressId) || progressId < 1000 || progressId > 1099) {
+  if (!Number.isInteger(progressId) || progressId < 0 || progressId > 12) {
     throw new Error('案件進度編號無效');
   }
 
