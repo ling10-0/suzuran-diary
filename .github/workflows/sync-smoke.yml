@@ -21,16 +21,16 @@ jobs:
             -H "apikey: $KEY" \
             -H 'Content-Type: application/json' \
             -H 'Prefer: resolution=ignore-duplicates,return=minimal' \
-            --data '{"newsroom":"迴聲","case_index":1099}')
+            --data '{"newsroom":"迴聲","case_index":1000}')
           echo "POST status: $status"
           cat /tmp/post.txt || true
           test "$status" = '201' || test "$status" = '204'
 
           status=$(curl -sS -o /tmp/get.txt -w '%{http_code}' \
-            "$URL?select=case_index&newsroom=eq.%E8%BF%B4%E8%81%B2&case_index=eq.1099" \
+            "$URL?select=case_index&newsroom=eq.%E8%BF%B4%E8%81%B2&case_index=eq.1000" \
             -H "apikey: $KEY" \
             -H 'Accept: application/json')
           echo "GET status: $status"
           cat /tmp/get.txt
           test "$status" = '200'
-          grep -q '1099' /tmp/get.txt
+          grep -q '1000' /tmp/get.txt
