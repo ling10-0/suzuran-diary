@@ -6,23 +6,49 @@
 }
 
 .case-evidence-documents > header {
-  margin-bottom: 14px;
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 14px;
+  padding: 0;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  background: transparent;
+  border: 0;
 }
 
 .case-evidence-documents > header small {
   display: block;
-  margin-bottom: 4px;
+  margin: 0 0 6px;
+  padding: 0;
+  writing-mode: horizontal-tb;
   letter-spacing: .12em;
   color: #8f251d;
 }
 
 .case-evidence-documents > header h4 {
-  margin: 0 0 6px;
+  display: block;
+  position: static;
+  width: auto;
+  margin: 0 0 7px;
+  padding: 0;
+  writing-mode: horizontal-tb;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: 20px;
+  line-height: 1.45;
 }
 
 .case-evidence-documents > header p {
+  display: block;
+  position: static;
+  width: auto;
   margin: 0;
+  padding: 0;
+  writing-mode: horizontal-tb;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-size: 13px;
   line-height: 1.65;
   color: #705f48;
@@ -123,6 +149,47 @@
   .case-evidence-documents {
     margin: 18px 0;
     padding: 12px;
+    overflow: hidden;
+  }
+
+  .case-evidence-documents > header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .case-evidence-documents > header small,
+  .case-evidence-documents > header h4,
+  .case-evidence-documents > header p {
+    position: static !important;
+    float: none !important;
+    inset: auto !important;
+    transform: none !important;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .case-evidence-documents > header small {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .case-evidence-documents > header h4 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.45;
+    letter-spacing: .04em;
+  }
+
+  .case-evidence-documents > header p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.7;
   }
 
   .case-evidence-grid {
@@ -135,7 +202,22 @@
   }
 
   .case-evidence-card figcaption {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
     padding: 10px;
+  }
+
+  .case-evidence-card figcaption b {
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .case-evidence-card figcaption span {
+    font-size: 10px;
+    white-space: nowrap;
   }
 
   .case-choice {
