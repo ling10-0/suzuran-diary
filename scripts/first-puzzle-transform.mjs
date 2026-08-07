@@ -1,5 +1,4 @@
 const firstPuzzleSetup = `
-
 Object.assign(mainlineCases[0], {
   direct: false,
   pending: false,
@@ -56,29 +55,30 @@ export function firstPuzzleTransform() {
     name: 'suzuran-first-puzzle-transform',
     enforce: 'pre',
     transform(code, id) {
-      if (id.endsWith('/src/mainlineCases.js')) {
-        const marker = "mainlineCases.forEach((item,index)=>{item.mainland=mainlandManuscripts[item.mainlandIndex??index]||item.travel||[]});";
-        if (!code.includes(marker)) return null;
-        return {code: code.replace(marker, marker + firstPuzzleSetup), map: null};
+      if (!id.endsWith('/src/main.jsx')) return null;
+
+      let next = code;
+      if (!next.includes("import './first-puzzle.css';")) {
+        next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './first-puzzle.css';");
       }
 
-      if (id.endsWith('/src/main.jsx')) {
-        let next = code;
-        if (!next.includes("import './first-puzzle.css';")) {
-          next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './first-puzzle.css';");
+      // Route transform會重建mainlineCases，因此在main.jsx匯入完成後再覆寫第一題最穩定。
+      if (!next.includes("taskTitle: '沒有名字的技術人員'")) {
+        const puzzleAnchor = 'const puzzles = mainlineCases;';
+        if (next.includes(puzzleAnchor)) {
+          next = next.replace(puzzleAnchor, firstPuzzleSetup + '\n\n' + puzzleAnchor);
         }
-
-        const evidenceAnchor = "{item.direct&&<p className=\"gazette-approved\">本件無須輸入答案，可直接對照兩種城市記錄。</p>}";
-        if (next.includes(evidenceAnchor) && !next.includes('case-evidence-documents')) {
-          next = next.replace(evidenceAnchor, evidenceMarkup + '\n    ' + evidenceAnchor);
-        }
-
-        const oldForm = `{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
-        if (next.includes(oldForm)) next = next.replace(oldForm, answerMarkup);
-
-        return next===code?null:{code:next,map:null};
       }
-      return null;
+
+      const evidenceAnchor = "{item.direct&&<p className=\"gazette-approved\">本件無須輸入答案，可直接對照兩種城市記錄。</p>}";
+      if (next.includes(evidenceAnchor) && !next.includes('case-evidence-documents')) {
+        next = next.replace(evidenceAnchor, evidenceMarkup + '\n    ' + evidenceAnchor);
+      }
+
+      const oldForm = `{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
+      if (next.includes(oldForm)) next = next.replace(oldForm, answerMarkup);
+
+      return next===code?null:{code:next,map:null};
     }
   };
 }
