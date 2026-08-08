@@ -35,7 +35,7 @@ Object.assign(mainlineCases[4], {
       correctValue: 'C'
     }
   ],
-  hashes: ['31e9a27fe779d3a4ae56495c60e274f56ebce6d34ab94043e503d3d0a39d1173'],
+  hashes: ['96b1f4e6d8cd3503a69066b208f015d8cb93639fa2637ac08af666df056b191f'],
   evidenceHeading: '數位掃描檔｜正確年報內頁',
   evidenceCompact: true,
   evidenceDocuments: []
