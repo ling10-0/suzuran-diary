@@ -4,10 +4,15 @@ export function directoryTitleTransform() {
     enforce: 'pre',
     transform(code, id) {
       if (!id.endsWith('/src/main.jsx')) return null;
+      let next = code;
+      if (!next.includes("import './directory-mobile.css';")) {
+        next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './directory-mobile.css';");
+      }
       const target = '<h3>{item.taskTitle}</h3>';
-      if (!code.includes(target)) return null;
-      const next = code.replace(target, '<h3>{item.directoryTitle||item.taskTitle}</h3>');
-      return {code: next, map:null};
+      if (next.includes(target)) {
+        next = next.replace(target, '<h3>{item.directoryTitle||item.taskTitle}</h3>');
+      }
+      return next===code?null:{code:next,map:null};
     }
   };
 }
