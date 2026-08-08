@@ -37,8 +37,25 @@ Object.assign(mainlineCases[7], {
       correctValue: 'B'
     }
   ],
-  evidenceHeading: '舊稿資料庫｜請比對匿名文章、退稿紀錄與最後殘稿',
-  evidenceCompact: true
+  evidenceHeading: '舊稿資料庫｜請比對三份被留下的文件',
+  evidenceCompact: true,
+  evidenceDocuments: [
+    {
+      title: '資料一｜匿名文章',
+      src: './assets/puzzles/central-bookstore/anonymous-article.png',
+      alt: '中央書局舊稿資料庫中的匿名文章，內容涉及七－圖庫、工程款改列、六名技術人員失去行蹤及攜帶圖面離開的第七人。'
+    },
+    {
+      title: '資料二｜退稿紀錄',
+      src: './assets/puzzles/central-bookstore/rejection-record.png',
+      alt: '中央書局退稿紀錄，記載匿名稿件在付印前被撤下，並提及稿件內容敏感及可能暴露資料提供者。'
+    },
+    {
+      title: '資料三｜最後一頁殘稿',
+      src: './assets/puzzles/central-bookstore/final-fragment.png',
+      alt: '匿名文章最後一頁殘稿，末尾僅留下青字，並寫有若出面將使留下資料的人一併被找到。'
+    }
+  ]
 });`;
 
 export function eighthPuzzleTransform() {
