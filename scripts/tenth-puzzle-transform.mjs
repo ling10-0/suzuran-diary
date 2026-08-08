@@ -111,7 +111,7 @@ export function tenthPuzzleTransform(){
    if(next.includes(fieldAnchor)&&!next.includes('function MarketLockerFlow(')) next=next.replace(fieldAnchor,marketLockerComponent+'\n\n'+fieldAnchor);
    const oldForm=`{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
    if(next.includes(oldForm)&&!next.includes("item.customFlow==='marketLocker'")){
-    const wrapped=`<>{item.customFlow==='marketLocker'&&!solved?<MarketLockerFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>:<>{${oldForm}}</>}</>`;
+    const wrapped=`<>{item.customFlow==='marketLocker'&&!solved?<MarketLockerFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>:<>${oldForm}</>}</>`;
     next=next.replace(oldForm,wrapped);
    }
    return next===code?null:{code:next,map:null};
