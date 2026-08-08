@@ -26,15 +26,16 @@ Object.assign(mainlineCases[3], {
         {value: 'D', label: 'D. 郵便局'}
       ],
       correctValue: 'A',
+      buttonLabel: '確認場域查核',
       passLabel: '場域查核完成'
     },
     {
       title: '當晚紀錄復原',
       prompt: '比對接待簿、廚房清點表與跑堂值班筆記，再依「先湯、再主食、最後甜點」與送出時間還原四張送菜單順序。將四個桌次記號填入轉交便條後，請輸入州立圖書館工程年報的分類號尾碼。',
-      placeholder: '請輸入四位數分類號尾碼'
+      placeholder: '請輸入四位數分類號尾碼',
+      correctValue: '3142'
     }
   ],
-  hashes: ['b02d413a5baaf2d60a8fb356a439557fbeb507c3a42485bff620eea37d0df610'],
   evidenceHeading: '留下來的紀錄｜請找出彼此矛盾之處',
   evidenceCompact: true,
   evidenceDocuments: [
@@ -70,18 +71,8 @@ export function fourthPuzzleTransform() {
       const anchor = 'const puzzles = mainlineCases;';
       if (!code.includes(anchor)) return null;
       let next = code;
-
       next = next.replace(/\n?Object\.assign\(mainlineCases\[3\],[\s\S]*?\n\}\);\n?/g, '\n');
       next = next.replace(anchor, fourthPuzzleSetup + '\n\n' + anchor);
-
-      const oldQ1 = `<section className="case-subquestion"><small>Q1｜{item.subQuestions[0].title}</small><p>{item.subQuestions[0].prompt}</p><input id={'case-'+index+'-0'} value={value.split('|||')[0]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[0].placeholder||'請輸入答案'}/>{subStep<1&&<button type="button" className="case-submit-choice" onClick={()=>{const answer=(value.split('|||')[0]||'').trim().normalize('NFKC').replace(/\\s+/g,'');const ok=['2個三角形','兩個三角形','2個三角型','兩個三角型'].includes(answer);setError(!ok);if(ok)setSubStep(1)}}>確認現場勘查</button>}{subStep>=1&&<small className="case-step-passed">✓ 現場勘查完成，已開放下一題</small>}</section>`;
-      const newQ1 = `{subStep<1?<section className="case-subquestion"><small>Q1｜{item.subQuestions[0].title}</small><p>{item.subQuestions[0].prompt}</p>{item.subQuestions[0].options?.length?<div className="case-choice-list">{item.subQuestions[0].options.map(option=>{const part=value.split('|||')[0]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-0'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div>:<input id={'case-'+index+'-0'} value={value.split('|||')[0]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[0].placeholder||'請輸入答案'}/>}<button type="button" className="case-submit-choice" disabled={item.subQuestions[0].options?.length&&!(value.split('|||')[0]||'')} onClick={()=>{const answer=(value.split('|||')[0]||'').trim().normalize('NFKC').replace(/\\s+/g,'');const accepted=item.subQuestions[0].correctValue?[item.subQuestions[0].correctValue]:['2個三角形','兩個三角形','2個三角型','兩個三角型'];const ok=accepted.includes(answer);setError(!ok);if(ok){setValue(current=>{const parts=current.split('|||');parts[0]='';return parts.join('|||')});setSubStep(1)}}}>確認場域查核</button></section>:<div className="case-step-passed case-step-summary">✓ {item.subQuestions[0].passLabel||'第一階段完成'}</div>}`;
-      if (next.includes(oldQ1)) next = next.replace(oldQ1, newQ1);
-
-      const oldQ2 = `{subStep>=1&&<section className="case-subquestion"><small>Q2｜{item.subQuestions[1].title}</small><p>{item.subQuestions[1].prompt}</p><div className="case-choice-list">{item.subQuestions[1].options.map(option=>{const part=value.split('|||')[1]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-1'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div></section>}`;
-      const newQ2 = `{subStep>=1&&<section className="case-subquestion"><small>Q2｜{item.subQuestions[1].title}</small><p>{item.subQuestions[1].prompt}</p>{item.subQuestions[1].options?.length?<div className="case-choice-list">{item.subQuestions[1].options.map(option=>{const part=value.split('|||')[1]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-1'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div>:<input id={'case-'+index+'-1'} value={value.split('|||')[1]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[1].placeholder||'請輸入答案'}/>}</section>}`;
-      if (next.includes(oldQ2)) next = next.replace(oldQ2, newQ2);
-
       return next===code?null:{code:next,map:null};
     }
   };
