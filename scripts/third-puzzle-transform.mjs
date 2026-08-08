@@ -20,6 +20,8 @@ Object.assign(mainlineCases[2], {
       title: '現場勘查',
       prompt: '新盛橋上有一個象徵臺灣的圖案。請找出它，並回答這個圖案由幾個什麼形狀組成。',
       placeholder: '請輸入：X個X形',
+      acceptedValues: ['2個三角形','兩個三角形','2個三角型','兩個三角型'],
+      buttonLabel: '確認現場勘查',
       passLabel: '現場勘查完成'
     },
     {
@@ -30,16 +32,9 @@ Object.assign(mainlineCases[2], {
         {value: 'B', label: 'B. 青木察覺有人接近後折返橋西側巷道，長紙筒仍由自己帶走，帳本事後疑遭改寫'},
         {value: 'C', label: 'C. 青木在下午六時五分才抵達茶擔，之後一直留在店內'},
         {value: 'D', label: 'D. 青木當晚沒有到橋邊，陌生男子只是向店家詢問一般路況'}
-      ]
+      ],
+      correctValue: 'B'
     }
-  ],
-  hashes: [
-    '0f0d2131a2bdad9307a8d47d0e58bc137b1a8378428368252b7e494477662f77',
-    '97b15735556e097e143a0439fd90ef34693f5f13f201aa6ae0373e91c7e8eaa0',
-    '43b5d87f577992782e09be2d1c889872f20c555cb886685fdf37b3dedfe51ae8',
-    '72a8d49300270420f11c13ab27fcbef664c3d4d0f98257147873664ee2a8e4eb',
-    '391d5d74b56278f9d342eaa178869b5942094b7bd53f8e3283c4cf5e7568248b',
-    'f12fa30eaf64739a3f195e7fa3fe32a417cec815ca9717a366b825b5e4c8c2b6'
   ],
   evidenceHeading: '留下來的紀錄｜請確認哪裡對不上',
   evidenceCompact: true,
