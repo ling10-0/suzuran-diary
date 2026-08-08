@@ -74,8 +74,19 @@ export function firstPuzzleTransform() {
         }
       }
 
-      if (!next.includes('const [subStep,setSubStep]')) {
-        next = next.replace(" const [error,setError]=useState(false);", " const [error,setError]=useState(false);\n const [subStep,setSubStep]=useState(0);\n const [replayMode,setReplayMode]=useState(false);");
+      // Sequential-question state must live in FieldJournal, not the older Puzzle component.
+      const fieldJournalStart = 'function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
+      const fieldJournalIndex = next.indexOf(fieldJournalStart);
+      if (fieldJournalIndex >= 0) {
+        const before = next.slice(0, fieldJournalIndex);
+        let fieldJournalAndAfter = next.slice(fieldJournalIndex);
+        if (!fieldJournalAndAfter.includes('const [subStep,setSubStep]=useState(0);')) {
+          fieldJournalAndAfter = fieldJournalAndAfter.replace(
+            ' const [error,setError]=useState(false);',
+            ' const [error,setError]=useState(false);\n const [subStep,setSubStep]=useState(0);\n const [replayMode,setReplayMode]=useState(false);'
+          );
+        }
+        next = before + fieldJournalAndAfter;
       }
 
       const evidenceAnchor = "{item.direct&&<p className=\"gazette-approved\">本件無須輸入答案，可直接對照兩種城市記錄。</p>}";
