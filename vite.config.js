@@ -4,6 +4,7 @@ import {routeTransform} from './scripts/route-transform.mjs';
 import {manuscriptTransform} from './scripts/manuscript-transform.mjs';
 import {syncTransform} from './scripts/sync-transform.mjs';
 import {ninthPuzzleTransform} from './scripts/ninth-puzzle-transform.mjs';
+import {tenthPuzzleTransform} from './scripts/tenth-puzzle-transform.mjs';
 import {firstPuzzleTransform} from './scripts/first-puzzle-transform.mjs';
 import {secondPuzzleTransform} from './scripts/second-puzzle-transform.mjs';
 import {thirdPuzzleTransform} from './scripts/third-puzzle-transform.mjs';
@@ -19,6 +20,6 @@ import {guidedMapLabelTransform} from './scripts/guided-map-label-transform.mjs'
 import {latestManuscriptsTransform} from './scripts/latest-manuscripts-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), firstPuzzleTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
+  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), firstPuzzleTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
   base: './'
 });
