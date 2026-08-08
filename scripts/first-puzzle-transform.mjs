@@ -38,7 +38,7 @@ const evidenceMarkup = `{item.evidenceDocuments?.length>0&&<section className={'
      <header>{!item.evidenceCompact&&<small>EVIDENCE / 原始資料</small>}<h4>{item.evidenceHeading||'請放大檢視兩份文件'}</h4><p>手機可點擊圖片開啟原尺寸查看細節，再返回此頁作答。</p></header>
      <div className="case-evidence-grid">
       {item.evidenceDocuments.map((evidence,evidenceIndex)=><figure className="case-evidence-card" key={evidence.src}>
-       <figcaption><b>{evidence.title}</b><span>點圖放大 ↗</span></figcaption>
+       <figcaption>{item.evidenceCompact?<b className="evidence-title-split"><small>{evidence.title.split('｜')[0]}</small><strong>{evidence.title.split('｜').slice(1).join('｜')}</strong></b>:<b>{evidence.title}</b>}<span>點圖放大 ↗</span></figcaption>
        <a href={evidence.src} target="_blank" rel="noreferrer" aria-label={'放大查看'+evidence.title}>
         <img src={evidence.src} alt={evidence.alt} loading="lazy"/>
        </a>
