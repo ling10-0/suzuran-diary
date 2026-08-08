@@ -21,7 +21,7 @@ Object.assign(mainlineCases[1], {
     {value: 'C', label: 'C. 青山（あおやま）'},
     {value: 'D', label: 'D. 木村（きむら）'}
   ],
-  hashes: ['dc6bb7bb40fafc117dcf02398502f59b300f8f36d25c74a3b2de4a1577ed8f7c']
+  hashes: ['3cddd95f18e8e7b1bd1d364a3f7a92e622d434bf99e48bdb7baa9665dbff471b']
 });`;
 
 export function secondPuzzleTransform() {
