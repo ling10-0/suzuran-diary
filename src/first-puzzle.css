@@ -115,6 +115,12 @@
 }
 
 .case-evidence-documents.is-compact .case-evidence-card figcaption {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 8px;
+  min-height: 78px;
+  box-sizing: border-box;
   padding: 7px 9px;
 }
 
@@ -144,7 +150,9 @@
 }
 
 .case-evidence-documents.is-compact .case-evidence-card figcaption span {
+  align-self: start;
   font-size: 10px;
+  white-space: nowrap;
 }
 
 .case-evidence-documents.is-compact .case-evidence-card a {
@@ -296,6 +304,7 @@
   }
 
   .case-evidence-documents.is-compact .case-evidence-card figcaption {
+    min-height: 68px;
     padding: 7px 9px;
   }
 
