@@ -5,6 +5,7 @@ Object.assign(mainlineCases[2], {
   type: 'investigation',
   code: '巡查第〇三號',
   taskTitle: '新盛橋通、櫻橋通（中山綠橋）＋進來涼冬瓜茶',
+  directoryTitle: '新盛橋通、櫻橋通（中山綠橋）',
   label: '新盛橋通、櫻橋通（中山綠橋）＋進來涼冬瓜茶',
   inputLabel: '請循線完成查核',
   hint: '先完成橋上觀察；確認現場線索後，再比對茶擔帳本與橋邊紀錄。',
