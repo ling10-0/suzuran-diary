@@ -11,8 +11,8 @@ Object.assign(mainlineCases[4], {
   question: '第四站留下的數字，指向了一筆不太合理的館藏紀錄。',
   questionDetails: [
     '第四站留下的數字，將你們帶進一份年代久遠的館藏目錄。幾本工程年報的封面與登錄資料看起來幾乎相同，只有其中一本，被放在不該出現的位置。',
-    '正確年報的掃描頁中，封面內側夾著一張折得很小的經費抄頁。抄頁內容與正式帳目並不完全一致，部分名稱、字跡與墨色像是後來才被改動。',
-    '抄頁旁另有一張未署名短箋：「若原件日後被改，至少還有人記得它原本的樣子。」請先用第四站取得的數字進入館藏搜尋，再找出異常的年報紀錄。'
+    '翻開正確年報的數位掃描檔後，封面、目錄與工程經費頁看似完整，但封面內側另夾著一張折得很小的經費抄本。',
+    '抄本上的項目名稱與正式帳目並不完全一致，旁邊還留有熟悉的藍綠色筆跡與一張沒有署名的短箋。請先從館藏紀錄找出那一本不尋常的年報，再進一步翻閱掃描頁。'
   ],
   questionHint: '先輸入上一站得到的四位數；館藏卡出現後，不要只看分類號，還要比較出版年份、登錄日期、館藏位置與狀態。',
   subQuestions: [
@@ -36,9 +36,31 @@ Object.assign(mainlineCases[4], {
     }
   ],
   hashes: ['96b1f4e6d8cd3503a69066b208f015d8cb93639fa2637ac08af666df056b191f'],
-  evidenceHeading: '數位掃描檔｜正確年報內頁',
+  evidenceAfterCorrectChoice: true,
+  evidenceHeading: '數位掃描檔｜請比對正式紀錄與夾藏抄本',
   evidenceCompact: true,
-  evidenceDocuments: []
+  evidenceDocuments: [
+    {
+      title: '掃描一｜工程年報封面',
+      src: './assets/puzzles/library/annual-report-cover.png',
+      alt: '臺中州地下保管設施工程年報昭和十年度封面，標示土木／雜項／3142與館藏註記。'
+    },
+    {
+      title: '掃描二｜年報目錄',
+      src: './assets/puzzles/library/annual-report-contents.png',
+      alt: '工程年報目錄，列有地下保管設施工程與工程經費等章節。'
+    },
+    {
+      title: '掃描三｜正式工程經費頁',
+      src: './assets/puzzles/library/expense-page.png',
+      alt: '正式工程經費明細，其中一筆支出以地下保管附屬整備費等名稱登錄。'
+    },
+    {
+      title: '掃描四｜夾藏經費抄本與短箋',
+      src: './assets/puzzles/library/expense-copy-note.png',
+      alt: '封面內側夾藏的經費抄本，項目名稱與正式帳目不同，並有藍綠色筆跡與未署名短箋。'
+    }
+  ]
 });`;
 
 export function fifthPuzzleTransform() {
