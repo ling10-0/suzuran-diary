@@ -48,7 +48,6 @@ function MarketLockerFlow({onComplete}){
  };
  return <section className="market-locker-flow" aria-label="第二市場四號置物箱查核">
   <header className="market-progress"><small>SHINTOMICHO LOCKER FILE</small><b>第 {Math.min(stage+1,6)}／6 階段</b></header>
-
   {stage===0&&<section className="market-stage">
    <p className="market-kicker">第一階段｜查看舊寄放帳冊</p><h4>哪一個箱子同時與青先生和阿蘭有關？</h4>
    <div className="market-ledger" role="table" aria-label="第二市場舊寄放帳冊">
@@ -61,39 +60,30 @@ function MarketLockerFlow({onComplete}){
    {error&&<small className="market-error">{error}</small>}
    <button className="market-next" type="button" onClick={()=>{if(lockerAnswer==='C'){setError('');setStage(1)}else setError('請再比對六月八日與六月二十二日的箱號及代取備註。')}}>確認帳冊線索</button>
   </section>}
-
   {stage===1&&<section className="market-stage">
    <p className="market-kicker">第二階段｜開啟網站置物箱</p><h4>請點選帳冊指向的置物箱</h4>
-   <div className="locker-grid">{[
-    [1,'普通布包'],[2,'空茶罐'],[3,'麵粉寄放紀錄'],[4,'存在未登錄物件'],[5,'無資料'],[6,'一只舊藥袋']
-   ].map(([no,desc])=><button type="button" className={openedLocker===no?'is-open':''} key={no} onClick={()=>{setOpenedLocker(no);setError(no===4?'':'這個箱子只有一般寄放資料，沒有主要線索。')}}><b>{no}</b><span>{openedLocker===no?desc:'置物箱'}</span></button>)}</div>
+   <div className="locker-grid">{[[1,'普通布包'],[2,'空茶罐'],[3,'麵粉寄放紀錄'],[4,'存在未登錄物件'],[5,'無資料'],[6,'一只舊藥袋']].map(([no,desc])=><button type="button" className={openedLocker===no?'is-open':''} key={no} onClick={()=>{setOpenedLocker(no);setError(no===4?'':'這個箱子只有一般寄放資料，沒有主要線索。')}}><b>{no}</b><span>{openedLocker===no?desc:'置物箱'}</span></button>)}</div>
    {openedLocker===4&&<div className="locker-found"><b>4號箱・開封</b><p>箱內有四件年代不同的物品，而且其中一張便條的日期就在今日。</p></div>}
    {error&&<small className="market-error">{error}</small>}
    <button className="market-next" type="button" disabled={openedLocker!==4} onClick={()=>setStage(2)}>整理箱內物件</button>
   </section>}
-
   {stage===2&&<section className="market-stage">
    <p className="market-kicker">第三階段｜檢視四件物品</p><h4>先讀完內容，再判斷它們分屬哪個時間</h4>
    <div className="locker-object-grid">{Object.entries(objects).map(([key,obj],index)=><article key={key}><small>物件 {index+1}</small><h5>{obj.title}</h5><p>{obj.detail}</p></article>)}</div>
    <button className="market-next" type="button" onClick={()=>setStage(3)}>開始整理年代</button>
   </section>}
-
   {stage===3&&<section className="market-stage">
    <p className="market-kicker">第四階段｜整理物件時間</p><h4>將每件物品分成「過去留下」或「今日留下」</h4>
    <div className="classification-list">{Object.entries(objects).map(([key,obj])=><article key={key}><b>{obj.title}</b><div><button type="button" className={classification[key]==='past'?'active':''} onClick={()=>setClass(key,'past')}>過去留下</button><button type="button" className={classification[key]==='today'?'active':''} onClick={()=>setClass(key,'today')}>今日留下</button></div></article>)}</div>
    {error&&<small className="market-error">{error}</small>}
    <button className="market-next" type="button" onClick={checkClassification}>確認年代分類</button>
   </section>}
-
   {stage===4&&<section className="market-stage">
    <p className="market-kicker">第五階段｜證據配對</p><h4>哪一份證據最能支持下面的推論？</h4>
-   <div className="evidence-pair-list">{[
-    ['p1','阿蘭與現在的鈴蘭高度相關'],['p2','青先生很可能就是青木'],['p3','青木與阿蘭是父女關係'],['p4','這段聯絡直到現在仍未中斷']
-   ].map(([key,label])=><label key={key}><span>{label}</span><select value={pairs[key]} onChange={event=>{setPairs(current=>({...current,[key]:event.target.value}));setError('')}}><option value="">請選擇證據</option><option value="E1">識字簿封面「阿蘭」＋第九站反覆出現的「蘭」</option><option value="E2">藍綠色記號紙封＋與前站相似的數字寫法</option><option value="E3">識字簿中的「父親」＋「青」「木」文字</option><option value="E4">日期為今日、以「父親」開頭的未寄便條</option></select></label>)}</div>
+   <div className="evidence-pair-list">{[['p1','阿蘭與現在的鈴蘭高度相關'],['p2','青先生很可能就是青木'],['p3','青木與阿蘭是父女關係'],['p4','這段聯絡直到現在仍未中斷']].map(([key,label])=><label key={key}><span>{label}</span><select value={pairs[key]} onChange={event=>{setPairs(current=>({...current,[key]:event.target.value}));setError('')}}><option value="">請選擇證據</option><option value="E1">識字簿封面「阿蘭」＋第九站反覆出現的「蘭」</option><option value="E2">藍綠色記號紙封＋與前站相似的數字寫法</option><option value="E3">識字簿中的「父親」＋「青」「木」文字</option><option value="E4">日期為今日、以「父親」開頭的未寄便條</option></select></label>)}</div>
    {error&&<small className="market-error">{error}</small>}
    <button className="market-next" type="button" onClick={checkPairs}>完成證據配對</button>
   </section>}
-
   {stage===5&&<section className="market-stage">
    <p className="market-kicker">第六階段｜最後判斷</p><h4>把人物關係與「現在仍在聯絡」分開確認</h4>
    <p className="market-question">題目一｜哪一項最能解釋「青先生」與「阿蘭」的關係？</p>
@@ -121,7 +111,7 @@ export function tenthPuzzleTransform(){
    if(next.includes(fieldAnchor)&&!next.includes('function MarketLockerFlow(')) next=next.replace(fieldAnchor,marketLockerComponent+'\n\n'+fieldAnchor);
    const oldForm=`{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
    if(next.includes(oldForm)&&!next.includes("item.customFlow==='marketLocker'")){
-    const wrapped=`{item.customFlow==='marketLocker'&&!solved?<MarketLockerFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>:${oldForm}}`;
+    const wrapped=`<>{item.customFlow==='marketLocker'&&!solved?<MarketLockerFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>:<>{${oldForm}}</>}</>`;
     next=next.replace(oldForm,wrapped);
    }
    return next===code?null:{code:next,map:null};
