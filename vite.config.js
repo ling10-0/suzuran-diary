@@ -6,12 +6,13 @@ import {syncTransform} from './scripts/sync-transform.mjs';
 import {firstPuzzleTransform} from './scripts/first-puzzle-transform.mjs';
 import {secondPuzzleTransform} from './scripts/second-puzzle-transform.mjs';
 import {thirdPuzzleTransform} from './scripts/third-puzzle-transform.mjs';
+import {fourthPuzzleTransform} from './scripts/fourth-puzzle-transform.mjs';
 import {finalSyncTransform} from './scripts/final-sync-transform.mjs';
 import {readingGateTransform} from './scripts/reading-gate-transform.mjs';
 import {guidedMapLabelTransform} from './scripts/guided-map-label-transform.mjs';
 import {latestManuscriptsTransform} from './scripts/latest-manuscripts-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), firstPuzzleTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
+  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), firstPuzzleTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
   base: './'
 });
