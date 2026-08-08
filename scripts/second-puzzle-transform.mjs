@@ -5,6 +5,7 @@ Object.assign(mainlineCases[1], {
   type: 'investigation',
   code: '商工第〇二號',
   taskTitle: '敷島町市場（第三市場）＋榮記餅店',
+  directoryTitle: '敷島町市場（第三市場）',
   label: '敷島町市場（第三市場）＋榮記餅店',
   inputLabel: '請選擇解讀出的姓氏',
   hint: '先查看兩份原始資料，依貨物交易紀錄中的訂單編號、品項與數量，對照暗碼表解讀文字。',
