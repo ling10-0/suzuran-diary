@@ -1,0 +1,78 @@
+/* Mobile/tablet refinements for the investigation case directory only. */
+@media (max-width: 900px) {
+  .case-directory-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-file {
+    grid-template-columns: 48px minmax(0, 1fr) auto !important;
+    gap: 12px !important;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .case-file > div {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .case-file h3 {
+    max-width: 100%;
+    margin-right: 0;
+    font-size: clamp(18px, 5.2vw, 24px) !important;
+    line-height: 1.45 !important;
+    letter-spacing: .02em !important;
+    white-space: normal !important;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  .case-file p {
+    max-width: 100%;
+    font-size: 13px !important;
+    line-height: 1.75 !important;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .case-file > b {
+    align-self: end;
+    white-space: nowrap;
+    font-size: 11px !important;
+  }
+
+  .case-file > svg {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .case-file {
+    grid-template-columns: 42px minmax(0, 1fr) !important;
+    min-height: 0 !important;
+    padding: 18px 46px 18px 14px !important;
+  }
+
+  .case-file > b {
+    grid-column: 2;
+    justify-self: end;
+    margin-top: 4px;
+  }
+
+  .case-file h3 {
+    font-size: 19px !important;
+    line-height: 1.42 !important;
+  }
+
+  .case-file p {
+    margin-bottom: 0;
+    font-size: 12px !important;
+    line-height: 1.7 !important;
+  }
+}
