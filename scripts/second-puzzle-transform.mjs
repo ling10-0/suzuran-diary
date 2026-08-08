@@ -22,8 +22,9 @@ Object.assign(mainlineCases[1], {
     {value: 'D', label: 'D. 木村（きむら）'}
   ],
   hashes: ['3cddd95f18e8e7b1bd1d364a3f7a92e622d434bf99e48bdb7baa9665dbff471b'],
-  evidenceHeading: '原始資料｜請比對兩份文件後作答',
+  evidenceHeading: '原始資料',
   evidenceCompact: true,
+  questionAfterFirstEvidence: true,
   evidenceDocuments: [
     {
       title: '資料一｜貨物交易紀錄',
