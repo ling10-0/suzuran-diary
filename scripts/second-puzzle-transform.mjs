@@ -22,6 +22,8 @@ Object.assign(mainlineCases[1], {
     {value: 'D', label: 'D. 木村（きむら）'}
   ],
   hashes: ['3cddd95f18e8e7b1bd1d364a3f7a92e622d434bf99e48bdb7baa9665dbff471b'],
+  evidenceHeading: '原始資料｜請比對兩份文件後作答',
+  evidenceCompact: true,
   evidenceDocuments: [
     {
       title: '資料一｜貨物交易紀錄',
@@ -46,7 +48,6 @@ export function secondPuzzleTransform() {
       if (!code.includes(anchor)) return null;
 
       let next = code;
-      // 若先前版本的第二題設定仍存在，先移除，避免重複覆寫。
       next = next.replace(/\n?Object\.assign\(mainlineCases\[1\],[\s\S]*?\n\}\);\n?/g, '\n');
       next = next.replace(anchor, secondPuzzleSetup + '\n\n' + anchor);
       return {code: next, map:null};
