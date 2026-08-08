@@ -46,7 +46,7 @@ const evidenceMarkup = `{item.evidenceDocuments?.length>0&&(!item.subQuestions?.
      </div>
     </section>}`;
 
-const answerMarkup = `{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label>{item.subQuestions?.length
+const answerMarkup = `{!item.direct&&!item.pending&&(!solved||replayMode)&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label>{item.subQuestions?.length
      ?<div className="case-subquestions">
        <section className="case-subquestion"><small>Q1｜{item.subQuestions[0].title}</small><p>{item.subQuestions[0].prompt}</p><input id={'case-'+index+'-0'} value={value.split('|||')[0]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[0].placeholder||'請輸入答案'}/>{subStep<1&&<button type="button" className="case-submit-choice" onClick={()=>{const answer=(value.split('|||')[0]||'').trim().normalize('NFKC').replace(/\s+/g,'');const ok=['2個三角形','兩個三角形','2個三角型','兩個三角型'].includes(answer);setError(!ok);if(ok)setSubStep(1)}}>確認現場勘查</button>}{subStep>=1&&<small className="case-step-passed">✓ 現場勘查完成，已開放下一題</small>}</section>
        {subStep>=1&&<section className="case-subquestion"><small>Q2｜{item.subQuestions[1].title}</small><p>{item.subQuestions[1].prompt}</p><div className="case-choice-list">{item.subQuestions[1].options.map(option=>{const part=value.split('|||')[1]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-1'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div></section>}
@@ -75,7 +75,7 @@ export function firstPuzzleTransform() {
       }
 
       if (!next.includes('const [subStep,setSubStep]')) {
-        next = next.replace(" const [error,setError]=useState(false);", " const [error,setError]=useState(false);\n const [subStep,setSubStep]=useState(0);");
+        next = next.replace(" const [error,setError]=useState(false);", " const [error,setError]=useState(false);\n const [subStep,setSubStep]=useState(0);\n const [replayMode,setReplayMode]=useState(false);");
       }
 
       const evidenceAnchor = "{item.direct&&<p className=\"gazette-approved\">本件無須輸入答案，可直接對照兩種城市記錄。</p>}";
@@ -85,6 +85,11 @@ export function firstPuzzleTransform() {
 
       const oldForm = `{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
       if (next.includes(oldForm)) next = next.replace(oldForm, answerMarkup);
+
+      const solvedAnchor = `{!item.direct&&!item.pending&&solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}`;
+      if (next.includes(solvedAnchor) && !next.includes('重新測試本題流程')) {
+        next = next.replace(solvedAnchor, `{!item.direct&&!item.pending&&solved&&<><p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>{item.subQuestions?.length&&!replayMode&&<button type="button" className="case-replay-button" onClick={()=>{setValue('');setError(false);setSubStep(0);setReplayMode(true)}}>重新測試本題流程</button>}{item.subQuestions?.length&&replayMode&&<button type="button" className="case-replay-button" onClick={()=>{setReplayMode(false);setValue('');setError(false);setSubStep(0)}}>結束測試</button>}</>}`);
+      }
 
       return next===code?null:{code:next,map:null};
     }
