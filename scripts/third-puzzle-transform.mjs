@@ -19,7 +19,7 @@ Object.assign(mainlineCases[2], {
     {
       title: '現場勘查',
       prompt: '新盛橋上有一個象徵臺灣的圖案。請找出它，並回答這個圖案由幾個什麼形狀組成。',
-      placeholder: '請輸入，例如：2個三角形'
+      placeholder: '請輸入觀察結果'
     },
     {
       title: '茶擔資料查核',
