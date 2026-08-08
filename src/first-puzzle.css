@@ -166,21 +166,47 @@
 }
 
 .case-subquestions {
-  display: grid;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-items: stretch !important;
   gap: 18px;
   margin-top: 12px;
-  width: 100%;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.case-subquestions > * {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box;
+}
+
+.case-step-summary {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 0 4px !important;
+  padding: 10px 14px !important;
+  border: 1px solid rgba(143,37,29,.38);
+  background: rgba(143,37,29,.06);
+  color: #8f251d;
+  font-family: var(--serif-tc, 'Songti TC','Songti SC','Noto Serif TC','PMingLiU','MingLiU',serif);
+  font-weight: 700;
+  line-height: 1.5;
+  writing-mode: horizontal-tb !important;
 }
 
 .case-subquestion {
   width: 100%;
   min-width: 0;
+  max-width: none !important;
   padding: 18px 20px;
   border: 1px solid #7b674a;
   background: rgba(255,255,255,.1);
   font-family: var(--serif-tc, 'Songti TC','Songti SC','Noto Serif TC','PMingLiU','MingLiU',serif);
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
+  box-sizing: border-box;
 }
 
 .case-subquestion > small {
@@ -198,7 +224,7 @@
 .case-subquestion > p {
   display: block;
   width: 100%;
-  max-width: 38em;
+  max-width: none;
   margin: 0 0 16px;
   font-family: inherit;
   font-size: 20px;
@@ -235,6 +261,7 @@
   grid-template-columns: 1fr !important;
   gap: 10px;
   margin-top: 10px;
+  width: 100% !important;
   writing-mode: horizontal-tb !important;
 }
 
@@ -246,6 +273,7 @@
   gap: 10px;
   width: 100%;
   min-width: 0;
+  box-sizing: border-box;
   padding: 13px 14px;
   border: 1px solid #7b674a;
   background: rgba(255,255,255,.14);
@@ -296,6 +324,7 @@
 /* Tablet: keep the question comfortably wide, but prevent oversized text/wrapping. */
 @media (min-width: 701px) and (max-width: 1100px) {
   .case-subquestions {
+    grid-template-columns: minmax(0,1fr) !important;
     gap: 16px;
   }
 
@@ -429,13 +458,20 @@
   .case-choice,
   .case-choice span,
   .case-submit-choice,
-  .case-replay-button {
+  .case-replay-button,
+  .case-step-summary {
     font-family: var(--serif-tc, 'Songti TC','Songti SC','Noto Serif TC','PMingLiU','MingLiU',serif) !important;
   }
 
   .case-subquestions {
+    grid-template-columns: minmax(0,1fr) !important;
     gap: 14px;
     margin-top: 10px;
+  }
+
+  .case-step-summary {
+    padding: 9px 11px !important;
+    font-size: 14px;
   }
 
   .case-subquestion {
