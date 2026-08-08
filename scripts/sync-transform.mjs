@@ -35,13 +35,13 @@ export function syncTransform() {
         '<footer>解謎進度會同步到同組裝置；個人照片與文字仍只保存在目前裝置。</footer>',
       );
 
-      const statusPanel = `<span className="group-sync-status"><b>目前組別｜{newsroom}</b><br/>{sharedProgress===null?'共同進度｜連線中…':'共同進度｜'+sharedProgress.length+' 件已同步'}</span>`;
+      const statusPanel = `<span className="group-sync-status"><b>目前組別｜{newsroom}</b><br/>{(()=>{if(sharedProgress===null)return '共同進度｜連線中…';const count=(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=0&&id<11).length;const score=Math.min(110,count*10);const level=score>=90?'中央報社':score>=60?'全島報社':score>=30?'州級報社':'地方報社';return '共同進度｜'+count+' 件已同步　分數｜'+score+'/110　等級｜'+level})()}</span>`;
       next = next.replace(/<span>所屬報社：\{newsroom\}<br\/>解謎進度由同組共用<\/span>/g, statusPanel);
       next = next.replace(/<span>所屬組別：\{newsroom\}<br\/>解謎進度由同組跨手機共用<\/span>/g, statusPanel);
 
       next = next.replace(
         `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <main>`,
-        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  <div className="mobile-group-banner" aria-label="目前所屬組別"><span>目前組別</span><strong>{newsroom}</strong><small>{sharedProgress===null?'共同進度連線中…':sharedProgress.length+' 件已同步'}</small></div>\n  <main>`,
+        `  <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>\n  {(()=>{const count=sharedProgress===null?null:(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=0&&id<11).length;const score=count===null?null:Math.min(110,count*10);const level=score===null?'計算中…':score>=90?'中央報社':score>=60?'全島報社':score>=30?'州級報社':'地方報社';return <div className="mobile-group-banner" aria-label="目前所屬組別與報社等級"><span>目前組別</span><strong>{newsroom}</strong><small>{count===null?'共同進度連線中…':'共同進度 '+count+' 件｜'+score+'/110 分｜'+level}</small></div>})()}\n  <main>`,
       );
 
       if (!next.includes("./mobile-group.css")) {
