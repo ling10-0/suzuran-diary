@@ -17,6 +17,11 @@
   cursor:not-allowed;
 }
 
+/* Move the accepted-task badge slightly lower so it has more breathing room from the vertical date above. */
+.gazette-meta strong{
+  transform:translateY(12px);
+}
+
 .embedded-field-record{
   display:block !important;
   position:relative !important;
@@ -174,6 +179,10 @@
     font-size:13px;
     writing-mode:horizontal-tb !important;
     text-orientation:mixed !important;
+  }
+
+  .gazette-meta strong{
+    transform:translateY(8px);
   }
 
   .embedded-field-record{
