@@ -34,7 +34,7 @@ Object.assign(mainlineCases[0], {
   ]
 });`;
 
-const evidenceMarkup = `{item.evidenceDocuments?.length>0&&<section className={'case-evidence-documents '+(item.evidenceCompact?'is-compact':'')} aria-label="案件原始資料">
+const evidenceMarkup = `{item.evidenceDocuments?.length>0&&(!item.subQuestions?.length||subStep>=1)&&<section className={'case-evidence-documents '+(item.evidenceCompact?'is-compact':'')} aria-label="案件原始資料">
      <header>{!item.evidenceCompact&&<small>EVIDENCE / 原始資料</small>}<h4>{item.evidenceHeading||'請放大檢視兩份文件'}</h4><p>手機可點擊圖片開啟原尺寸查看細節，再返回此頁作答。</p></header>
      <div className="case-evidence-grid">
       {item.evidenceDocuments.map((evidence,evidenceIndex)=><figure className="case-evidence-card" key={evidence.src}>
@@ -47,10 +47,13 @@ const evidenceMarkup = `{item.evidenceDocuments?.length>0&&<section className={'
     </section>}`;
 
 const answerMarkup = `{!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label>{item.subQuestions?.length
-     ?<div className="case-subquestions">{item.subQuestions.map((subQuestion,subIndex)=>{const part=value.split('|||')[subIndex]||'';return <section className="case-subquestion" key={subQuestion.title||subIndex}><small>Q{subIndex+1}｜{subQuestion.title}</small><p>{subQuestion.prompt}</p>{subQuestion.options?.length?<div className="case-choice-list">{subQuestion.options.map(option=><label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-'+subIndex} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[subIndex]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>)}</div>:<input id={'case-'+index+'-'+subIndex} value={part} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[subIndex]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={subQuestion.placeholder||'請輸入答案'}/>}</section>})}</div>
+     ?<div className="case-subquestions">
+       <section className="case-subquestion"><small>Q1｜{item.subQuestions[0].title}</small><p>{item.subQuestions[0].prompt}</p><input id={'case-'+index+'-0'} value={value.split('|||')[0]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[0].placeholder||'請輸入答案'}/>{subStep<1&&<button type="button" className="case-submit-choice" onClick={()=>{const answer=(value.split('|||')[0]||'').trim().normalize('NFKC').replace(/\s+/g,'');const ok=['2個三角形','兩個三角形','2個三角型','兩個三角型'].includes(answer);setError(!ok);if(ok)setSubStep(1)}}>確認現場勘查</button>}{subStep>=1&&<small className="case-step-passed">✓ 現場勘查完成，已開放下一題</small>}</section>
+       {subStep>=1&&<section className="case-subquestion"><small>Q2｜{item.subQuestions[1].title}</small><p>{item.subQuestions[1].prompt}</p><div className="case-choice-list">{item.subQuestions[1].options.map(option=>{const part=value.split('|||')[1]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-1'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div></section>}
+      </div>
      :item.options?.length
       ?<div className="case-choice-list" id={'case-'+index}>{item.options.map(option=><label className={'case-choice '+(value===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-choice-'+index} value={option.value} checked={value===option.value} onChange={event=>{setValue(event.target.value);setError(false)}}/><span>{option.label}</span></label>)}</div>
-      :<div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/></div>}<button className="case-submit-choice" type="submit" disabled={item.subQuestions?.length?item.subQuestions.some((_,subIndex)=>!(value.split('|||')[subIndex]||'').trim()):item.options?.length&&!value}>送交查核</button>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
+      :<div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/></div>}{(!item.subQuestions?.length||subStep>=1)&&<button className="case-submit-choice" type="submit" disabled={item.subQuestions?.length?!(value.split('|||')[1]||'').trim():item.options?.length&&!value}>送交查核</button>}{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}`;
 
 export function firstPuzzleTransform() {
   return {
@@ -69,6 +72,10 @@ export function firstPuzzleTransform() {
         if (next.includes(puzzleAnchor)) {
           next = next.replace(puzzleAnchor, firstPuzzleSetup + '\n\n' + puzzleAnchor);
         }
+      }
+
+      if (!next.includes('const [subStep,setSubStep]')) {
+        next = next.replace(" const [error,setError]=useState(false);", " const [error,setError]=useState(false);\n const [subStep,setSubStep]=useState(0);");
       }
 
       const evidenceAnchor = "{item.direct&&<p className=\"gazette-approved\">本件無須輸入答案，可直接對照兩種城市記錄。</p>}";
