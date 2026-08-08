@@ -118,9 +118,29 @@
   padding: 7px 9px;
 }
 
-.case-evidence-documents.is-compact .case-evidence-card figcaption b {
-  font-size: 12px;
-  line-height: 1.45;
+.case-evidence-documents.is-compact .evidence-title-split {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.case-evidence-documents.is-compact .evidence-title-split small {
+  display: block;
+  margin: 0;
+  color: #8f251d;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  line-height: 1.25;
+}
+
+.case-evidence-documents.is-compact .evidence-title-split strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: inherit;
 }
 
 .case-evidence-documents.is-compact .case-evidence-card figcaption span {
@@ -279,8 +299,12 @@
     padding: 7px 9px;
   }
 
-  .case-evidence-documents.is-compact .case-evidence-card figcaption b {
-    font-size: 11px;
+  .case-evidence-documents.is-compact .evidence-title-split small {
+    font-size: 9px;
+  }
+
+  .case-evidence-documents.is-compact .evidence-title-split strong {
+    font-size: 12px;
   }
 
   .case-evidence-documents.is-compact .case-evidence-card img {
