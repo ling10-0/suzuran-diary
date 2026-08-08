@@ -34,8 +34,8 @@ Object.assign(mainlineCases[0], {
   ]
 });`;
 
-const evidenceMarkup = `{item.evidenceDocuments?.length>0&&<section className="case-evidence-documents" aria-label="案件原始資料">
-     <header><small>EVIDENCE / 原始資料</small><h4>請放大檢視兩份文件</h4><p>手機可點擊圖片開啟原尺寸查看細節，再返回此頁作答。</p></header>
+const evidenceMarkup = `{item.evidenceDocuments?.length>0&&<section className={'case-evidence-documents '+(item.evidenceCompact?'is-compact':'')} aria-label="案件原始資料">
+     <header>{!item.evidenceCompact&&<small>EVIDENCE / 原始資料</small>}<h4>{item.evidenceHeading||'請放大檢視兩份文件'}</h4><p>手機可點擊圖片開啟原尺寸查看細節，再返回此頁作答。</p></header>
      <div className="case-evidence-grid">
       {item.evidenceDocuments.map((evidence,evidenceIndex)=><figure className="case-evidence-card" key={evidence.src}>
        <figcaption><b>{evidence.title}</b><span>點圖放大 ↗</span></figcaption>
@@ -62,7 +62,6 @@ export function firstPuzzleTransform() {
         next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './first-puzzle.css';");
       }
 
-      // Route transform會重建mainlineCases，因此在main.jsx匯入完成後再覆寫第一題最穩定。
       if (!next.includes("taskTitle: '沒有名字的技術人員'")) {
         const puzzleAnchor = 'const puzzles = mainlineCases;';
         if (next.includes(puzzleAnchor)) {
