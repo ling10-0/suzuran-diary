@@ -17,6 +17,7 @@ import {fifthPuzzleTransform} from './scripts/fifth-puzzle-transform.mjs';
 import {sixthPuzzleTransform} from './scripts/sixth-puzzle-transform.mjs';
 import {seventhPuzzleTransform} from './scripts/seventh-puzzle-transform.mjs';
 import {eighthPuzzleTransform} from './scripts/eighth-puzzle-transform.mjs';
+import {placeOnlyDirectoryTitleTransform} from './scripts/place-only-directory-title-transform.mjs';
 import {directoryTitleTransform} from './scripts/directory-title-transform.mjs';
 import {finalSyncTransform} from './scripts/final-sync-transform.mjs';
 import {readingGateTransform} from './scripts/reading-gate-transform.mjs';
@@ -24,6 +25,6 @@ import {guidedMapLabelTransform} from './scripts/guided-map-label-transform.mjs'
 import {latestManuscriptsTransform} from './scripts/latest-manuscripts-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
+  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
   base: './'
 });
