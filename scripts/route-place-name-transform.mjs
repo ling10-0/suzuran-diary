@@ -22,6 +22,7 @@ export function routePlaceNameTransform(){
         ["duty:'沿水路前行，記錄河道與城市生活'","duty:'沿柳川比對送貨路線與巡查空檔'"],
         ["duty:'觀察六角樓、市場人流與地方飲食'","duty:'查閱新富町市場的寄放帳冊與取物紀錄'"],
         ["duty:'於舊鐵道路廊集中完成第二日解謎'","duty:'集中完成第二日工程圖碎片追查'"],
+        ["<p className=\"document-intro\">臨時調查員之巡查地點，分兩日依左列次序辦理。各處並非競速通過之關卡；應就現場用途、人物生活及異動痕跡詳實記入調查簿。</p>",""]
       ];
       for(const [from,to] of replacements) next=next.split(from).join(to);
       return next===code?null:{code:next,map:null};
