@@ -178,151 +178,654 @@ function resizePhoto(file){
 function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
  const unlockKey='suzuran-main-v2-unlocked-'+index;
  const recordKey='suzuran-main-v2-field-record-'+index;
+
  const initialRecord=()=>{
-  try{return JSON.parse(window.localStorage.getItem(recordKey))||{reflection:'',photo:'',ending:''}}catch{return {reflection:'',photo:'',ending:''}}
+  try{
+   return JSON.parse(window.localStorage.getItem(recordKey))||{
+    reflection:'',
+    photo:'',
+    ending:''
+   };
+  }catch{
+   return {
+    reflection:'',
+    photo:'',
+    ending:''
+   };
+  }
  };
- const [solved,setSolved]=useState(()=>item.direct||sharedSolved||window.localStorage.getItem(unlockKey)==='1');
+
+ const [solved,setSolved]=useState(
+  ()=>item.direct||sharedSolved||window.localStorage.getItem(unlockKey)==='1'
+ );
  const [value,setValue]=useState('');
  const [error,setError]=useState(false);
  const [record,setRecord]=useState(initialRecord);
- const [documentView,setDocumentView]=useState('mainland');
+ const [documentView,setDocumentView]=useState('travel');
  const [photoError,setPhotoError]=useState('');
+
  const document=item;
  const islandManuscriptReady=item.direct||solved;
+
  const mainlandManuscript=item.mainland||item.travel||[];
- const activeManuscript=documentView==='mainland'?mainlandManuscript:(item.island||[]);
- useEffect(()=>{if(sharedSolved)setSolved(true)},[sharedSolved]);
- const saveRecord=next=>{setRecord(next);try{window.localStorage.setItem(recordKey,JSON.stringify(next))}catch{setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。')}};
+
+ const activeManuscript=
+  documentView==='mainland'
+   ?mainlandManuscript
+   :documentView==='island'
+    ?(item.island||[])
+    :(item.travel||[]);
+
+ useEffect(()=>{
+  if(sharedSolved)setSolved(true);
+ },[sharedSolved]);
+
+ const saveRecord=next=>{
+  setRecord(next);
+
+  try{
+   window.localStorage.setItem(recordKey,JSON.stringify(next));
+  }catch{
+   setPhotoError('照片檔案較大，這次內容只能暫存在目前頁面。');
+  }
+ };
+
  const submit=async event=>{
   event.preventDefault();
+
   if(item.pending||item.direct)return;
+
   const submittedHash=await hashAnswer(value);
   const ok=(item.hashes||[]).includes(submittedHash);
+
   setError(!ok);
-  if(ok){setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}
+
+  if(ok){
+   setSolved(true);
+   window.localStorage.setItem(unlockKey,'1');
+   onSharedSolved?.(index);
+  }
  };
+
  const addPhoto=async event=>{
   const file=event.target.files?.[0];
+
   if(!file)return;
-  if(!file.type.startsWith('image/')){setPhotoError('請選擇照片檔案。');return}
+
+  if(!file.type.startsWith('image/')){
+   setPhotoError('請選擇照片檔案。');
+   return;
+  }
+
   setPhotoError('');
-  try{saveRecord({...record,photo:await resizePhoto(file)})}catch{setPhotoError('照片無法讀取，請換一張再試。')}
+
+  try{
+   saveRecord({
+    ...record,
+    photo:await resizePhoto(file)
+   });
+  }catch{
+   setPhotoError('照片無法讀取，請換一張再試。');
+  }
  };
- const createEnding=()=>saveRecord({...record,ending:buildPersonalEnding(record.reflection,item,index,unlockedCount)});
- return <article className={'gazette-case case-type-'+item.type+' '+(islandManuscriptReady?'is-open':'is-locked')}>
-  <header className="gazette-case-head">
-   <div className="gazette-issue"><small>臺中市報附錄</small><b>第 {String(index+1).padStart(3,'0')} 號</b></div>
-   <div><p>{item.code}・第 {item.day} 日調查記錄</p><h2>{item.label}</h2></div>
-   <div className="gazette-status">{item.direct?'公開':item.pending?'封緘':solved?'受理済':'未受理'}</div>
-  </header>
-  <div className="gazette-columns">
-   <section className="gazette-query">
-    <h3>{item.taskTitle}</h3>
-    <p>{item.hint}</p>
-    {item.question&&<section className="case-question-sheet" aria-label="案件查核資料">
-     <small>案件查核資料</small>
-     <h4>{item.question}</h4>
-     {item.questionDetails?.map((detail,detailIndex)=><p key={detailIndex}>{detail}</p>)}
-     {item.questionHint&&<em>提示：{item.questionHint}</em>}
-    </section>}
-    {item.direct&&<p className="gazette-approved">本件無須輸入答案，可直接對照兩種城市記錄。</p>}
-    {item.pending&&<p className="pending-case-notice">現場題目尚未發給，文書暫保持封緘；取得題目後將補上查核欄。</p>}
-    {!item.direct&&!item.pending&&!solved&&<form onSubmit={submit}><label htmlFor={'case-'+index}>{item.inputLabel}</label><div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/><button type="submit">送交查核</button></div>{error&&<small>登記內容不符，請重新確認現場線索。</small>}</form>}
-    {!item.direct&&!item.pending&&solved&&<p className="gazette-approved">本件照合完了，准予閱覽本島人手稿。</p>}
-    {document.dialogue?.length>0&&<section className="travel-dialogue case-dialogue" aria-label="現場短對話">
-     <small>現場短對話・採訪筆記</small>
-     {document.dialogue.map(([speaker,line],dialogueIndex)=><p key={dialogueIndex}><b>{speaker}</b><span>{line}</span></p>)}
-    </section>}
-     <section className="gazette-travelogue" aria-label="內地人遊記">
-     <div className="document-copy travel">
+
+ const createEnding=()=>{
+  saveRecord({
+   ...record,
+   ending:buildPersonalEnding(
+    record.reflection,
+    item,
+    index,
+    unlockedCount
+   )
+  });
+ };
+
+ return (
+  <article
+   className={
+    'gazette-case case-type-'+
+    item.type+
+    ' '+
+    (islandManuscriptReady?'is-open':'is-locked')
+   }
+  >
+
+   {/* =========================
+       案件表頭
+   ========================== */}
+
+   <header className="gazette-case-head">
+    <div className="gazette-issue">
+     <small>臺中市報附錄</small>
+     <b>第 {String(index+1).padStart(3,'0')} 號</b>
+    </div>
+
+    <div>
+     <p>{item.code}・第 {item.day} 日調查記錄</p>
+     <h2>{item.label}</h2>
+    </div>
+
+    <div className="gazette-status">
+     {
+      item.direct
+       ?'公開'
+       :item.pending
+        ?'封緘'
+        :solved
+         ?'受理済'
+         :'未受理'
+     }
+    </div>
+   </header>
+
+
+   {/* =====================================================
+       ① 調查資料
+       玩家進來後先看到這一區
+   ====================================================== */}
+
+   <section className="gazette-manuscript investigation-materials">
+
+    <h3 className="investigation-materials-title">
+     調查資料
+    </h3>
+
+    <div
+     className="document-tabs four-reading-tabs"
+     role="tablist"
+     aria-label="調查資料選擇"
+    >
+
+     <button
+      type="button"
+      role="tab"
+      aria-selected={documentView==='travel'}
+      className={documentView==='travel'?'active':''}
+      onClick={()=>setDocumentView('travel')}
+     >
+      內地人遊記
+     </button>
+
+     <button
+      type="button"
+      role="tab"
+      aria-selected={documentView==='field'}
+      className={documentView==='field'?'active':''}
+      onClick={()=>setDocumentView('field')}
+     >
+      我的走讀紀錄
+     </button>
+
+     <button
+      type="button"
+      role="tab"
+      aria-selected={documentView==='mainland'}
+      className={documentView==='mainland'?'active':''}
+      disabled={!islandManuscriptReady}
+      onClick={()=>setDocumentView('mainland')}
+     >
+      {
+       islandManuscriptReady
+        ?'內地人手稿'
+        :'內地人手稿・封緘中'
+      }
+     </button>
+
+     <button
+      type="button"
+      role="tab"
+      aria-selected={documentView==='island'}
+      className={documentView==='island'?'active':''}
+      disabled={!islandManuscriptReady}
+      onClick={()=>setDocumentView('island')}
+     >
+      {
+       islandManuscriptReady
+        ?'本島人手稿'
+        :'本島人手稿・封緘中'
+      }
+     </button>
+
+    </div>
+
+
+    {/* 內地人遊記 */}
+
+    {documentView==='travel'&&(
+     <div
+      className="document-copy travel"
+      role="tabpanel"
+     >
       <small>{document.title}</small>
       <h4>內地人遊記</h4>
-      {(document.travel||[]).map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
-      {document.travelImage&&<img className="travel-document-image" src={document.travelImage} alt="相關舊照片" onError={event=>{event.currentTarget.style.display='none'}}/>}
+
+      {(document.travel||[]).map(
+       (paragraph,paragraphIndex)=>(
+        <p key={paragraphIndex}>
+         {paragraph}
+        </p>
+       )
+      )}
+
+      {document.travelImage&&(
+       <img
+        className="travel-document-image"
+        src={document.travelImage}
+        alt={document.title||'相關舊照片'}
+        onError={event=>{
+         event.currentTarget.style.display='none';
+        }}
+       />
+      )}
      </div>
-    </section>
-   </section>
-    <section className="gazette-manuscript">
-    <div className="manuscript-reader">
-     <h3>{islandManuscriptReady?'調查手稿':'本島人手稿封緘中'}</h3>
-     <div className="document-tabs" role="tablist" aria-label="手稿選擇">
-      <button role="tab" aria-selected={documentView==='mainland'} className={documentView==='mainland'?'active':''} onClick={()=>setDocumentView('mainland')}>內地人手稿</button>
-      <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':'本島人手稿・封緘中'}</button>
+    )}
+
+
+    {/* 我的走讀紀錄 */}
+
+    {documentView==='field'&&(
+     <div
+      className="document-copy field-reading-copy"
+      role="tabpanel"
+     >
+
+      <small>
+       FIELD NOTE / 私人附箋
+      </small>
+
+      <h4>
+       我的走讀紀錄
+      </h4>
+
+      <div className="field-record-grid embedded-field-record">
+
+       <div className="photo-entry">
+
+        {
+         record.photo
+          ?(
+           <img
+            src={record.photo}
+            alt={'第 '+(index+1)+' 號走讀記錄'}
+           />
+          )
+          :(
+           <div>
+            <b>寫真貼付欄</b>
+            <span>
+             可放入現場照片、街景或小組合照
+            </span>
+           </div>
+          )
+        }
+
+        <label>
+         <input
+          type="file"
+          accept="image/*"
+          onChange={addPhoto}
+         />
+
+         {
+          record.photo
+           ?'更換寫真'
+           :'選擇寫真'
+         }
+        </label>
+
+        {record.photo&&(
+         <button
+          type="button"
+          onClick={()=>
+           saveRecord({
+            ...record,
+            photo:''
+           })
+          }
+         >
+          移除
+         </button>
+        )}
+
+        {photoError&&(
+         <small>{photoError}</small>
+        )}
+
+       </div>
+
+
+       <div className="reflection-entry">
+
+        <label htmlFor={'reflection-'+index}>
+         調查後記
+        </label>
+
+        <textarea
+         id={'reflection-'+index}
+         value={record.reflection}
+         onChange={event=>
+          saveRecord({
+           ...record,
+           reflection:event.target.value,
+           ending:''
+          })
+         }
+         placeholder="今天哪個人、地方、聲音或味道讓你停下來？"
+        />
+
+        <button
+         type="button"
+         onClick={createEnding}
+        >
+         編製我的結語
+         <ArrowUpRight size={16}/>
+        </button>
+
+       </div>
+
+      </div>
+
+      {record.ending&&(
+       <div className="personal-ending">
+        <small>
+         個人調查結語・編製済
+        </small>
+
+        <p>
+         {record.ending}
+        </p>
+
+        <i>閱</i>
+       </div>
+      )}
+
      </div>
-     <div className={'document-copy '+documentView} role="tabpanel">
+    )}
+
+
+    {/* 內地人手稿 */}
+
+    {documentView==='mainland'&&(
+     <div
+      className="document-copy mainland"
+      role="tabpanel"
+     >
       <small>{document.title}</small>
-      <h4>{documentView==='mainland'?'內地人手稿':'本島人手稿'}</h4>
-      {activeManuscript.map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
+      <h4>內地人手稿</h4>
+
+      {mainlandManuscript.map(
+       (paragraph,paragraphIndex)=>(
+        <p key={paragraphIndex}>
+         {paragraph}
+        </p>
+       )
+      )}
      </div>
-    </div>
-      <div className="document-reader legacy-reader">
-      <div className="document-tabs" role="tablist" aria-label="切換城市記錄版本">
-       <button role="tab" aria-selected={documentView==='travel'} className={documentView==='travel'?'active':''} onClick={()=>setDocumentView('travel')}>內地人遊記</button>
-       <button role="tab" aria-selected={documentView==='island'} className={documentView==='island'?'active':''} disabled={!islandManuscriptReady} onClick={()=>setDocumentView('island')}>{islandManuscriptReady?'本島人手稿':item.pending?'本島人手稿・題目待發':'本島人手稿・封緘中'}</button>
-      </div>
-      <div className={'document-copy '+documentView} role="tabpanel">
-       <small>{document.title}</small>
-       <h4>{documentView==='travel'?'內地人遊記':'本島人手稿'}</h4>
-       {document[documentView].map((paragraph,paragraphIndex)=><p key={paragraphIndex}>{paragraph}</p>)}
-        {documentView==='travel' && document.travelImage && (
-  <img
-    className="travel-document-image"
-    src={document.travelImage}
-    alt={document.title}
-  />
-)}
-      </div>
+    )}
+
+
+    {/* 本島人手稿 */}
+
+    {documentView==='island'&&(
+     <div
+      className="document-copy island"
+      role="tabpanel"
+     >
+      <small>{document.title}</small>
+      <h4>本島人手稿</h4>
+
+      {(item.island||[]).map(
+       (paragraph,paragraphIndex)=>(
+        <p key={paragraphIndex}>
+         {paragraph}
+        </p>
+       )
+      )}
      </div>
+    )}
+
    </section>
-  </div>
-  <section className="field-record">
-   <div className="field-record-heading"><div><small>FIELD NOTE / 私人附箋</small><h3>我的走讀記錄</h3></div><span>本欄僅保存於目前裝置</span></div>
-   <div className="field-record-grid">
-    <div className="photo-entry">
-     {record.photo?<img src={record.photo} alt={'第 '+(index+1)+' 號走讀記錄'}/>:<div><b>寫真貼付欄</b><span>可放入現場照片、街景或小組合照</span></div>}
-     <label><input type="file" accept="image/*" onChange={addPhoto}/>{record.photo?'更換寫真':'選擇寫真'}</label>
-     {record.photo&&<button onClick={()=>saveRecord({...record,photo:''})}>移除</button>}
-     {photoError&&<small>{photoError}</small>}
-    </div>
-    <div className="reflection-entry">
-     <label htmlFor={'reflection-'+index}>調查後記</label>
-     <textarea id={'reflection-'+index} value={record.reflection} onChange={event=>saveRecord({...record,reflection:event.target.value,ending:''})} placeholder="今天哪個人、地方、聲音或味道讓你停下來？"/>
-     <button onClick={createEnding}>編製我的結語 <ArrowUpRight size={16}/></button>
-    </div>
-   </div>
-   {record.ending&&<div className="personal-ending"><small>個人調查結語・編製済</small><p>{record.ending}</p><i>閱</i></div>}
-  </section>
- </article>
+
+
+   {/* =====================================================
+       ② 題目
+       一定放在調查資料下面
+   ====================================================== */}
+
+   <section className="gazette-query">
+
+    <h3>{item.taskTitle}</h3>
+
+    <p>{item.hint}</p>
+
+
+    {item.question&&(
+     <section
+      className="case-question-sheet"
+      aria-label="案件查核資料"
+     >
+
+      <small>
+       案件查核資料
+      </small>
+
+      <h4>
+       {item.question}
+      </h4>
+
+      {item.questionDetails?.map(
+       (detail,detailIndex)=>(
+        <p key={detailIndex}>
+         {detail}
+        </p>
+       )
+      )}
+
+      {item.questionHint&&(
+       <em>
+        提示：{item.questionHint}
+       </em>
+      )}
+
+     </section>
+    )}
+
+
+    {/* 直接閱覽案件 */}
+
+    {item.direct&&(
+     <p className="gazette-approved">
+      本件無須輸入答案，可直接對照兩種城市記錄。
+     </p>
+    )}
+
+
+    {/* 尚未發題 */}
+
+    {item.pending&&(
+     <p className="pending-case-notice">
+      現場題目尚未發給，文書暫保持封緘；
+      取得題目後將補上查核欄。
+     </p>
+    )}
+
+
+    {/* 作答 */}
+
+    {!item.direct&&!item.pending&&!solved&&(
+     <form onSubmit={submit}>
+
+      <label htmlFor={'case-'+index}>
+       {item.inputLabel}
+      </label>
+
+      <div>
+       <input
+        id={'case-'+index}
+        value={value}
+        onChange={event=>{
+         setValue(event.target.value);
+         setError(false);
+        }}
+        placeholder={'請輸入'+item.inputLabel}
+       />
+
+       <button type="submit">
+        送交查核
+       </button>
+      </div>
+
+      {error&&(
+       <small>
+        登記內容不符，請重新確認現場線索。
+       </small>
+      )}
+
+     </form>
+    )}
+
+
+    {/* 解鎖成功 */}
+
+    {!item.direct&&!item.pending&&solved&&(
+     <p className="gazette-approved">
+      本件照合完了，相關手稿已開放閱覽。
+     </p>
+    )}
+
+   </section>
+
+  </article>
+ );
 }
+
+
 
 function NewsroomEntry({onComplete}){
  const [newsroom,setNewsroom]=useState('');
  const [error,setError]=useState('');
+
  const submit=event=>{
   event.preventDefault();
+
   const next=newsroom.trim();
-  if(!next){setError('請填入領隊指定的報社名稱。');return}
-  window.localStorage.setItem('suzuran-newsroom',next);
+
+  if(!next){
+   setError('請填入領隊指定的報社名稱。');
+   return;
+  }
+
+  window.localStorage.setItem(
+   'suzuran-newsroom',
+   next
+  );
+
   onComplete(next);
  };
- return <div className="newspaper-journal-page newsroom-entry-page">
-  <header className="route-nav"><button className="brand" onClick={()=>window.location.assign('./')}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={()=>window.location.assign('./')}><ArrowLeft size={18}/> 返回市役所</button></header>
-  <main><section className="newsroom-entry">
-   <p className="eyebrow">PRESS REGISTRATION / 報社登記</p>
-   <h1>請報明所屬報社</h1>
-   <p>進入調查案件前，請填入同組共用的報社名稱。請全組使用完全相同的名稱，以便後續啟用共用紀錄。</p>
-   <form onSubmit={submit}>
-    <label htmlFor="newsroom-name">報社／組別名稱</label>
-    <input id="newsroom-name" list="newsroom-list" value={newsroom} onChange={event=>{setNewsroom(event.target.value);setError('')}} placeholder="請選擇或填入報社名稱" maxLength="30" autoFocus />
-    <datalist id="newsroom-list"><option value="臺中日日新報"/><option value="曉鐘通信社"/><option value="柳川新聞社"/><option value="鈴蘭報社"/></datalist>
-    <button type="submit">登記後進入案件目錄 <ArrowUpRight size={17}/></button>
-    {error&&<small>{error}</small>}
-   </form>
-   <footer>現階段的個人照片與文字仍僅保存於本機；跨手機共用紀錄將於資料庫啟用後開放。</footer>
-  </section></main>
- </div>
-}
 
+ return (
+  <div className="newspaper-journal-page newsroom-entry-page">
+
+   <header className="route-nav">
+
+    <button
+     className="brand"
+     onClick={()=>window.location.assign('./')}
+    >
+     <span>翻閱1938</span>
+     <i>市報</i>
+    </button>
+
+    <button
+     className="route-back"
+     onClick={()=>window.location.assign('./')}
+    >
+     <ArrowLeft size={18}/>
+     返回市役所
+    </button>
+
+   </header>
+
+
+   <main>
+
+    <section className="newsroom-entry">
+
+     <p className="eyebrow">
+      PRESS REGISTRATION / 報社登記
+     </p>
+
+     <h1>
+      請報明所屬報社
+     </h1>
+
+     <p>
+      進入調查案件前，請選擇同組共用的報社名稱，
+      以便啟用共同調查進度。
+     </p>
+
+
+     <form onSubmit={submit}>
+
+      <label htmlFor="newsroom-name">
+       報社／組別名稱
+      </label>
+
+      <select
+       id="newsroom-name"
+       value={newsroom}
+       onChange={event=>{
+        setNewsroom(event.target.value);
+        setError('');
+       }}
+       autoFocus
+      >
+
+       <option value="">
+        請選擇報社
+       </option>
+
+       <option value="蘭臺">
+        蘭臺
+       </option>
+
+       <option value="見山">
+        見山
+       </option>
+
+       <option value="迴聲">
+        迴聲
+       </option>
+
+      </select>
+
+
+      <button type="submit">
+       登記後進入案件目錄
+       <ArrowUpRight size={17}/>
+      </button>
+
+
+      {error&&(
+       <small>{error}</small>
+      )}
+
+     </form>
+
+
+     <footer>
+      同一組請選擇相同報社；
+      案件解謎進度將由同組共同使用。
+     </footer>
+
+    </section>
+
+   </main>
+
+  </div>
+ );
+}
 function SideQuestArchive({isUnlocked,onUnlock}){
  const [working,setWorking]=useState(null);
  const [answers,setAnswers]=useState({});
