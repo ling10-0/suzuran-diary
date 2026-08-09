@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
 import {routeTransform} from './scripts/route-transform.mjs';
+import {routePlaceNameTransform} from './scripts/route-place-name-transform.mjs';
 import {manuscriptTransform} from './scripts/manuscript-transform.mjs';
 import {syncTransform} from './scripts/sync-transform.mjs';
 import {ninthPuzzleTransform} from './scripts/ninth-puzzle-transform.mjs';
@@ -25,6 +26,6 @@ import {guidedMapLabelTransform} from './scripts/guided-map-label-transform.mjs'
 import {latestManuscriptsTransform} from './scripts/latest-manuscripts-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
+  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), react()],
   base: './'
 });
