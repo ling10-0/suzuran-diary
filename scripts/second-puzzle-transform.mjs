@@ -4,9 +4,10 @@ Object.assign(mainlineCases[1], {
   pending: false,
   type: 'investigation',
   code: '商工第〇二號',
-  taskTitle: '敷島町市場（第三市場）＋榮記餅店',
-  directoryTitle: '敷島町市場（第三市場）',
-  label: '敷島町市場（第三市場）＋榮記餅店',
+  taskTitle: '敷島町市場',
+  directoryTitle: '敷島町市場',
+  label: '敷島町市場',
+  caseSubtitle: '第三市場・榮記餅店',
   inputLabel: '請選擇解讀出的姓氏',
   hint: '先查看兩份原始資料，依貨物交易紀錄中的訂單編號、品項與數量，對照暗碼表解讀文字。',
   question: '你解讀出的文字，對應到下列哪一個姓氏？',
@@ -50,8 +51,16 @@ export function secondPuzzleTransform() {
       if (!code.includes(anchor)) return null;
 
       let next = code;
+      if (!next.includes("import './case-title-note.css';")) {
+        next = next.replace("import './newspaper.css';", "import './newspaper.css';\nimport './case-title-note.css';");
+      }
       next = next.replace(/\n?Object\.assign\(mainlineCases\[1\],[\s\S]*?\n\}\);\n?/g, '\n');
       next = next.replace(anchor, secondPuzzleSetup + '\n\n' + anchor);
+
+      const caseHeader = '<div><p>{item.code}・第 {item.day} 日調查記錄</p><h2>{item.label}</h2></div>';
+      const caseHeaderWithSubtitle = '<div><p>{item.code}・第 {item.day} 日調查記錄</p><h2>{item.label}</h2>{item.caseSubtitle&&<p className="case-title-note">{item.caseSubtitle}</p>}</div>';
+      if (next.includes(caseHeader)) next = next.split(caseHeader).join(caseHeaderWithSubtitle);
+
       return {code: next, map:null};
     }
   };
