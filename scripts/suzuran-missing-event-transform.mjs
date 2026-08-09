@@ -64,7 +64,7 @@ function SuzuranMissingNotice(){
      </div>
      <strong className="suzuran-missing-order">明日調查勤務照常進行。</strong>
      <footer>
-      <div><span>文書係</span><time>昭和十三年八月十四日　午後</time></div>
+      <div><span>文書係</span><time>昭和十三年八月十三日　午後</time></div>
       <i>急</i>
      </footer>
      <button type="button" className="suzuran-missing-confirm" onClick={acknowledge}>確認通報</button>
