@@ -219,12 +219,44 @@
     transform:translateY(8px);
   }
 
+  /* Keep the same reading sequence on phones even if other mobile styles change layout. */
+  .gazette-query{
+    display:flex !important;
+    flex-direction:column !important;
+    width:100% !important;
+  }
+
   .gazette-query>.gazette-travelogue{
-    margin-bottom:24px;
+    order:-30 !important;
+    width:100% !important;
+    margin:0 0 24px !important;
   }
 
   .gazette-query>.case-evidence-documents{
-    margin-bottom:24px;
+    order:-20 !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin:0 0 24px !important;
+    box-sizing:border-box !important;
+  }
+
+  .gazette-query>.case-question-sheet{
+    order:10 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .gazette-query>form{
+    order:20 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  .case-evidence-documents,
+  .case-evidence-grid,
+  .case-evidence-card,
+  .case-evidence-card img{
+    max-width:100% !important;
   }
 
   .embedded-field-record{
