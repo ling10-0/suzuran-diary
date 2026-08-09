@@ -22,6 +22,24 @@
   transform:translateY(12px);
 }
 
+/* Reading order inside each case: travelogue first, then the investigation prompt and evidence. */
+.gazette-query{
+  display:flex;
+  flex-direction:column;
+}
+
+.gazette-query>.gazette-travelogue{
+  order:-10;
+  width:100%;
+  margin-top:0;
+  margin-bottom:30px;
+}
+
+.gazette-query>.gazette-travelogue .document-copy{
+  width:100%;
+  box-sizing:border-box;
+}
+
 .embedded-field-record{
   display:block !important;
   position:relative !important;
@@ -183,6 +201,10 @@
 
   .gazette-meta strong{
     transform:translateY(8px);
+  }
+
+  .gazette-query>.gazette-travelogue{
+    margin-bottom:24px;
   }
 
   .embedded-field-record{
