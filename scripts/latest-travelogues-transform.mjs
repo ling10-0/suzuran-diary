@@ -56,6 +56,10 @@ Object.entries(latestTravelogues).forEach(([caseIndex, travel]) => {
   if (item) item.travel = travel;
 });
 
+if (mainlineCases[0]) {
+  mainlineCases[0].travelImage = './assets/travel/1916.png';
+}
+
 `;
 
       const next = code.slice(0, index) + injection + code.slice(index);
