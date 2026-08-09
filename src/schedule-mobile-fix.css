@@ -97,8 +97,19 @@
   .schedule-hero::after{
     opacity:.12!important;
     transform:scale(.72)!important;
-    transform-origin:center!important;
     pointer-events:none;
+  }
+
+  /* 市役所／驛舍線稿固定貼齊紅色 Hero 的下緣，不再因縮放浮到中央。 */
+  .schedule-hero::before{
+    bottom:0!important;
+    top:auto!important;
+    transform-origin:center bottom!important;
+    background-position:right bottom!important;
+  }
+
+  .schedule-hero::after{
+    transform-origin:center!important;
   }
 }
 
