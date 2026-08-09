@@ -1,0 +1,101 @@
+@media (max-width: 800px){
+  .schedule-page{overflow-x:hidden}
+  .schedule-hero{
+    position:relative;
+    isolation:isolate;
+    min-height:430px;
+    padding:56px 20px 54px;
+    overflow:hidden;
+  }
+  .schedule-hero-copy{
+    position:relative;
+    z-index:4;
+    width:100%;
+    max-width:100%;
+    padding-right:0;
+  }
+  .schedule-hero-copy .eyebrow{
+    max-width:72%;
+    font-size:10px;
+    line-height:1.65;
+  }
+  .schedule-hero h1{
+    position:relative;
+    z-index:4;
+    width:100%;
+    max-width:100%;
+    margin:14px 0 18px;
+    font-size:clamp(38px,11vw,50px);
+    line-height:1.15;
+    letter-spacing:.01em;
+    white-space:normal;
+  }
+  .schedule-hero-copy>p:last-child{
+    position:relative;
+    z-index:4;
+    width:min(76%,360px);
+    max-width:100%;
+    margin:0;
+    font-size:13px;
+    line-height:1.9;
+  }
+  .schedule-hero-notice{
+    position:absolute!important;
+    z-index:2!important;
+    top:42px!important;
+    right:18px!important;
+    left:auto!important;
+    width:128px!important;
+    min-width:0!important;
+    max-width:34vw!important;
+    height:auto!important;
+    padding:11px 8px!important;
+    transform:rotate(-5deg)!important;
+    transform-origin:center!important;
+    opacity:.42;
+    pointer-events:none;
+  }
+  .schedule-hero-notice small,
+  .schedule-hero-notice b,
+  .schedule-hero-notice span{
+    display:block;
+    max-width:100%;
+    font-size:9px!important;
+    line-height:1.45!important;
+    white-space:normal!important;
+    text-align:center;
+  }
+  .schedule-character{
+    position:absolute!important;
+    z-index:1!important;
+    right:-26px!important;
+    bottom:-20px!important;
+    top:auto!important;
+    left:auto!important;
+    width:168px!important;
+    max-width:42vw!important;
+    height:auto!important;
+    object-fit:contain!important;
+    object-position:right bottom!important;
+    opacity:.28!important;
+    transform:none!important;
+    pointer-events:none;
+  }
+  .schedule-hero::before,
+  .schedule-hero::after{
+    max-width:100%;
+    overflow:hidden;
+  }
+}
+
+@media (max-width: 430px){
+  .schedule-hero{
+    min-height:410px;
+    padding:48px 18px 48px;
+  }
+  .schedule-hero-copy .eyebrow{max-width:68%;font-size:9px}
+  .schedule-hero h1{font-size:clamp(36px,10.5vw,44px)}
+  .schedule-hero-copy>p:last-child{width:78%;font-size:12px}
+  .schedule-hero-notice{top:34px!important;right:12px!important;width:112px!important;max-width:31vw!important}
+  .schedule-character{right:-28px!important;bottom:-12px!important;width:148px!important;max-width:40vw!important}
+}
