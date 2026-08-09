@@ -37,11 +37,11 @@ function SuzuranMissingNotice(){
  };
 
  return <>
-  <button className="suzuran-missing-banner" type="button" onClick={()=>setOpen(true)}>
+  {!open&&<button className="suzuran-missing-banner" type="button" onClick={()=>setOpen(true)}>
    <span>臨時通報</span>
    <strong>案內係員・鈴蘭　所在不明</strong>
-   <b>{open?'通報表示中':'調查継續中'}</b>
-  </button>
+   <b>調查継續中</b>
+  </button>}
   {open&&<div className="suzuran-missing-overlay" role="dialog" aria-modal="true" aria-labelledby="suzuran-missing-title">
    <article className="suzuran-missing-paper">
     <header>
