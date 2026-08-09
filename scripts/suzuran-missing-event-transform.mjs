@@ -40,7 +40,7 @@ function SuzuranMissingNotice(){
   {!open&&<button className="suzuran-missing-banner" type="button" onClick={()=>setOpen(true)}>
    <span>臨時通報</span>
    <strong>案內係員・鈴蘭　所在不明</strong>
-   <b>調查継續中</b>
+   <b>調查繼續中</b>
   </button>}
   {open&&<div className="suzuran-missing-overlay" role="dialog" aria-modal="true" aria-labelledby="suzuran-missing-title">
    <div className="suzuran-missing-shell">
