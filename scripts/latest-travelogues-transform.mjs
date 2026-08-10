@@ -60,6 +60,10 @@ if (mainlineCases[0]) {
   mainlineCases[0].travelImage = './assets/travel/1916.png';
 }
 
+if (mainlineCases[2]) {
+  mainlineCases[2].travelImage = './assets/travel/bridge.jpg';
+}
+
 `;
 
       const next = code.slice(0, index) + injection + code.slice(index);
