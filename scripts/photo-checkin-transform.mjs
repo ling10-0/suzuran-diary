@@ -90,6 +90,17 @@ export function photoCheckinTransform(){
     "item.direct&&index!==0\n       ?'公開'\n       :item.direct&&index===0\n        ?(solved?'受理済':'待隊輔確認')"
    );
 
+   /* 案件目錄與 sharedSolved 原本把所有 direct 案件直接視為通關，
+      會讓 1916 一進頁面就被標成 solved，導致密碼欄永遠不出現。 */
+   next=next.replace(
+    "const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';",
+    "const isSolved=index=>(puzzles[index]?.direct&&index!==0)||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';"
+   );
+   next=next.replace(
+    "const status=item.direct?'直接閱覽':item.pending?'題目待發':solved?'已解鎖':'未查核';",
+    "const status=item.direct&&item.index===0?(solved?'已解鎖':'待隊輔確認'):item.direct?'直接閱覽':item.pending?'題目待發':solved?'已解鎖':'未查核';"
+   );
+
    const fieldStart='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    if(!next.includes('function PhotoCheckinChallenge(')&&next.includes(fieldStart)){
     next=next.replace(fieldStart,photoComponent+'\n'+fieldStart);
