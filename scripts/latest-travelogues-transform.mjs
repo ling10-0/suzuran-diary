@@ -65,8 +65,7 @@ const latestTravelImages = {
   3: './assets/travel/change.jpg',
   4: './assets/travel/library.jpg',
   5: './assets/travel/shiyakusho.jpg',
-  // 目前 assets/travel 尚無大正橋通專用照片，先沿用橋梁照片，避免誤顯示柳川照片。
-  6: './assets/travel/bridge.jpg',
+  6: './assets/travel/da.jpg',
   7: './assets/travel/bookstore.jpg',
   8: './assets/travel/yanagawa.jpg',
   9: './assets/travel/second.jpg'
