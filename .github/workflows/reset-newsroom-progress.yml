@@ -1,0 +1,32 @@
+name: Reset newsroom progress
+
+on:
+  push:
+    paths:
+      - '.github/workflows/reset-newsroom-progress.yml'
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Delete all three newsroom progress records
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL=$(grep "const supabaseUrl" src/sharedProgress.js | sed -E "s/.*= '([^']+)'.*/\1/")
+          KEY=$(grep "const publishableKey" src/sharedProgress.js | sed -E "s/.*= '([^']+)'.*/\1/")
+          ENDPOINT="$URL/rest/v1/newsroom_progress"
+
+          curl --fail-with-body -sS -X DELETE \
+            "$ENDPOINT?newsroom=in.(蘭臺,見山,迴聲)" \
+            -H "apikey: $KEY" \
+            -H 'Prefer: return=minimal'
+
+          RESULT=$(curl --fail-with-body -sS \
+            "$ENDPOINT?select=newsroom,case_index&newsroom=in.(蘭臺,見山,迴聲)" \
+            -H "apikey: $KEY" \
+            -H 'Accept: application/json')
+
+          echo "Remaining rows: $RESULT"
+          test "$RESULT" = '[]'
