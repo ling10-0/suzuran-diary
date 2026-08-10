@@ -1,0 +1,19 @@
+.publication-decision-stage{background:rgba(255,255,255,.08)}
+.publication-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.publication-choice-card{display:grid;gap:8px;min-height:150px;padding:18px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.12);color:var(--gazette-ink);font-family:inherit;text-align:left;cursor:pointer}
+.publication-choice-card:hover,.publication-choice-card:focus-visible{border-color:var(--gazette-red);background:rgba(143,37,29,.06);outline:none}
+.publication-choice-card small{font:10px 'DM Mono';letter-spacing:.12em;color:var(--gazette-red)}
+.publication-choice-card b{font-size:20px;line-height:1.4}
+.publication-choice-card span{font-size:12px;line-height:1.8}
+.ending-stage{position:relative;overflow:hidden;padding-top:34px!important}
+.ending-stamp{display:inline-block;margin:0 0 14px;padding:5px 9px;border:2px solid var(--gazette-red);color:var(--gazette-red);font-weight:700;letter-spacing:.14em;transform:rotate(-2deg)}
+.ending-stage h4{font-size:26px;line-height:1.45}
+.ending-lead{font-size:14px!important;line-height:2!important}
+.ending-news-card,.ending-telegram{margin:20px 0;padding:18px;border:1px solid var(--gazette-rule);background:rgba(255,255,255,.16)}
+.ending-news-card small,.ending-telegram small{display:block;margin-bottom:8px;font:10px 'DM Mono';letter-spacing:.12em;color:var(--gazette-red)}
+.ending-news-card b,.ending-telegram b{display:block;font-size:18px;line-height:1.55}
+.ending-news-card p,.ending-telegram p{margin:10px 0 0;font-size:13px;line-height:1.9}
+.ending-publish{border-top:4px solid var(--gazette-red)}
+.ending-protect{border-top:4px solid var(--gazette-ink)}
+.ending-question{margin-top:20px!important;padding:14px 16px;border-left:3px solid var(--gazette-red);background:rgba(143,37,29,.04);font-weight:700}
+@media(max-width:700px){.publication-choice-grid{grid-template-columns:1fr}.publication-choice-card{min-height:0}.ending-stage h4{font-size:22px}.ending-news-card,.ending-telegram{padding:15px}}
