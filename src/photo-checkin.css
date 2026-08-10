@@ -10,24 +10,28 @@
   isolation:isolate;
 }
 
-/* Override the site's global `header { position:absolute; ... }` rule.
-   This is an in-card section heading, so it must stay in normal document flow. */
+/* Override the site's global header positioning. */
 .photo-checkin-head{
-  position:static;
-  inset:auto;
-  z-index:auto;
-  height:auto;
-  min-height:0;
+  position:static!important;
+  inset:auto!important;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  z-index:auto!important;
+  width:100%!important;
+  max-width:100%;
+  height:auto!important;
+  min-height:0!important;
   display:grid;
   grid-template-columns:minmax(0,1fr);
   align-items:start;
   justify-content:stretch;
   gap:8px;
-  width:100%;
-  max-width:100%;
   box-sizing:border-box;
-  padding:0 0 18px;
-  margin:0;
+  padding:0 0 18px!important;
+  margin:0!important;
+  transform:none!important;
   background:transparent;
   border:0;
   border-bottom:1px solid rgba(59,42,30,.35);
@@ -44,6 +48,7 @@
 }
 
 .photo-checkin-head h4{
+  display:block;
   margin:0;
   max-width:100%;
   font-size:1.55rem;
@@ -52,6 +57,7 @@
 }
 
 .photo-checkin-head p{
+  display:block;
   margin:0;
   max-width:100%;
   min-width:0;
@@ -273,74 +279,122 @@
 }
 
 @media(max-width:800px){
+  .newspaper-journal-page .photo-checkin-challenge,
   .photo-checkin-challenge{
-    padding:16px;
-    margin-top:26px;
-  }
-
-  /* Keep overriding generic mobile `header` rules as well. */
-  .photo-checkin-head{
-    position:static;
-    inset:auto;
-    z-index:auto;
-    height:auto;
-    min-height:0;
     width:100%;
-    padding:0 0 14px;
-    margin:0;
-    gap:7px;
+    max-width:100%;
+    margin:22px 0 10px;
+    padding:14px;
+    overflow:hidden;
   }
 
+  .newspaper-journal-page .photo-checkin-head,
+  .photo-checkin-head{
+    position:static!important;
+    inset:auto!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    z-index:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    display:block!important;
+    padding:0 0 14px!important;
+    margin:0 0 16px!important;
+    transform:none!important;
+    border:0!important;
+    border-bottom:1px solid rgba(59,42,30,.35)!important;
+  }
+
+  .newspaper-journal-page .photo-checkin-head small,
+  .photo-checkin-head small{
+    display:block!important;
+    margin:0 0 7px!important;
+    font-size:.75rem;
+    line-height:1.4;
+  }
+
+  .newspaper-journal-page .photo-checkin-head h4,
   .photo-checkin-head h4{
+    display:block!important;
+    margin:0 0 8px!important;
     font-size:1.3rem;
+    line-height:1.35;
+  }
+
+  .newspaper-journal-page .photo-checkin-head p,
+  .photo-checkin-head p{
+    display:block!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:.92rem;
+    line-height:1.75;
   }
 
   .photo-checkin-grid{
-    gap:16px;
+    grid-template-columns:1fr;
+    gap:14px;
+    margin-top:0;
+  }
+
+  .photo-checkin-card{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:12px;
   }
 
   .photo-reference-pair{
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:8px;
   }
 
   .photo-reference-pair img{
-    height:180px;
+    height:160px;
   }
 
   .photo-reference-pair figcaption{
     padding:7px;
-    font-size:.82rem;
+    font-size:.8rem;
   }
 
-  .photo-checkin-card{
-    padding:12px;
+  .photo-checkin-card>p{
+    margin:12px 0 14px;
+    font-size:.9rem;
   }
 
   .photo-staff-gate{
-    padding:14px;
+    width:100%;
+    padding:13px;
+    gap:9px;
   }
 
   .photo-staff-gate-row{
     grid-template-columns:1fr;
+    gap:8px;
   }
 
+  .photo-staff-gate input,
   .photo-staff-gate .photo-pass-button{
     width:100%;
+    min-height:46px;
   }
 }
 
 @media(max-width:520px){
+  .newspaper-journal-page .photo-checkin-challenge,
   .photo-checkin-challenge{
-    padding:12px;
+    margin:18px 0 8px;
+    padding:10px;
   }
 
+  .newspaper-journal-page .photo-checkin-head,
   .photo-checkin-head{
-    padding:0 0 12px;
-  }
-
-  .photo-checkin-head p{
-    font-size:.92rem;
-    line-height:1.7;
+    padding:0 0 12px!important;
+    margin:0 0 12px!important;
   }
 
   .photo-reference-pair{
@@ -364,8 +418,8 @@
   }
 
   .photo-staff-gate{
-    padding:12px;
-    gap:9px;
+    padding:11px;
+    gap:8px;
   }
 
   .photo-staff-gate-copy strong{
