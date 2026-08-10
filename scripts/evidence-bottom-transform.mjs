@@ -7,7 +7,7 @@ const evidenceMarkup = `
        <header>
         {!item.evidenceCompact&&<small>EVIDENCE / 原始資料</small>}
         <h4>{item.evidenceHeading||'請放大檢視原始資料'}</h4>
-        <p>近期整理工場舊資料時，工作人員發現一只空的工程圖封套，以及一份殘缺的工程人員名冊。<br/>封套中的圖稿已不見，只剩襯紙；借用人姓名遭墨水覆蓋，工程人員名冊共列七人，第七人的姓名也遭塗黑。請仔細查看兩張原始資料。</p>
+        <p>手機可點擊圖片開啟原尺寸查看細節，再返回此頁作答。</p>
        </header>
        <div className="case-evidence-grid">
         {item.evidenceDocuments.map((evidence,evidenceIndex)=><figure className="case-evidence-card" key={evidence.src}>
