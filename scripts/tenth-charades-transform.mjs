@@ -24,6 +24,7 @@ export function tenthCharadesTransform(){
   transform(code,id){
    if(!id.endsWith('/src/main.jsx')||!code.includes('function MarketLockerFlow({onComplete})'))return null;
    let next=code;
+   if(!next.includes("import './tenth-charades.css';"))next=next.replace("import './tenth-puzzle.css';","import './tenth-puzzle.css';\nimport './tenth-charades.css';");
    if(!next.includes("const [charadeText,setCharadeText]=useState('');")){
     next=next.replace(" const [finalTwo,setFinalTwo]=useState('');\n const [ready,setReady]=useState(false);"," const [finalTwo,setFinalTwo]=useState('');\n const [charadeText,setCharadeText]=useState('');\n const [ready,setReady]=useState(false);");
    }
