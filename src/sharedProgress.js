@@ -48,7 +48,7 @@ export async function loadNewsroomProgress(newsroom) {
 export async function saveNewsroomProgress(newsroom, caseIndex) {
   const group = assertNewsroom(newsroom);
   const progressId = Number(caseIndex);
-  if (!Number.isInteger(progressId) || progressId < 0 || progressId > 12) {
+  if (!Number.isInteger(progressId) || progressId < 1000 || progressId > 1099) {
     throw new Error('案件進度編號無效');
   }
 

@@ -176,8 +176,8 @@ function resizePhoto(file){
 }
 
 function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
- const unlockKey='suzuran-main-v2-unlocked-'+index;
- const recordKey='suzuran-main-v2-field-record-'+index;
+ const unlockKey='suzuran-main-v3-unlocked-'+index;
+ const recordKey='suzuran-main-v3-field-record-'+index;
 
  const initialRecord=()=>{
   try{
@@ -892,18 +892,20 @@ function NewspaperJournalPage({caseIndex}){
   const timer=window.setInterval(refreshProgress,10000);
   return()=>window.clearInterval(timer)
  },[newsroom]);
- const mainProgressId=index=>1000+index;
+ const mainProgressId=index=>1050+index;
+ const sideProgressId=id=>1070+(id-100);
  const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v2-unlocked-'+index)==='1';
- const isSideUnlocked=id=>(sharedProgress?.includes(id)??false)||window.localStorage.getItem('suzuran-side-unlocked-'+id)==='1';
+ const isSideUnlocked=id=>(sharedProgress?.includes(sideProgressId(id))??false)||window.localStorage.getItem('suzuran-side-v2-unlocked-'+id)==='1';
  const unlockedCount=puzzles.filter((_,index)=>isSolved(index)).length;
  const markSharedSolved=async index=>{
   const progressId=mainProgressId(index);
   try{await saveNewsroomProgress(newsroom,progressId);setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
  };
  const unlockSideQuest=async id=>{
-  window.localStorage.setItem('suzuran-side-unlocked-'+id,'1');
-  setSharedProgress(current=>Array.from(new Set([...(current||[]),id])));
-  try{await saveNewsroomProgress(newsroom,id);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}
+  const progressId=sideProgressId(id);
+  window.localStorage.setItem('suzuran-side-v2-unlocked-'+id,'1');
+  setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));
+  try{await saveNewsroomProgress(newsroom,progressId);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}
  };
  const selected=Number.isInteger(caseIndex)&&caseIndex>=0&&caseIndex<puzzles.length?caseIndex:null;
  const openCase=index=>window.location.assign('./?page=puzzles&case='+(index+1));
