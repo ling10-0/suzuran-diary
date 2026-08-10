@@ -10,13 +10,9 @@ Object.assign(mainlineCases[10], {
   label: '第二日・綠空廊道',
   inputLabel: '完成第二日碎片追查',
   hint: '碎片①由工作人員於開場直接發放。每答對一題，依畫面指示向工作人員領取下一片；第四題為現場比手畫腳。',
-  question: '昨晚鈴蘭與青木為什麼將工程圖拆成五片？',
-  questionDetails: [
-    '今早，集合地點收到一封沒有署名的信。信封中已有《七－圖庫地下工程圖》碎片①、鈴蘭留下的訊息，以及一張未完成的綠空廊道路線圖。',
-    '鈴蘭寫道：「昨晚我去通知父親時，後面一直有人跟著，我們不能帶著完整的圖一起走，所以把它拆開了。有些是我們藏起來的，有些可能在逃跑時掉了。不要只追著我的腳步走，父親和我曾經分開。」',
-    '你們已經拿到第一片。前三題要重建行動邏輯；第四題則要靠現場比手畫腳還原鈴蘭沒有直接寫下來的行動訊息。'
-  ],
-  questionHint: '第四題請先完成五個關鍵字的比手畫腳，再把五個詞依正確順序放回網站句子。',
+  question: '',
+  questionDetails: [],
+  questionHint: '',
   customFlow: 'greenCorridorFragments'
 });`;
 
@@ -107,6 +103,14 @@ function GreenCorridorFragmentFlow({onComplete}){
  return <section className="day2-fragment-flow" aria-label="第二日工程圖碎片追查">
   <header className="day2-progress"><div><small>DAY 02 / GREEN CORRIDOR FILE</small><b>重建《七－圖庫地下工程圖》</b></div><strong>{foundCount} / 5</strong></header>
   {fragmentBar}
+  {stage===0&&<section className="day2-stage day2-intro-stage">
+   <p className="day2-kicker">案件查核資料</p>
+   <h4>昨晚鈴蘭與青木為什麼將工程圖拆成五片？</h4>
+   <p>今早，集合地點收到一封沒有署名的信。信封中已有《七－圖庫地下工程圖》碎片①、鈴蘭留下的訊息，以及一張未完成的綠空廊道路線圖。</p>
+   <p>鈴蘭寫道：「昨晚我去通知父親時，後面一直有人跟著，我們不能帶著完整的圖一起走，所以把它拆開了。有些是我們藏起來的，有些可能在逃跑時掉了。不要只追著我的腳步走，父親和我曾經分開。」</p>
+   <p>你們已經拿到第一片。前三題要重建行動邏輯；第四題則要靠現場比手畫腳，還原鈴蘭沒有直接寫下來的行動訊息。</p>
+   <p className="choice-reminder">提示：第四題請先完成五個關鍵字的比手畫腳，再把五個詞依正確順序放回網站句子。</p>
+  </section>}
   {stage<8&&stage%2===0&&current&&<section className="day2-stage">
    <p className="day2-kicker">Q{current.no}｜碎片追查</p>
    <h4>{current.title}</h4>
