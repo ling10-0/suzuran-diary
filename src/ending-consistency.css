@@ -1,0 +1,12 @@
+/* Ending alignment + promotion consistency */
+.ending-extra{display:block;width:100%;max-width:100%;overflow:hidden}
+.official-telegram{width:min(760px,100%)!important;max-width:100%!important;margin:28px auto 0!important;transform:rotate(.35deg)!important;box-sizing:border-box!important}
+.official-telegram small,.official-telegram b,.official-telegram p{max-width:100%;overflow-wrap:anywhere}
+.promotion-certificate{width:min(820px,100%);max-width:100%;margin:22px auto 0;box-sizing:border-box}
+.promotion-score-note{display:grid;gap:7px;width:min(620px,100%);margin:18px auto 6px;padding:16px 18px;border:1px solid rgba(105,80,51,.5);background:rgba(250,238,207,.55);text-align:left;box-sizing:border-box}
+.promotion-score-note small{font:10px 'DM Mono';letter-spacing:.12em;color:#9b3028}
+.promotion-score-note b{font-size:18px;line-height:1.5;color:#35271c}
+.promotion-score-note p{margin:0;font-size:12px;line-height:1.8;color:#5a4734}
+.extra-grid{align-items:stretch}
+.publish-cost{width:auto;max-width:none;box-sizing:border-box}
+@media(max-width:700px){.official-telegram{width:100%!important;margin:18px 0 0!important;transform:none!important}.promotion-certificate{width:100%;margin-top:18px}.promotion-score-note{width:100%;padding:14px}.promotion-score-note b{font-size:16px}}
