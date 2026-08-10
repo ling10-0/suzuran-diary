@@ -10,9 +10,18 @@
   isolation:isolate;
 }
 
+/* Override the site's global `header { position:absolute; ... }` rule.
+   This is an in-card section heading, so it must stay in normal document flow. */
 .photo-checkin-head{
+  position:static;
+  inset:auto;
+  z-index:auto;
+  height:auto;
+  min-height:0;
   display:grid;
   grid-template-columns:minmax(0,1fr);
+  align-items:start;
+  justify-content:stretch;
   gap:8px;
   width:100%;
   max-width:100%;
@@ -195,9 +204,17 @@
     margin-top:26px;
   }
 
+  /* Keep overriding generic mobile `header` rules as well. */
   .photo-checkin-head{
+    position:static;
+    inset:auto;
+    z-index:auto;
+    height:auto;
+    min-height:0;
+    width:100%;
+    padding:0 0 14px;
+    margin:0;
     gap:7px;
-    padding-bottom:14px;
   }
 
   .photo-checkin-head h4{
@@ -229,6 +246,15 @@
 @media(max-width:520px){
   .photo-checkin-challenge{
     padding:12px;
+  }
+
+  .photo-checkin-head{
+    padding:0 0 12px;
+  }
+
+  .photo-checkin-head p{
+    font-size:.92rem;
+    line-height:1.7;
   }
 
   .photo-reference-pair{
