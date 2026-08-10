@@ -11,9 +11,10 @@ export function liuchuanEvidenceImagesTransform(){
         next=next.replace("import './ninth-puzzle.css';","import './ninth-puzzle.css';\nimport './liuchuan-evidence-images.css';");
       }
 
-      const mapAnchor='<div className="liuchuan-map" aria-label="柳川簡化舊地圖">';
-      if(next.includes(mapAnchor)&&!next.includes('liuchuan-map.png')){
-        next=next.replace(mapAnchor,`<figure className="liuchuan-source-document"><figcaption>資料一｜柳川舊地圖 <span>點圖放大 ↗</span></figcaption><a href="./assets/puzzles/liuchuan/liuchuan-map.png" target="_blank" rel="noreferrer"><img src="./assets/puzzles/liuchuan/liuchuan-map.png" alt="柳川舊地圖，標示四個調查點與河岸路線。" loading="lazy"/></a></figure>\n   ${mapAnchor}`);
+      const oldMap=`<div className="liuchuan-map" aria-label="柳川簡化舊地圖">\n    <div className="river-line"></div>\n    {Object.entries(points).map(([code,name])=><article className={'map-point point-'+code.toLowerCase()} key={code}><b>{code}</b><span>{name}</span></article>)}\n   </div>`;
+      const sourceMap=`<figure className="liuchuan-source-document liuchuan-primary-map"><figcaption>資料一｜柳川舊地圖 <span>點圖放大 ↗</span></figcaption><a href="./assets/puzzles/liuchuan/liuchuan-map.png" target="_blank" rel="noreferrer"><img src="./assets/puzzles/liuchuan/liuchuan-map.png" alt="柳川舊地圖，標示四個調查點與河岸路線。" loading="lazy"/></a></figure>`;
+      if(next.includes(oldMap)&&!next.includes('liuchuan-primary-map')){
+        next=next.replace(oldMap,sourceMap);
       }
 
       const testimonyAnchor='<blockquote>那名外地男子從北側橋口走來，手中抱著一支長紙筒。';
