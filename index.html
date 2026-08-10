@@ -23,6 +23,51 @@
       .newspaper-journal-page .four-reading-tabs button:nth-child(-n + 2) {
         border-bottom: 1px solid var(--gazette-ink);
       }
+
+      /* 柳川第九題：讓地圖圖片與外框同寬，避免 max-height 把圖片縮窄後留下大面積空白。 */
+      .newspaper-journal-page .case-question-sheet .liuchuan-stage {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .newspaper-journal-page .case-question-sheet .liuchuan-stage > header {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0 0 16px;
+        overflow: hidden;
+      }
+
+      .newspaper-journal-page .case-question-sheet .liuchuan-map-wrap {
+        width: min(100%, 920px);
+        max-width: 100%;
+        min-height: 0;
+        margin: 16px auto;
+        box-sizing: border-box;
+        overflow: hidden;
+        line-height: 0;
+      }
+
+      .newspaper-journal-page .case-question-sheet .liuchuan-map-image {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        margin: 0;
+        object-fit: contain;
+      }
+
+      .newspaper-journal-page .case-question-sheet .liuchuan-map-diagram {
+        line-height: normal;
+      }
+
+      @media (max-width: 800px) {
+        .newspaper-journal-page .case-question-sheet .liuchuan-map-wrap {
+          width: 100%;
+          min-height: 0;
+        }
+      }
     </style>
   </head>
   <body>
