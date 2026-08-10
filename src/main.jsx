@@ -894,7 +894,7 @@ function NewspaperJournalPage({caseIndex}){
  },[newsroom]);
  const mainProgressId=index=>1050+index;
  const sideProgressId=id=>1070+(id-100);
- const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v2-unlocked-'+index)==='1';
+ const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';
  const isSideUnlocked=id=>(sharedProgress?.includes(sideProgressId(id))??false)||window.localStorage.getItem('suzuran-side-v2-unlocked-'+id)==='1';
  const unlockedCount=puzzles.filter((_,index)=>isSolved(index)).length;
  const markSharedSolved=async index=>{
