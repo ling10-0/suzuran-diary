@@ -1,15 +1,15 @@
 const placeOnlyTitles = `
 [
   '大正製酒株式會社',
-  '敷島町市場',
-  '新盛橋通、櫻橋通',
+  '敷島町市場＋榮記餅店',
+  '新盛橋通、櫻橋通＋進來涼冬瓜茶',
   '精養軒',
   '臺中州立圖書館',
   '臺中市役所',
   '大正橋通',
   '中央書局',
   '柳川古道',
-  '新富町市場',
+  '新富町市場＋鹿港阿甫師肉包',
   '臺中驛鐵道路廊'
 ].forEach((title,index)=>{
   if(mainlineCases[index]) mainlineCases[index].directoryTitle=title;
