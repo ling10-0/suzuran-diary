@@ -20,7 +20,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
   <header className="photo-checkin-head">
    <small>CHECK-IN / 拍照打卡</small>
    <h4>拍照打卡</h4>
-   <p>請在大正製酒株式會社園區內找到下方兩個指定位置，並在各地點模仿對應姿勢完成拍照。兩組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿。</p>
+   <p>請在大正製酒株式會社園區內找到下方兩個指定位置，並在各地點模仿對應姿勢完成拍照。兩組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿與案件查核資料。</p>
   </header>
   <div className="photo-checkin-grid">
    <article className={'photo-checkin-card '+(photoCheck1?'is-done':'')}>
@@ -58,7 +58,6 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
      {staffError&&<p className="photo-staff-error">密碼不正確，請由隊輔重新確認。</p>}
     </form>
    )}
-   {photoCheck1&&photoCheck2&&solved&&<p className="photo-staff-success">✓ 隊輔已確認・本關已通過，相關手稿已開放閱覽。</p>}
   </div>
  </section>
 }
@@ -90,6 +89,12 @@ export function photoCheckinTransform(){
     "item.direct&&index!==0\n       ?'公開'\n       :item.direct&&index===0\n        ?(solved?'受理済':'待隊輔確認')"
    );
 
+   /* 1916 的案件查核資料要在拍照＋隊輔確認後才開示。 */
+   next=next.replace(
+    "{item.question&&(\n",
+    "{item.question&&(!(item.direct&&index===0)||solved)&&(\n"
+   );
+
    /* 案件目錄與 sharedSolved 原本把所有 direct 案件直接視為通關，
       會讓 1916 一進頁面就被標成 solved，導致密碼欄永遠不出現。 */
    next=next.replace(
@@ -108,7 +113,7 @@ export function photoCheckinTransform(){
 
    if(!next.includes('<PhotoCheckinChallenge index={index}')){
     const directBlock=/\{\/\*\s*直接閱覽案件\s*\*\/\}[\s\S]*?\{item\.direct&&\([\s\S]*?<p className="gazette-approved">[\s\S]*?本件無須輸入答案，可直接對照兩種城市記錄。\s*<\/p>[\s\S]*?\)\}/;
-    const replacement=`{/* 直接閱覽案件 */}\n\n    {item.direct&&index!==0&&(\n     <p className="gazette-approved">\n      本件無須輸入答案，可直接對照兩種城市記錄。\n     </p>\n    )}\n    {item.direct&&index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} `;
+    const replacement=`{/* 直接閱覽案件 */}\n\n    {item.direct&&index!==0&&(\n     <p className="gazette-approved">\n      本件無須輸入答案，可直接對照兩種城市記錄。\n     </p>\n    )}\n    {item.direct&&index===0&&!solved&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} `;
     next=next.replace(directBlock,replacement);
    }
 
