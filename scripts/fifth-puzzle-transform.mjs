@@ -25,7 +25,7 @@ Object.assign(mainlineCases[4], {
     ]}
   ],
   hashes:['96b1f4e6d8cd3503a69066b208f015d8cb93639fa2637ac08af666df056b191f'],
-  evidenceAfterCorrectChoice:true,
+  evidenceAfterCorrectChoice:false,
   evidenceHeading:'數位掃描檔｜請比對正式紀錄與夾藏抄本',
   evidenceCompact:true,
   evidenceDocuments:[
@@ -63,7 +63,7 @@ if (fifthLibraryCase) Object.assign(fifthLibraryCase, {
       {value:'D',label:'D｜《臺中州建築修繕工程年報　昭和十一年度》\\n出版：昭和十二年｜分類號：土木／建築／3143\\n登錄：昭和十二年四月七日｜土木類書庫第四架｜館內閱覽'}
     ]}
   ],
-  evidenceAfterCorrectChoice:true,
+  evidenceAfterCorrectChoice:false,
   evidenceHeading:'數位掃描檔｜請比對正式紀錄與夾藏抄本',
   evidenceCompact:true,
   evidenceDocuments:[
