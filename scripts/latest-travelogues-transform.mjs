@@ -56,13 +56,26 @@ Object.entries(latestTravelogues).forEach(([caseIndex, travel]) => {
   if (item) item.travel = travel;
 });
 
-if (mainlineCases[0]) {
-  mainlineCases[0].travelImage = './assets/travel/1916.png';
-}
+// 關卡順序曾調整過，不能再沿用 mainlineCases 原始陣列中的舊圖片位置。
+// 這裡明確逐題指定，避免第 4 題之後的遊記照片整體錯位。
+const latestTravelImages = {
+  0: './assets/travel/1916.png',
+  1: './assets/travel/third.jpg',
+  2: './assets/travel/bridge.jpg',
+  3: './assets/travel/change.jpg',
+  4: './assets/travel/library.jpg',
+  5: './assets/travel/shiyakusho.jpg',
+  // 目前 assets/travel 尚無大正橋通專用照片，先沿用橋梁照片，避免誤顯示柳川照片。
+  6: './assets/travel/bridge.jpg',
+  7: './assets/travel/bookstore.jpg',
+  8: './assets/travel/yanagawa.jpg',
+  9: './assets/travel/second.jpg'
+};
 
-if (mainlineCases[2]) {
-  mainlineCases[2].travelImage = './assets/travel/bridge.jpg';
-}
+Object.entries(latestTravelImages).forEach(([caseIndex, travelImage]) => {
+  const item = mainlineCases[Number(caseIndex)];
+  if (item) item.travelImage = travelImage;
+});
 
 `;
 
