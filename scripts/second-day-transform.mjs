@@ -25,6 +25,7 @@ function GreenCorridorFragmentFlow({onComplete}){
  const [stage,setStage]=useState(0);
  const [answer,setAnswer]=useState('');
  const [charadeText,setCharadeText]=useState('');
+ const [publicationChoice,setPublicationChoice]=useState('');
  const [error,setError]=useState('');
  const [received,setReceived]=useState({2:false,3:false,4:false,5:false});
  const questions=[
@@ -75,9 +76,9 @@ function GreenCorridorFragmentFlow({onComplete}){
    title:'鈴蘭的無聲訊息',
    prompt:'這一題不提供選項。先完成現場五個比手畫腳，再把猜到的五個詞依順序放回句子。',
    charades:true,
-   keywords:['跟蹤','示警','分開','藏圖','留訊'],
-   frame:'發現有人＿＿後，鈴蘭先向父親＿＿；兩人決定＿＿行動，她把其中一片工程圖＿＿，並設法＿＿給後來追查的人。',
-   result:'你們還原出的訊息顯示：鈴蘭不是單純逃跑，而是在被跟蹤後先示警、再和父親分開，並刻意留下能讓後人接續追查的線索。',
+   keywords:['跟蹤','打電話','分開','藏起來','寫信'],
+   frame:'發現有人＿＿後，鈴蘭先＿＿通知父親；兩人決定＿＿行動，把工程圖＿＿，最後再＿＿留下線索。',
+   result:'你們還原出的訊息顯示：鈴蘭不是單純逃跑，而是在發現跟蹤後先聯絡父親，再分開保管證據並留下能讓後人接續追查的訊息。',
    fragment:5
   }
  ];
@@ -90,7 +91,7 @@ function GreenCorridorFragmentFlow({onComplete}){
    const normalized=charadeText.normalize('NFKC').replace(/\\s+/g,'');
    const positions=current.keywords.map(word=>normalized.indexOf(word));
    const ok=positions.every(position=>position>=0)&&positions.every((position,index)=>index===0||position>positions[index-1]);
-   if(!ok){setError('還缺少比手畫腳得到的關鍵字，或五個詞的順序不正確。請依「跟蹤 → 示警 → 分開 → 藏圖 → 留訊」重新整理。');return}
+   if(!ok){setError('還缺少比手畫腳得到的關鍵字，或五個詞的順序不正確。請依「跟蹤 → 打電話 → 分開 → 藏起來 → 寫信」重新整理。');return}
    setError('');setStage(stage+1);return
   }
   if(!answer){setError('請先選擇一個答案。');return}
@@ -102,6 +103,7 @@ function GreenCorridorFragmentFlow({onComplete}){
   setReceived(prev=>({...prev,[no]:true}));
   setAnswer('');setCharadeText('');setError('');setStage(stage+1)
  };
+ const choosePublication=choice=>{setPublicationChoice(choice);setStage(10)};
  return <section className="day2-fragment-flow" aria-label="第二日工程圖碎片追查">
   <header className="day2-progress"><div><small>DAY 02 / GREEN CORRIDOR FILE</small><b>重建《七－圖庫地下工程圖》</b></div><strong>{foundCount} / 5</strong></header>
   {fragmentBar}
@@ -110,7 +112,7 @@ function GreenCorridorFragmentFlow({onComplete}){
    <h4>{current.title}</h4>
    <p>{current.prompt}</p>
    {current.charades?<>
-    <div className="charades-note"><b>現場任務</b><p>隊輔依序出示五張關鍵字卡：跟蹤、示警、分開、藏圖、留訊。每題40秒；表演者不能說話、寫字、用嘴型提示或直接指出答案文字。</p></div>
+    <div className="charades-note"><b>現場任務</b><p>隊輔依序出示五張關鍵字卡：跟蹤、打電話、分開、藏起來、寫信。每題40秒；表演者不能說話、寫字、用嘴型提示或直接指出答案文字。</p></div>
     <p className="day2-charades-frame">「{current.frame}」</p>
     <label className="day2-charades-input">請輸入完整句子<textarea rows="4" value={charadeText} onChange={event=>{setCharadeText(event.target.value);setError('')}} placeholder="把五個比手畫腳答案依序放進句子中。"/></label>
    </>:<div className="day2-choice-list">{current.options.map(([value,label])=><label key={value} className={answer===value?'is-selected':''}><input type="radio" name={'day2-q-'+current.no} value={value} checked={answer===value} onChange={()=>{setAnswer(value);setError('')}}/><span><b>{value}.</b> {label}</span></label>)}</div>}
@@ -128,8 +130,38 @@ function GreenCorridorFragmentFlow({onComplete}){
    <p className="day2-kicker">最終步驟｜拼回完整工程圖</p>
    <h4>你們已經取得碎片①～⑤</h4>
    <p>請把五片實體工程圖放在一起，依線條、文字與邊緣位置拼回完整《七－圖庫地下工程圖》。</p>
-   <div className="charades-note"><b>完成條件</b><p>五片必須能組成同一張連續圖面。拼好後由小組自行再次核對，再按下「完成工程圖重建」。</p></div>
-   <button className="day2-next" type="button" onClick={onComplete}>完成工程圖重建</button>
+   <div className="charades-note"><b>完成條件</b><p>五片必須能組成同一張連續圖面。拼好後由小組自行再次核對，再進入最後的發刊決定。</p></div>
+   <button className="day2-next" type="button" onClick={()=>setStage(9)}>工程圖已重建・進入發刊決定</button>
+  </section>}
+  {stage===9&&<section className="day2-stage publication-decision-stage">
+   <p className="day2-kicker">最終抉擇｜是否刊登</p>
+   <h4>真相已經完整，但你們要不要把它刊出去？</h4>
+   <p>你們手上的報導足以揭露《七－圖庫》地下工程、異常經費與追查行動，也會暴露鈴蘭與青木仍然存在的線索。總社表示：只要同意刊登，你們的報社將獲得晉升。</p>
+   <div className="publication-choice-grid">
+    <button type="button" className="publication-choice-card" onClick={()=>choosePublication('publish')}><small>選擇一</small><b>同意刊登</b><span>交出完整報導與人物線索，換取正式發刊與報社晉升。</span></button>
+    <button type="button" className="publication-choice-card" onClick={()=>choosePublication('protect')}><small>選擇二</small><b>不同意刊登</b><span>保留關鍵人物資訊，不以他們的安全交換報社地位。</span></button>
+   </div>
+   <p className="choice-reminder">這一題沒有「正確答案」。請先和隊友討論：記者應該把真相公開到什麼程度？你們願意讓誰承擔公開後的代價？</p>
+  </section>}
+  {stage===10&&publicationChoice==='publish'&&<section className="day2-stage ending-stage ending-publish">
+   <p className="ending-stamp">發刊號外</p>
+   <p className="day2-kicker">ENDING A｜同意刊登</p>
+   <h4>恭喜成功發刊，晉升為「中央報社」</h4>
+   <p className="ending-lead">隔天清晨，你們的報導登上頭版。總社發來正式通知：憑藉這次獨家調查，你們的小報社獲准升格為中央報社。</p>
+   <div className="ending-news-card"><small>市役所臨時通告</small><b>「涉案人員已尋獲。」</b><p>一名市役所官員在記者會上宣布：「感謝諸位提供完整線索。鈴蘭與青木已被帶回接受調查，相關工程圖也已由本所接管。」</p></div>
+   <p>桌上放著嶄新的中央報社證章。你們得到了一間更大的辦公室、更高的報社等級，也第一次看見自己的報紙被整座城市傳閱。</p>
+   <p className="ending-question">只是，那篇報導裡再也沒有鈴蘭親口說明自己的機會。</p>
+   <button className="day2-next" type="button" onClick={onComplete}>收下中央報社證章・完成故事</button>
+  </section>}
+  {stage===10&&publicationChoice==='protect'&&<section className="day2-stage ending-stage ending-protect">
+   <p className="ending-stamp">未刊稿</p>
+   <p className="day2-kicker">ENDING B｜不同意刊登</p>
+   <h4>你們沒有升格，仍繼續經營自己的小報社</h4>
+   <p className="ending-lead">幾個月後，冬天來了。報社的暖爐壞了一半，你們圍著桌子吃泡麵，一邊整理下一期可能沒多少人會看的地方新聞。</p>
+   <div className="ending-telegram"><small>叮——電報送達</small><b>致那間沒有刊出我名字的報社：</b><p>「我和父親都平安。那張圖沒有白白留下。謝謝你們最後替我們保留了一個可以繼續生活的地方。——蘭」</p></div>
+   <p>你們仍然沒有中央總社的證章，也沒有豪華辦公室。窗外很冷，泡麵已經有點糊了，但桌上的下一期報紙仍在排版。</p>
+   <p className="ending-question">這一次，你們知道有些沒有被刊出的名字，也可能是記者選擇留下來的真相。</p>
+   <button className="day2-next" type="button" onClick={onComplete}>收下鈴蘭的電報・完成故事</button>
   </section>}
  </section>
 }
@@ -143,6 +175,7 @@ export function secondDayTransform(){
    if(!id.endsWith('/src/main.jsx'))return null;
    let next=code;
    if(!next.includes("import './second-day.css';"))next=next.replace("import './newspaper.css';","import './newspaper.css';\nimport './second-day.css';");
+   if(!next.includes("import './second-day-ending.css';"))next=next.replace("import './second-day.css';","import './second-day.css';\nimport './second-day-ending.css';");
    const puzzleAnchor='const puzzles = mainlineCases;';
    if(next.includes(puzzleAnchor)&&!next.includes("customFlow: 'greenCorridorFragments'"))next=next.replace(puzzleAnchor,secondDaySetup+'\n\n'+puzzleAnchor);
    const fieldAnchor='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
