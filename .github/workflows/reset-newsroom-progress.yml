@@ -1,29 +1,55 @@
-name: Inspect newsroom progress
+name: Start fresh newsroom test batch
 
 on:
   push:
     paths:
       - '.github/workflows/reset-newsroom-progress.yml'
 
+permissions:
+  contents: write
+
 jobs:
-  inspect:
+  reset-batch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Show current newsroom progress rows
+      - name: Move all three newsrooms to a fresh progress batch
         shell: bash
         run: |
           set -euo pipefail
-          URL=$(grep "const supabaseUrl" src/sharedProgress.js | sed -E "s/.*= '([^']+)'.*/\1/")
-          KEY=$(grep "const publishableKey" src/sharedProgress.js | sed -E "s/.*= '([^']+)'.*/\1/")
-          ENDPOINT="$URL/rest/v1/newsroom_progress"
+          python - <<'PY'
+          from pathlib import Path
 
-          for ROOM in '蘭臺' '見山' '迴聲'; do
-            RESULT=$(curl --fail-with-body -sS -G "$ENDPOINT" \
-              --data-urlencode 'select=newsroom,case_index,created_at' \
-              --data-urlencode "newsroom=eq.$ROOM" \
-              --data-urlencode 'order=case_index.asc' \
-              -H "apikey: $KEY" \
-              -H 'Accept: application/json')
-            echo "$ROOM rows: $RESULT"
-          done
+          main_path = Path('src/main.jsx')
+          main = main_path.read_text(encoding='utf-8')
+
+          replacements = {
+              "const unlockKey='suzuran-main-v2-unlocked-'+index;": "const unlockKey='suzuran-main-v3-unlocked-'+index;",
+              "const recordKey='suzuran-main-v2-field-record-'+index;": "const recordKey='suzuran-main-v3-field-record-'+index;",
+              "const mainProgressId=index=>1000+index;": "const mainProgressId=index=>1050+index;\n const sideProgressId=id=>1070+(id-100);",
+              "const isSideUnlocked=id=>(sharedProgress?.includes(id)??false)||window.localStorage.getItem('suzuran-side-unlocked-'+id)==='1';": "const isSideUnlocked=id=>(sharedProgress?.includes(sideProgressId(id))??false)||window.localStorage.getItem('suzuran-side-v2-unlocked-'+id)==='1';",
+              "window.localStorage.setItem('suzuran-side-unlocked-'+id,'1');\n  setSharedProgress(current=>Array.from(new Set([...(current||[]),id])));\n  try{await saveNewsroomProgress(newsroom,id);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}": "const progressId=sideProgressId(id);\n  window.localStorage.setItem('suzuran-side-v2-unlocked-'+id,'1');\n  setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));\n  try{await saveNewsroomProgress(newsroom,progressId);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}",
+          }
+
+          for old, new in replacements.items():
+              if old not in main:
+                  raise SystemExit(f'Missing expected main.jsx text: {old}')
+              main = main.replace(old, new, 1)
+
+          main_path.write_text(main, encoding='utf-8')
+
+          shared_path = Path('src/sharedProgress.js')
+          shared = shared_path.read_text(encoding='utf-8')
+          old = "if (!Number.isInteger(progressId) || progressId < 0 || progressId > 12) {"
+          new = "if (!Number.isInteger(progressId) || progressId < 1000 || progressId > 1099) {"
+          if old not in shared:
+              raise SystemExit('Missing expected sharedProgress validation')
+          shared = shared.replace(old, new, 1)
+          shared_path.write_text(shared, encoding='utf-8')
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main.jsx src/sharedProgress.js
+          git commit -m 'Reset all newsroom progress for fresh retest'
+          git push
