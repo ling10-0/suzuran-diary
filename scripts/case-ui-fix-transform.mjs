@@ -43,18 +43,28 @@ const answerMarkup = String.raw`
             :<input id={'case-'+index+'-0'} value={value.split('|||')[0]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[0]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[0].placeholder||'請輸入答案'}/>} 
            <button type="button" className="case-submit-choice" onClick={()=>{const answer=(value.split('|||')[0]||'').trim().normalize('NFKC').replace(/\s+/g,'');const accepted=item.subQuestions[0].acceptedValues||[item.subQuestions[0].correctValue].filter(Boolean);const ok=accepted.map(v=>String(v).trim().normalize('NFKC').replace(/\s+/g,'')).includes(answer);setError(!ok);if(ok)setSubStep(1)}}>{item.subQuestions[0].submitLabel||('確認'+item.subQuestions[0].title)}</button>
           </section>:<div className="case-step-passed case-step-summary">✓ {item.subQuestions[0].passLabel||'第一階段完成'}</div>}
-          {subStep>=1&&<section className="case-subquestion">
+
+          {subStep>=1&&item.subQuestions[1]&&(item.subQuestions.length<3||subStep<2)?<section className="case-subquestion">
            <small>Q2｜{item.subQuestions[1].title}</small>
            <p>{item.subQuestions[1].prompt}</p>
            {item.subQuestions[1].options?.length
             ?<div className="case-choice-list">{item.subQuestions[1].options.map(option=>{const part=value.split('|||')[1]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-1'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div>
             :<input id={'case-'+index+'-1'} value={value.split('|||')[1]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[1]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[1].placeholder||'請輸入答案'}/>} 
+           {item.subQuestions.length>=3&&<button type="button" className="case-submit-choice" onClick={()=>{const answer=(value.split('|||')[1]||'').trim().normalize('NFKC').replace(/\s+/g,'');const accepted=item.subQuestions[1].acceptedValues||[item.subQuestions[1].correctValue].filter(Boolean);const ok=accepted.map(v=>String(v).trim().normalize('NFKC').replace(/\s+/g,'')).includes(answer);setError(!ok);if(ok)setSubStep(2)}}>{item.subQuestions[1].submitLabel||('確認'+item.subQuestions[1].title)}</button>}
+          </section>:item.subQuestions.length>=3&&subStep>=2?<div className="case-step-passed case-step-summary">✓ {item.subQuestions[1].passLabel||'第二階段完成'}</div>:null}
+
+          {item.subQuestions.length>=3&&subStep>=2&&item.subQuestions[2]&&<section className="case-subquestion">
+           <small>Q3｜{item.subQuestions[2].title}</small>
+           <p>{item.subQuestions[2].prompt}</p>
+           {item.subQuestions[2].options?.length
+            ?<div className="case-choice-list">{item.subQuestions[2].options.map(option=>{const part=value.split('|||')[2]||'';return <label className={'case-choice '+(part===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-sub-'+index+'-2'} value={option.value} checked={part===option.value} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[2]=event.target.value;return parts.join('|||')});setError(false)}}/><span>{option.label}</span></label>})}</div>
+            :<input id={'case-'+index+'-2'} value={value.split('|||')[2]||''} onChange={event=>{setValue(current=>{const parts=current.split('|||');parts[2]=event.target.value;return parts.join('|||')});setError(false)}} placeholder={item.subQuestions[2].placeholder||'請輸入答案'}/>} 
           </section>}
          </div>
          :item.options?.length
           ?<div className="case-choice-list" id={'case-'+index}>{item.options.map(option=><label className={'case-choice '+(value===option.value?'is-selected':'')} key={option.value}><input type="radio" name={'case-choice-'+index} value={option.value} checked={value===option.value} onChange={event=>{setValue(event.target.value);setError(false)}}/><span>{option.label}</span></label>)}</div>
           :<div><input id={'case-'+index} value={value} onChange={event=>{setValue(event.target.value);setError(false)}} placeholder={'請輸入'+item.inputLabel}/></div>}
-        {(!item.subQuestions?.length||subStep>=1)&&<button className="case-submit-choice" type="submit">送交查核</button>}
+        {(!item.subQuestions?.length||subStep>=item.subQuestions.length-1)&&<button className="case-submit-choice" type="submit">送交查核</button>}
         {error&&<small>登記內容不符，請重新確認現場線索。</small>}
        </form>
       )}
@@ -86,8 +96,10 @@ export function caseUiFixTransform(){
   if(item.pending||item.direct)return;
   let ok=false;
   if(item.subQuestions?.length){
-   const answer=(value.split('|||')[1]||'').trim().normalize('NFKC').replace(/\s+/g,'');
-   const accepted=item.subQuestions[1].acceptedValues||[item.subQuestions[1].correctValue].filter(Boolean);
+   const answerIndex=item.subQuestions.length-1;
+   const answer=(value.split('|||')[answerIndex]||'').trim().normalize('NFKC').replace(/\s+/g,'');
+   const finalQuestion=item.subQuestions[answerIndex];
+   const accepted=finalQuestion.acceptedValues||[finalQuestion.correctValue].filter(Boolean);
    ok=accepted.map(v=>String(v).trim().normalize('NFKC').replace(/\s+/g,'')).includes(answer);
   }else{
    const submittedHash=await hashAnswer(value);
