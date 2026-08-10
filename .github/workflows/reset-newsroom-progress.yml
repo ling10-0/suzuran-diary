@@ -1,4 +1,4 @@
-name: Reset newsroom progress
+name: Inspect newsroom progress
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - '.github/workflows/reset-newsroom-progress.yml'
 
 jobs:
-  reset:
+  inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Delete all three newsroom progress records
+      - name: Show current newsroom progress rows
         shell: bash
         run: |
           set -euo pipefail
@@ -19,18 +19,11 @@ jobs:
           ENDPOINT="$URL/rest/v1/newsroom_progress"
 
           for ROOM in '蘭臺' '見山' '迴聲'; do
-            curl --fail-with-body -sS -X DELETE -G "$ENDPOINT" \
-              --data-urlencode "newsroom=eq.$ROOM" \
-              -H "apikey: $KEY" \
-              -H 'Prefer: return=minimal'
-          done
-
-          for ROOM in '蘭臺' '見山' '迴聲'; do
             RESULT=$(curl --fail-with-body -sS -G "$ENDPOINT" \
-              --data-urlencode 'select=newsroom,case_index' \
+              --data-urlencode 'select=newsroom,case_index,created_at' \
               --data-urlencode "newsroom=eq.$ROOM" \
+              --data-urlencode 'order=case_index.asc' \
               -H "apikey: $KEY" \
               -H 'Accept: application/json')
-            echo "$ROOM remaining rows: $RESULT"
-            test "$RESULT" = '[]'
+            echo "$ROOM rows: $RESULT"
           done
