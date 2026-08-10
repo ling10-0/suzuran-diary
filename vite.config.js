@@ -30,8 +30,9 @@ import {caseReadingFirstTransform} from './scripts/case-reading-first-transform.
 import {evidenceBottomTransform} from './scripts/evidence-bottom-transform.mjs';
 import {suzuranMissingEventTransform} from './scripts/suzuran-missing-event-transform.mjs';
 import {caseQuestionTitleTransform} from './scripts/case-question-title-transform.mjs';
+import {photoCheckinTransform} from './scripts/photo-checkin-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), react()],
+  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), photoCheckinTransform(), react()],
   base: './'
 });
