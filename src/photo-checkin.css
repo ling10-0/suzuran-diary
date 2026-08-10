@@ -262,6 +262,37 @@
   font-size:1.05rem;
 }
 
+/* Desktop readability for the case evidence / question sheet. */
+@media(min-width:801px){
+  .newspaper-journal-page .case-question-sheet{
+    padding:24px 26px;
+  }
+
+  .newspaper-journal-page .case-question-sheet>small{
+    font-size:11px;
+    line-height:1.5;
+  }
+
+  .newspaper-journal-page .case-question-sheet h4{
+    margin:10px 0 16px;
+    font-size:22px;
+    line-height:1.65;
+  }
+
+  .newspaper-journal-page .case-question-sheet p{
+    margin:8px 0;
+    font-size:16px;
+    line-height:1.95;
+  }
+
+  .newspaper-journal-page .case-question-sheet em{
+    margin-top:16px;
+    padding-top:13px;
+    font-size:14px;
+    line-height:1.85;
+  }
+}
+
 @media(max-width:980px){
   .photo-checkin-grid{
     grid-template-columns:1fr;
