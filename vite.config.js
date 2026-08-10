@@ -5,7 +5,6 @@ import {routePlaceNameTransform} from './scripts/route-place-name-transform.mjs'
 import {manuscriptTransform} from './scripts/manuscript-transform.mjs';
 import {syncTransform} from './scripts/sync-transform.mjs';
 import {ninthPuzzleTransform} from './scripts/ninth-puzzle-transform.mjs';
-import {liuchuanEvidenceImagesTransform} from './scripts/liuchuan-evidence-images-transform.mjs';
 import {tenthPuzzleTransform} from './scripts/tenth-puzzle-transform.mjs';
 import {secondDayTransform} from './scripts/second-day-transform.mjs';
 import {secondDayMobileFixTransform} from './scripts/second-day-mobile-fix-transform.mjs';
@@ -32,8 +31,9 @@ import {evidenceBottomTransform} from './scripts/evidence-bottom-transform.mjs';
 import {suzuranMissingEventTransform} from './scripts/suzuran-missing-event-transform.mjs';
 import {caseQuestionTitleTransform} from './scripts/case-question-title-transform.mjs';
 import {photoCheckinTransform} from './scripts/photo-checkin-transform.mjs';
+import {caseUiFixTransform} from './scripts/case-ui-fix-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), liuchuanEvidenceImagesTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), photoCheckinTransform(), react()],
+  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), photoCheckinTransform(), caseUiFixTransform(), react()],
   base: './'
 });
