@@ -2,13 +2,25 @@ const photoComponent = `
 function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
  const [photoCheck1,setPhotoCheck1]=useState(()=>window.localStorage.getItem('suzuran-1916-photo-place1')==='1');
  const [photoCheck2,setPhotoCheck2]=useState(()=>window.localStorage.getItem('suzuran-1916-photo-place2')==='1');
+ const [staffCode,setStaffCode]=useState('');
+ const [staffError,setStaffError]=useState(false);
  if(index!==0)return null;
  const unlockKey='suzuran-main-v3-unlocked-'+index;
+ const staffGateHash='5a32e885ff6e6b4380146757f7a4a192a466b095d2e2e0829db9882bc8d47ee2';
+ const confirmByStaff=async event=>{
+  event.preventDefault();
+  const ok=await hashAnswer(staffCode)===staffGateHash;
+  setStaffError(!ok);
+  if(!ok)return;
+  window.localStorage.setItem(unlockKey,'1');
+  setSolved(true);
+  onSharedSolved?.(index);
+ };
  return <section className="photo-checkin-challenge" aria-label="拍照打卡關卡">
   <header className="photo-checkin-head">
    <small>CHECK-IN / 拍照打卡</small>
    <h4>拍照打卡</h4>
-   <p>請在大正製酒株式會社園區內找到下方兩個指定位置，並在各地點模仿對應姿勢完成拍照。兩組都完成後，才可完成本關。</p>
+   <p>請在大正製酒株式會社園區內找到下方兩個指定位置，並在各地點模仿對應姿勢完成拍照。兩組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿。</p>
   </header>
   <div className="photo-checkin-grid">
    <article className={'photo-checkin-card '+(photoCheck1?'is-done':'')}>
@@ -31,9 +43,22 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
    </article>
   </div>
   <div className="photo-checkin-submit">
-   {photoCheck1&&photoCheck2
-    ?<button type="button" className="photo-pass-button" onClick={()=>{window.localStorage.setItem(unlockKey,'1');setSolved(true);onSharedSolved?.(index)}} disabled={solved}>{solved?'✓ 拍照打卡完成・本關已通過':'兩組皆完成・送出通關'}</button>
-    :<p>尚未完成兩組指定拍照。</p>}
+   {!(photoCheck1&&photoCheck2)&&<p>尚未完成兩組指定拍照。</p>}
+   {photoCheck1&&photoCheck2&&!solved&&(
+    <form className="photo-staff-gate" onSubmit={confirmByStaff}>
+     <div className="photo-staff-gate-copy">
+      <small>STAFF CONFIRM / 隊輔確認</small>
+      <strong>請隊輔先確認兩組照片皆符合指定地點與姿勢，再輸入隊輔通關密碼。</strong>
+     </div>
+     <label htmlFor={'photo-staff-code-'+index}>隊輔通關密碼</label>
+     <div className="photo-staff-gate-row">
+      <input id={'photo-staff-code-'+index} type="password" autoComplete="off" value={staffCode} onChange={event=>{setStaffCode(event.target.value);setStaffError(false)}} placeholder="僅由隊輔輸入" />
+      <button type="submit" className="photo-pass-button">確認並通關</button>
+     </div>
+     {staffError&&<p className="photo-staff-error">密碼不正確，請由隊輔重新確認。</p>}
+    </form>
+   )}
+   {photoCheck1&&photoCheck2&&solved&&<p className="photo-staff-success">✓ 隊輔已確認・本關已通過，相關手稿已開放閱覽。</p>}
   </div>
  </section>
 }
@@ -50,6 +75,20 @@ export function photoCheckinTransform(){
    if(!next.includes("import './photo-checkin.css';")){
     next=next.replace("import './newspaper.css';","import './newspaper.css';\nimport './photo-checkin.css';");
    }
+
+   /* 第一關雖為 direct 案件，但必須等拍照＋隊輔密碼後才算 solved。 */
+   next=next.replace(
+    "()=>item.direct||sharedSolved||window.localStorage.getItem(unlockKey)==='1'",
+    "()=>((item.direct&&index!==0)||sharedSolved||window.localStorage.getItem(unlockKey)==='1')"
+   );
+   next=next.replace(
+    "const islandManuscriptReady=item.direct||solved;",
+    "const islandManuscriptReady=(item.direct&&index!==0)||solved;"
+   );
+   next=next.replace(
+    "item.direct\n       ?'公開'",
+    "item.direct&&index!==0\n       ?'公開'\n       :item.direct&&index===0\n        ?(solved?'受理済':'待隊輔確認')"
+   );
 
    const fieldStart='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    if(!next.includes('function PhotoCheckinChallenge(')&&next.includes(fieldStart)){
