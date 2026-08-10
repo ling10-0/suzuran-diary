@@ -6,6 +6,24 @@
     <meta name="theme-color" content="#c72b30" />
     <title>翻閱1938：那些待續的章節</title>
     <link rel="stylesheet" href="/src/participant-info-compact.css" />
+    <style>
+      .newspaper-journal-page .four-reading-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 14px;
+      }
+
+      .newspaper-journal-page .four-reading-tabs button {
+        border-right: 0;
+      }
+
+      .newspaper-journal-page .four-reading-tabs button:nth-child(odd) {
+        border-right: 1px solid var(--gazette-ink);
+      }
+
+      .newspaper-journal-page .four-reading-tabs button:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--gazette-ink);
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
