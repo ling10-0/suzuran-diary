@@ -169,12 +169,86 @@
   box-sizing:border-box;
 }
 
-.photo-checkin-submit p{
+.photo-checkin-submit>p{
   margin:0;
   padding:13px 14px;
   border:1px dashed rgba(59,42,30,.5);
   box-sizing:border-box;
   text-align:center;
+}
+
+.photo-staff-gate{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  width:100%;
+  margin:0;
+  padding:18px;
+  border:1px solid var(--gazette-red,#8f251d);
+  background:rgba(143,37,29,.055);
+  box-sizing:border-box;
+}
+
+.photo-staff-gate-copy{
+  display:grid;
+  gap:6px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(59,42,30,.28);
+}
+
+.photo-staff-gate-copy small{
+  color:var(--gazette-red,#8f251d);
+  font-size:.78rem;
+  letter-spacing:.12em;
+}
+
+.photo-staff-gate-copy strong{
+  font-size:.98rem;
+  line-height:1.75;
+  font-weight:600;
+}
+
+.photo-staff-gate>label{
+  font-size:.85rem;
+  font-weight:700;
+}
+
+.photo-staff-gate-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 180px;
+  gap:10px;
+  width:100%;
+}
+
+.photo-staff-gate input{
+  width:100%;
+  min-width:0;
+  min-height:48px;
+  padding:11px 13px;
+  border:1px solid var(--gazette-ink,#3b2a1e);
+  background:rgba(255,255,255,.2);
+  box-sizing:border-box;
+  font:inherit;
+}
+
+.photo-staff-gate .photo-pass-button{
+  min-height:48px;
+  margin:0;
+}
+
+.photo-staff-error{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  color:var(--gazette-red,#8f251d);
+  text-align:left!important;
+  font-size:.82rem;
+}
+
+.photo-staff-success{
+  color:var(--gazette-red,#8f251d);
+  font-weight:700;
+  background:rgba(143,37,29,.04);
 }
 
 .photo-pass-button{
@@ -241,6 +315,18 @@
   .photo-checkin-card{
     padding:12px;
   }
+
+  .photo-staff-gate{
+    padding:14px;
+  }
+
+  .photo-staff-gate-row{
+    grid-template-columns:1fr;
+  }
+
+  .photo-staff-gate .photo-pass-button{
+    width:100%;
+  }
 }
 
 @media(max-width:520px){
@@ -275,5 +361,14 @@
   .photo-checkin-card button,
   .photo-pass-button{
     padding:11px 10px;
+  }
+
+  .photo-staff-gate{
+    padding:12px;
+    gap:9px;
+  }
+
+  .photo-staff-gate-copy strong{
+    font-size:.9rem;
   }
 }
