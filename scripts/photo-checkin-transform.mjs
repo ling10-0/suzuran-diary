@@ -6,7 +6,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
  const [staffError,setStaffError]=useState(false);
  if(index!==0)return null;
  const unlockKey='suzuran-main-v3-unlocked-'+index;
- const staffGateHash='5a32e885ff6e6b4380146757f7a4a192a466b095d2e2e0829db9882bc8d47ee2';
+ const staffGateHash='09e241893403f359ff9af5c8a8a0c20dec47226cef7f96d954411b83779b5094';
  const confirmByStaff=async event=>{
   event.preventDefault();
   const ok=await hashAnswer(staffCode)===staffGateHash;
