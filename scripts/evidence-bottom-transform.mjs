@@ -1,6 +1,7 @@
 const evidenceMarkup = `
 
     {item.evidenceDocuments?.length>0
+      &&(!(item.direct&&index===0)||solved)
       &&(!item.subQuestions?.length||subStep>=1)
       &&(!item.evidenceAfterCorrectChoice||(value.split('|||')[1]||'')===item.subQuestions?.[1]?.correctValue)
       &&<section className={'case-evidence-documents '+(item.evidenceCompact?'is-compact':'')} aria-label="案件原始資料">
