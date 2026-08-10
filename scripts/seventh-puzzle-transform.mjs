@@ -22,7 +22,7 @@ Object.assign(mainlineCases[6], {
     {value: 'C', label: 'C. 男子離開時沒有帶走紙筒，因此工程圖面應已在橋邊被取走'},
     {value: 'D', label: 'D. 居民口述可以直接證明另外六名技術人員的去向'}
   ],
-  hashes: ['df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c'],
+  hashes: ['179eea91584636de026b4ed8405300e00d0175e85f58f08697dbf2e4c4d5c9d6'],
   evidenceHeading: '橋邊紀錄｜請核對巡查時段與居民目擊',
   evidenceCompact: true,
   evidenceDocuments: [
