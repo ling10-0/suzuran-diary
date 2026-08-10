@@ -3,3 +3,18 @@
 @media(max-width:1100px){.day2-fragment-flow{margin-top:18px}.day2-progress{padding:14px 16px}.day2-stage{padding:18px 16px}.day2-card-list,.time-card-grid,.notice-pair{grid-template-columns:1fr}.day2-card-list p{min-height:0}.action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:761px) and (max-width:1100px){.gazette-columns:has(.day2-fragment-flow) .day2-card-list,.gazette-columns:has(.day2-fragment-flow) .time-card-grid,.gazette-columns:has(.day2-fragment-flow) .notice-pair{grid-template-columns:repeat(2,minmax(0,1fr))}.gazette-columns:has(.day2-fragment-flow) .action-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:760px){.day2-progress{grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;padding:13px 14px}.day2-progress b{font-size:15px}.fragment-status{grid-template-columns:repeat(5,minmax(0,1fr))}.fragment-status span{padding:8px 3px}.fragment-status b{font-size:9px}.fragment-status small{font-size:8px}.day2-stage{padding:16px 14px}.day2-stage h4{font-size:18px}.spot-grid label{grid-template-columns:20px 58px minmax(0,1fr)}.day2-next{width:100%;min-height:46px}.day2-choice-list>label{padding:12px!important}.day2-choice-list span{font-size:12px}}@media(max-width:420px){.day2-progress{grid-template-columns:1fr!important}.day2-progress strong{justify-self:end!important}.fragment-status b{font-size:8px}.fragment-status small{font-size:7px}.spot-grid label{grid-template-columns:20px minmax(0,1fr)}.spot-grid label b{grid-column:2}.spot-grid label span{grid-column:2}.action-grid{grid-template-columns:1fr 1fr}}
+
+/* 2026-08-10 final layout guard: keep the entire Day 2 file inside its case column. */
+.gazette-query:has(.day2-fragment-flow){overflow:hidden!important}
+.day2-fragment-flow{width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important;overflow:hidden!important}
+.day2-progress{position:relative!important;inset:auto!important;transform:none!important;width:100%!important;max-width:100%!important;grid-template-columns:minmax(0,1fr) max-content!important;padding:18px 22px!important;overflow:hidden!important}
+.day2-progress>div{width:100%!important;max-width:100%!important}
+.day2-progress strong{position:static!important;inset:auto!important;transform:none!important;justify-self:end!important;margin:0!important;padding:0!important;width:auto!important;max-width:100%!important}
+.day2-stage{margin:0!important;width:100%!important;max-width:100%!important;padding:24px 26px 28px!important;overflow:hidden!important}
+.day2-choice-list{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;width:100%!important;max-width:100%!important}
+.day2-choice-list>label{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;width:100%!important;max-width:100%!important;min-height:58px!important;margin:0!important;padding:14px 16px!important}
+.day2-choice-list>label+label{margin-top:0!important}
+.day2-choice-list span{white-space:normal!important;overflow-wrap:anywhere!important}
+.final-choice-stage .charades-note{width:100%!important;max-width:100%!important}
+@media(max-width:760px){.day2-progress{grid-template-columns:minmax(0,1fr) auto!important;padding:14px!important}.day2-stage{padding:18px 14px 20px!important}.day2-choice-list{gap:10px!important}.day2-choice-list>label{min-height:54px!important;padding:12px!important}}
+@media(max-width:420px){.day2-progress{grid-template-columns:1fr!important}.day2-progress strong{justify-self:start!important;margin-top:4px!important}}
