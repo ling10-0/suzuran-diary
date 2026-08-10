@@ -18,15 +18,19 @@ jobs:
           KEY=$(grep "const publishableKey" src/sharedProgress.js | sed -E "s/.*= '([^']+)'.*/\1/")
           ENDPOINT="$URL/rest/v1/newsroom_progress"
 
-          curl --fail-with-body -sS -X DELETE \
-            "$ENDPOINT?newsroom=in.(蘭臺,見山,迴聲)" \
-            -H "apikey: $KEY" \
-            -H 'Prefer: return=minimal'
+          for ROOM in '蘭臺' '見山' '迴聲'; do
+            curl --fail-with-body -sS -X DELETE -G "$ENDPOINT" \
+              --data-urlencode "newsroom=eq.$ROOM" \
+              -H "apikey: $KEY" \
+              -H 'Prefer: return=minimal'
+          done
 
-          RESULT=$(curl --fail-with-body -sS \
-            "$ENDPOINT?select=newsroom,case_index&newsroom=in.(蘭臺,見山,迴聲)" \
-            -H "apikey: $KEY" \
-            -H 'Accept: application/json')
-
-          echo "Remaining rows: $RESULT"
-          test "$RESULT" = '[]'
+          for ROOM in '蘭臺' '見山' '迴聲'; do
+            RESULT=$(curl --fail-with-body -sS -G "$ENDPOINT" \
+              --data-urlencode 'select=newsroom,case_index' \
+              --data-urlencode "newsroom=eq.$ROOM" \
+              -H "apikey: $KEY" \
+              -H 'Accept: application/json')
+            echo "$ROOM remaining rows: $RESULT"
+            test "$RESULT" = '[]'
+          done
