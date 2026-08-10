@@ -70,11 +70,11 @@ function GreenCorridorFragmentFlow({onComplete}){
   {
    no:4,
    title:'鈴蘭的無聲訊息',
-   prompt:'這一題不提供選項。先完成現場五個比手畫腳，再把猜到的五個詞依順序放回句子。',
+   prompt:'這一題不提供選項。請先完成現場五個比手畫腳，再把猜到的五個詞依正確順序放回句子。',
    charades:true,
-   keywords:['跟蹤','打電話','分開','藏起來','寫信'],
-   frame:'發現有人＿＿後，鈴蘭先＿＿通知父親；兩人決定＿＿行動，把工程圖＿＿，最後再＿＿留下線索。',
-   result:'你們還原出的訊息顯示：鈴蘭不是單純逃跑，而是在發現跟蹤後先聯絡父親，再分開保管證據並留下能讓後人接續追查的訊息。',
+   keywords:['跟蹤','打電話','分開','線索','寫信'],
+   frame:'發現有人＿＿後，鈴蘭先＿＿通知父親；兩人決定＿＿行動，沿路留下＿＿，最後再以＿＿交代後續。',
+   result:'你們還原出的訊息顯示：鈴蘭不是單純逃跑，而是在發現跟蹤後先聯絡父親，再分開行動、沿路留下線索，並以寫信交代後續。',
    fragment:5
   }
  ];
@@ -87,7 +87,7 @@ function GreenCorridorFragmentFlow({onComplete}){
    const normalized=charadeText.normalize('NFKC').replace(/\\s+/g,'');
    const positions=current.keywords.map(word=>normalized.indexOf(word));
    const ok=positions.every(position=>position>=0)&&positions.every((position,index)=>index===0||position>positions[index-1]);
-   if(!ok){setError('還缺少比手畫腳得到的關鍵字，或五個詞的順序不正確。請依「跟蹤 → 打電話 → 分開 → 藏起來 → 寫信」重新整理。');return}
+   if(!ok){setError('還缺少比手畫腳得到的關鍵字，或五個詞的順序不正確。請依「跟蹤 → 打電話 → 分開 → 線索 → 寫信」重新整理。');return}
    setError('');setStage(stage+1);return
   }
   if(!answer){setError('請先選擇一個答案。');return}
@@ -116,9 +116,9 @@ function GreenCorridorFragmentFlow({onComplete}){
    <h4>{current.title}</h4>
    <p>{current.prompt}</p>
    {current.charades?<>
-    <div className="charades-note"><b>現場任務</b><p>隊輔依序出示五張關鍵字卡：跟蹤、打電話、分開、藏起來、寫信。每題40秒；表演者不能說話、寫字、用嘴型提示或直接指出答案文字。</p></div>
+    <div className="charades-note"><b>現場任務</b><p>隊輔依序出示五張關鍵字卡：跟蹤、打電話、分開、線索、寫信。每題40秒；表演者不能說話、寫字、用嘴型提示或直接指出答案文字。</p></div>
     <p className="day2-charades-frame">「{current.frame}」</p>
-    <label className="day2-charades-input">請輸入完整句子<textarea rows="4" value={charadeText} onChange={event=>{setCharadeText(event.target.value);setError('')}} placeholder="把五個比手畫腳答案依序放進句子中。"/></label>
+    <label className="day2-charades-input">請輸入完整句子<textarea rows="4" value={charadeText} onChange={event=>{setCharadeText(event.target.value);setError('')}} placeholder="把五個比手畫腳答案依正確順序填入句子中。"/></label>
    </>:<div className="day2-choice-list">{current.options.map(([value,label])=><label key={value} className={answer===value?'is-selected':''}><input type="radio" name={'day2-q-'+current.no} value={value} checked={answer===value} onChange={()=>{setAnswer(value);setError('')}}/><span><b>{value}.</b> {label}</span></label>)}</div>}
    {error&&<p className="day2-error">{error}</p>}
    <button className="day2-next" type="button" onClick={submitQuestion}>{current.charades?'完成無聲訊息':'確認答案'}</button>
