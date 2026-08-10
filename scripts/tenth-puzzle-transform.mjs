@@ -46,8 +46,10 @@ function MarketLockerFlow({onComplete}){
   const ok=pairs.p1==='E1'&&pairs.p2==='E2'&&pairs.p3==='E3'&&pairs.p4==='E4';
   if(ok){setError('');setStage(5)}else setError('證據配對仍有一處不符，請回頭比對識字簿、紙封與今日便條。')
  };
+ const objectReference=stage>=3?<section className="market-reference"><p className="market-kicker">作答參考｜四件箱內物品</p><p>後面的年代分類、證據配對與最後判斷都可以直接回看這四件物品，不需要切回上一頁。</p><div className="locker-object-grid">{Object.entries(objects).map(([key,obj],index)=><article key={'ref-'+key}><small>物件 {index+1}</small><h5>{obj.title}</h5><p>{obj.detail}</p></article>)}</div></section>:null;
  return <section className="market-locker-flow" aria-label="第二市場四號置物箱查核">
   <header className="market-progress"><small>SHINTOMICHO LOCKER FILE</small><b>第 {Math.min(stage+1,6)}／6 階段</b></header>
+  {objectReference}
   {stage===0&&<section className="market-stage">
    <p className="market-kicker">第一階段｜查看舊寄放帳冊</p><h4>哪一個箱子同時與青先生和阿蘭有關？</h4>
    <div className="market-ledger" role="table" aria-label="第二市場舊寄放帳冊">
