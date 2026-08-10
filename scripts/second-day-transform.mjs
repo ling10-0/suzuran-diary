@@ -9,14 +9,14 @@ Object.assign(mainlineCases[10], {
   directoryTitle: '綠空廊道｜工程圖碎片追查',
   label: '第二日・綠空廊道',
   inputLabel: '完成第二日碎片追查',
-  hint: '碎片①由工作人員於開場直接發放。每答對一題，依畫面指示向工作人員領取下一片，最後將碎片①～⑤拼回完整工程圖。',
+  hint: '碎片①由工作人員於開場直接發放。每答對一題，依畫面指示向工作人員領取下一片；第四題為現場比手畫腳。',
   question: '昨晚鈴蘭與青木為什麼將工程圖拆成五片？',
   questionDetails: [
     '今早，集合地點收到一封沒有署名的信。信封中已有《七－圖庫地下工程圖》碎片①、鈴蘭留下的訊息，以及一張未完成的綠空廊道路線圖。',
     '鈴蘭寫道：「昨晚我去通知父親時，後面一直有人跟著，我們不能帶著完整的圖一起走，所以把它拆開了。有些是我們藏起來的，有些可能在逃跑時掉了。不要只追著我的腳步走，父親和我曾經分開。」',
-    '你們已經拿到第一片。接下來四題不只要找出字面答案，還要把「跟蹤、分開、藏圖、遺落」串成同一條行動邏輯。每完成一題，再向工作人員領取一片工程圖碎片。'
+    '你們已經拿到第一片。前三題要重建行動邏輯；第四題則要靠現場比手畫腳還原鈴蘭沒有直接寫下來的行動訊息。'
   ],
-  questionHint: '每題只有一個最完整的推論。注意：只說對其中一半的選項，也不算正確。',
+  questionHint: '第四題請先完成五個關鍵字的比手畫腳，再把五個詞依正確順序放回網站句子。',
   customFlow: 'greenCorridorFragments'
 });`;
 
@@ -24,6 +24,7 @@ const component = String.raw`
 function GreenCorridorFragmentFlow({onComplete}){
  const [stage,setStage]=useState(0);
  const [answer,setAnswer]=useState('');
+ const [charadeText,setCharadeText]=useState('');
  const [error,setError]=useState('');
  const [received,setReceived]=useState({2:false,3:false,4:false,5:false});
  const questions=[
@@ -71,16 +72,12 @@ function GreenCorridorFragmentFlow({onComplete}){
   },
   {
    no:4,
-   title:'哪一條因果順序最能還原昨晚的行動？',
-   prompt:'把目前四題線索整合起來。哪一條順序最合理，而不是只把幾個關鍵字排在一起？',
-   options:[
-    ['A','分開 → 被跟蹤 → 探路 → 把圖集中 → 留下完整圖。'],
-    ['B','被跟蹤 → 鈴蘭先探路並示警 → 父女分開 → 圖面分散保管、部分刻意藏起且部分可能遺落 → 後來的人必須沿兩條路線重建。'],
-    ['C','被跟蹤 → 兩人一起去車站 → 把圖交給陌生人 → 回頭製作五張副本。'],
-    ['D','鈴蘭探路 → 所有碎片交給青木 → 兩人始終同行 → 最後只需找青木。']
-   ],
-   correct:'B',
-   result:'完整因果鏈是：遭跟蹤後先確認前方、示警，再分開行動並分散證據。你們現在拿到的五片，就是這條行動鏈留下的結果。',
+   title:'鈴蘭的無聲訊息',
+   prompt:'這一題不提供選項。先完成現場五個比手畫腳，再把猜到的五個詞依順序放回句子。',
+   charades:true,
+   keywords:['跟蹤','示警','分開','藏圖','留訊'],
+   frame:'發現有人＿＿後，鈴蘭先向父親＿＿；兩人決定＿＿行動，她把其中一片工程圖＿＿，並設法＿＿給後來追查的人。',
+   result:'你們還原出的訊息顯示：鈴蘭不是單純逃跑，而是在被跟蹤後先示警、再和父親分開，並刻意留下能讓後人接續追查的線索。',
    fragment:5
   }
  ];
@@ -89,6 +86,13 @@ function GreenCorridorFragmentFlow({onComplete}){
  const foundCount=1+Object.values(received).filter(Boolean).length;
  const fragmentBar=<div className="fragment-status" aria-label="工程圖碎片進度">{[1,2,3,4,5].map(no=><span key={no} className={no===1||received[no]?'is-found':''}><b>碎片{no}</b><small>{no===1?'開場取得':received[no]?'已取得':'待取得'}</small></span>)}</div>;
  const submitQuestion=()=>{
+  if(current.charades){
+   const normalized=charadeText.normalize('NFKC').replace(/\\s+/g,'');
+   const positions=current.keywords.map(word=>normalized.indexOf(word));
+   const ok=positions.every(position=>position>=0)&&positions.every((position,index)=>index===0||position>positions[index-1]);
+   if(!ok){setError('還缺少比手畫腳得到的關鍵字，或五個詞的順序不正確。請依「跟蹤 → 示警 → 分開 → 藏圖 → 留訊」重新整理。');return}
+   setError('');setStage(stage+1);return
+  }
   if(!answer){setError('請先選擇一個答案。');return}
   if(answer!==current.correct){setError('查核不符。請確認你選的是「完整推論」，不是只符合其中一小段線索的說法。');return}
   setError('');setStage(stage+1)
@@ -96,7 +100,7 @@ function GreenCorridorFragmentFlow({onComplete}){
  const receiveFragment=()=>{
   const no=current.fragment;
   setReceived(prev=>({...prev,[no]:true}));
-  setAnswer('');setError('');setStage(stage+1)
+  setAnswer('');setCharadeText('');setError('');setStage(stage+1)
  };
  return <section className="day2-fragment-flow" aria-label="第二日工程圖碎片追查">
   <header className="day2-progress"><div><small>DAY 02 / GREEN CORRIDOR FILE</small><b>重建《七－圖庫地下工程圖》</b></div><strong>{foundCount} / 5</strong></header>
@@ -105,9 +109,13 @@ function GreenCorridorFragmentFlow({onComplete}){
    <p className="day2-kicker">Q{current.no}｜碎片追查</p>
    <h4>{current.title}</h4>
    <p>{current.prompt}</p>
-   <div className="day2-choice-list">{current.options.map(([value,label])=><label key={value} className={answer===value?'is-selected':''}><input type="radio" name={'day2-q-'+current.no} value={value} checked={answer===value} onChange={()=>{setAnswer(value);setError('')}}/><span><b>{value}.</b> {label}</span></label>)}</div>
+   {current.charades?<>
+    <div className="charades-note"><b>現場任務</b><p>隊輔依序出示五張關鍵字卡：跟蹤、示警、分開、藏圖、留訊。每題40秒；表演者不能說話、寫字、用嘴型提示或直接指出答案文字。</p></div>
+    <p className="day2-charades-frame">「{current.frame}」</p>
+    <label className="day2-charades-input">請輸入完整句子<textarea rows="4" value={charadeText} onChange={event=>{setCharadeText(event.target.value);setError('')}} placeholder="把五個比手畫腳答案依序放進句子中。"/></label>
+   </>:<div className="day2-choice-list">{current.options.map(([value,label])=><label key={value} className={answer===value?'is-selected':''}><input type="radio" name={'day2-q-'+current.no} value={value} checked={answer===value} onChange={()=>{setAnswer(value);setError('')}}/><span><b>{value}.</b> {label}</span></label>)}</div>}
    {error&&<p className="day2-error">{error}</p>}
-   <button className="day2-next" type="button" onClick={submitQuestion}>確認答案</button>
+   <button className="day2-next" type="button" onClick={submitQuestion}>{current.charades?'完成無聲訊息':'確認答案'}</button>
   </section>}
   {stage<8&&stage%2===1&&current&&<section className="day2-stage reward-stage">
    <p className="day2-kicker">Q{current.no} 查核完成</p>
