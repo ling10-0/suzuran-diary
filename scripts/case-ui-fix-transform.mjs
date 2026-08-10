@@ -28,6 +28,8 @@ const answerMarkup = String.raw`
     {/* 作答 */}
     {item.customFlow==='liuchuan'&&!solved
      ?<LiuchuanFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>
+     :item.customFlow==='greenCorridorFragments'&&!solved
+      ?<GreenCorridorFragmentFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>
      :item.customFlow==='marketLocker'&&!solved
       ?<MarketLockerFlow onComplete={()=>{setSolved(true);window.localStorage.setItem(unlockKey,'1');onSharedSolved?.(index)}}/>
       :!item.direct&&!item.pending&&!solved&&(
