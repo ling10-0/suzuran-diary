@@ -26,10 +26,10 @@ export function firstPhotoScoringFlowTransform(){
     next=before+after;
    }
 
-   // 拍照四組＋隊輔確認後：記錄拍照任務 10 分，重新載入後接著玩第一關案件題。
+   // 拍照至少三組＋隊輔確認後：每一組核發 2 分，再重新載入接著玩第一關案件題。
    next=next.replace(
     " const confirmByStaff=event=>{\n  event.preventDefault();\n  const normalizedCode=staffCode.trim().normalize('NFKC').toLowerCase();\n  const ok=normalizedCode==='okok';\n  setStaffError(!ok);\n  if(!ok)return;\n  window.localStorage.setItem(unlockKey,'1');\n  setSolved(true);\n  onSharedSolved?.(index);\n };",
-    " const confirmByStaff=async event=>{\n  event.preventDefault();\n  const normalizedCode=staffCode.trim().normalize('NFKC').toLowerCase();\n  const ok=normalizedCode==='okok';\n  setStaffError(!ok);\n  if(!ok)return;\n  window.localStorage.setItem('suzuran-1916-photo-gate','1');\n  window.localStorage.setItem('suzuran-1916-photo-score','1');\n  const newsroom=window.localStorage.getItem('suzuran-newsroom')||'';\n  try{if(newsroom)await saveNewsroomProgress(newsroom,1049)}catch{}\n  window.location.reload();\n };"
+    " const confirmByStaff=async event=>{\n  event.preventDefault();\n  const normalizedCode=staffCode.trim().normalize('NFKC').toLowerCase();\n  const ok=normalizedCode==='okok';\n  setStaffError(!ok);\n  if(!ok)return;\n  const completedPhotoIds=photoTasks.filter(task=>photoChecks[task.no]).map(task=>1030+task.no);\n  window.localStorage.setItem('suzuran-1916-photo-gate','1');\n  window.localStorage.setItem('suzuran-1916-photo-score',String(completedPhotoIds.length*2));\n  const newsroom=window.localStorage.getItem('suzuran-newsroom')||'';\n  try{if(newsroom)await Promise.all(completedPhotoIds.map(progressId=>saveNewsroomProgress(newsroom,progressId)))}catch{}\n  window.location.reload();\n };"
    );
 
    // 拍照關卡只在尚未通過隊輔確認時顯示。
@@ -52,15 +52,50 @@ export function firstPhotoScoringFlowTransform(){
     "{!item.direct&&!item.pending&&(index!==0||photoGatePassed||solved)&&(!solved||replayMode)&&<form"
    );
 
-   // 計分：第一關拍照任務 10 分 + 11 件案件各 10 分，滿分改為 120。
+   // 計分：11 件案件各 10 分（110 分）＋10 個拍照點各 2 分（20 分），滿分 130。
+   // 拍照只在隊輔確認後寫入 1031～1040，因此未確認的自拍不會加分。
    next=next.replaceAll(
     ".filter(id=>Number.isInteger(id)&&id>=0&&id<11).length",
-    ".filter(id=>Number.isInteger(id)&&(id===1049||(id>=1050&&id<=1060))).length"
+    ".filter(id=>Number.isInteger(id)&&(id>=1050&&id<=1060)).length"
    );
-   next=next.replaceAll('Math.min(110,count*10)','Math.min(120,count*10)');
-   next=next.replaceAll('Math.min(110,syncedCount*10)','Math.min(120,syncedCount*10)');
-   next=next.replaceAll("+'/110'","+'/120'");
-   next=next.replaceAll("+' / 110'","+' / 120'");
+   next=next.replaceAll(
+    ".filter(id=>Number.isInteger(id)&&(id===1049||(id>=1050&&id<=1060))).length",
+    ".filter(id=>Number.isInteger(id)&&(id>=1050&&id<=1060)).length"
+   );
+
+   // 將原本 count*10 的總分公式改成「案件分＋拍照分」。
+   next=next.replaceAll(
+    "const score=Math.min(110,count*10);",
+    "const photoCount=(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=Math.min(130,count*10+photoCount*2);"
+   );
+   next=next.replaceAll(
+    "const score=Math.min(120,count*10);",
+    "const photoCount=(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=Math.min(130,count*10+photoCount*2);"
+   );
+   next=next.replaceAll(
+    "const score=count===null?null:Math.min(110,count*10);",
+    "const photoCount=count===null?null:(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=count===null?null:Math.min(130,count*10+photoCount*2);"
+   );
+   next=next.replaceAll(
+    "const score=count===null?null:Math.min(120,count*10);",
+    "const photoCount=count===null?null:(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=count===null?null:Math.min(130,count*10+photoCount*2);"
+   );
+   next=next.replaceAll(
+    "const score=syncedCount===null?null:Math.min(110,syncedCount*10);",
+    "const photoCount=syncedCount===null?null:(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=syncedCount===null?null:Math.min(130,syncedCount*10+photoCount*2);"
+   );
+   next=next.replaceAll(
+    "const score=syncedCount===null?null:Math.min(120,syncedCount*10);",
+    "const photoCount=syncedCount===null?null:(sharedProgress||[]).filter(id=>Number.isInteger(id)&&id>=1031&&id<=1040).length;const score=syncedCount===null?null:Math.min(130,syncedCount*10+photoCount*2);"
+   );
+
+   next=next.replaceAll("+'/110'","+'/130'");
+   next=next.replaceAll("+'/120'","+'/130'");
+   next=next.replaceAll("+' / 110'","+' / 130'");
+   next=next.replaceAll("+' / 120'","+' / 130'");
+
+   // 新級距：拍照 bonus 可以補分，但中央報社仍需要完成大部分主線。
+   next=next.replaceAll("score>=90?'中央報社':score>=60?'全島報社':score>=30?'州級報社':'地方報社'","score>=100?'中央報社':score>=70?'全島報社':score>=40?'州級報社':'地方報社'");
 
    return next===code?null:{code:next,map:null};
   }
