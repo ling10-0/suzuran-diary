@@ -12,5 +12,11 @@
  .telegram-card h3{font-size:clamp(24px,7.4vw,32px)!important;line-height:1.45!important;word-break:break-word!important;overflow-wrap:anywhere!important}
  .telegram-card p{font-size:17px!important;line-height:1.9!important;word-break:break-word!important;overflow-wrap:anywhere!important}
  .telegram-card small,.telegram-card em{max-width:100%!important;overflow-wrap:anywhere!important}
- .local-draft{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+ .local-draft{width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0!important;padding:18px 16px!important}
+ .local-draft h3{font-size:clamp(22px,6.5vw,30px)!important;line-height:1.45!important;word-break:break-word!important}
+ .local-draft p{font-size:15px!important;line-height:1.85!important;overflow-wrap:anywhere!important}
+ .protect-final{width:100%!important;max-width:100%!important;margin:22px 0 0!important;padding:20px 16px!important;box-sizing:border-box!important;font-size:18px!important;line-height:1.85!important;text-align:center!important;word-break:break-word!important;overflow-wrap:anywhere!important}
+ .ending-night .ending-action{width:100%!important;max-width:100%!important;margin:20px 0 0!important;padding:0!important;box-sizing:border-box!important}
+ .ending-night .ending-action button{width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0!important}
+ .ending-night .ending-action button+button{margin-top:10px!important}
 }
