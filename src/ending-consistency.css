@@ -8,5 +8,19 @@
 .promotion-score-note b{font-size:18px;line-height:1.5;color:#35271c}
 .promotion-score-note p{margin:0;font-size:12px;line-height:1.8;color:#5a4734}
 .extra-grid{align-items:stretch}
-.publish-cost{width:auto;max-width:none;box-sizing:border-box}
-@media(max-width:700px){.official-telegram{width:100%!important;margin:18px 0 0!important;transform:none!important}.promotion-certificate{width:100%;margin-top:18px}.promotion-score-note{width:100%;padding:14px}.promotion-score-note b{font-size:16px}}
+
+/* Ending A: keep the consequence panel and navigation as two separate blocks. */
+.publish-cost{width:auto;max-width:none;box-sizing:border-box;margin:30px -34px 0!important;padding:48px 24px 42px!important}
+.publish-cost + .ending-action{margin:0 -34px -38px!important;padding:22px 20px 26px!important;background:rgba(218,194,146,.92);border-top:1px solid rgba(75,57,36,.38);box-sizing:border-box;display:flex;justify-content:center;align-items:center;gap:12px}
+.publish-cost + .ending-action button{width:auto;min-width:130px;margin:0}
+.publish-cost + .ending-action button.secondary{background:rgba(245,230,193,.72);color:#2d2117}
+
+@media(max-width:700px){
+ .official-telegram{width:100%!important;margin:18px 0 0!important;transform:none!important}
+ .promotion-certificate{width:100%;margin-top:18px}
+ .promotion-score-note{width:100%;padding:14px}
+ .promotion-score-note b{font-size:16px}
+ .publish-cost{margin:24px -14px 0!important;padding:42px 16px 32px!important}
+ .publish-cost + .ending-action{margin:0 -14px -28px!important;padding:16px 14px 22px!important;flex-direction:column}
+ .publish-cost + .ending-action button{width:100%;min-width:0}
+}
