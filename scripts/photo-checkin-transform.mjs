@@ -1,8 +1,8 @@
 const photoComponent = `
 function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
  const photoTasks=[
-  {no:1,place:'./assets/puzzles/1916/place1.jpg',pose:'./assets/puzzles/1916/pose1.png'},
-  {no:2,place:'./assets/puzzles/1916/place2.jpg',pose:'./assets/puzzles/1916/pose2.jpg'},
+  {no:1,place:'./assets/puzzles/1916/place1.jpg',pose:'./assets/puzzles/1916/pose2.jpg'},
+  {no:2,place:'./assets/puzzles/1916/place2.jpg',pose:'./assets/puzzles/1916/pose1.png'},
   {no:3,place:'./assets/puzzles/1916/place3.jpg',pose:'./assets/puzzles/1916/pose3.jpg'},
   {no:4,place:'./assets/puzzles/1916/place4.jpg',pose:'./assets/puzzles/1916/pose4.jpg'},
   {no:5,place:'./assets/puzzles/1916/place5.jpg',pose:'./assets/puzzles/1916/pose5.jpg'},
