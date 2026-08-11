@@ -7,6 +7,7 @@ import {syncTransform} from './scripts/sync-transform.mjs';
 import {ninthPuzzleTransform} from './scripts/ninth-puzzle-transform.mjs';
 import {tenthPuzzleTransform} from './scripts/tenth-puzzle-transform.mjs';
 import {secondDayTransform} from './scripts/second-day-transform.mjs';
+import {greenCorridorReviewTransform} from './scripts/green-corridor-review-transform.mjs';
 import {endingConsistencyTransform} from './scripts/ending-consistency-transform.mjs';
 import {endingGateTransform} from './scripts/ending-gate-transform.mjs';
 import {secondDayMobileFixTransform} from './scripts/second-day-mobile-fix-transform.mjs';
@@ -38,6 +39,6 @@ import {fixFifthEvidenceFlowTransform} from './scripts/fix-fifth-evidence-flow-t
 import {liuchuanPlayerCleanupTransform} from './scripts/liuchuan-player-cleanup-transform.mjs';
 
 export default defineConfig({
-  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), endingConsistencyTransform(), endingGateTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), photoCheckinTransform(), caseUiFixTransform(), fixFifthEvidenceFlowTransform(), liuchuanPlayerCleanupTransform(), react()],
+  plugins: [routeTransform(), routePlaceNameTransform(), manuscriptTransform(), latestManuscriptsTransform(), latestTraveloguesTransform(), syncTransform(), ninthPuzzleTransform(), tenthPuzzleTransform(), secondDayTransform(), greenCorridorReviewTransform(), endingConsistencyTransform(), endingGateTransform(), secondDayMobileFixTransform(), routeMobileFixTransform(), scheduleMobileFixTransform(), firstPuzzleTransform(), customReplayTransform(), secondPuzzleTransform(), thirdPuzzleTransform(), fourthPuzzleTransform(), fifthPuzzleTransform(), sixthPuzzleTransform(), seventhPuzzleTransform(), eighthPuzzleTransform(), placeOnlyDirectoryTitleTransform(), directoryTitleTransform(), finalSyncTransform(), readingGateTransform(), guidedMapLabelTransform(), caseReadingFirstTransform(), evidenceBottomTransform(), suzuranMissingEventTransform(), caseQuestionTitleTransform(), photoCheckinTransform(), caseUiFixTransform(), fixFifthEvidenceFlowTransform(), liuchuanPlayerCleanupTransform(), react()],
   base: './'
 });
