@@ -28,6 +28,7 @@ export function endingGateTransform(){
    const oldNoodle='<div className="noodle-cup"><b>泡麵</b><span>今晚的編輯晚餐</span></div>';
    const pixelNoodle='<div className="noodle-cup"><div className="pixel-ramen" aria-hidden="true"><i className="ramen-steam steam-one"></i><i className="ramen-steam steam-two"></i><i className="ramen-steam steam-three"></i><div className="ramen-top"><span className="ramen-egg"></span><span className="ramen-green green-one"></span><span className="ramen-green green-two"></span><span className="ramen-noodle noodle-one"></span><span className="ramen-noodle noodle-two"></span><span className="ramen-noodle noodle-three"></span></div><div className="ramen-bowl"><b>麵</b></div></div><b>泡麵</b><span>今晚的編輯晚餐</span></div>';
    if(next.includes(oldNoodle)&&!next.includes('pixel-ramen'))next=next.replace(oldNoodle,pixelNoodle);
+   next=next.replace('我們沒有變得更大，但我們選擇成為<strong>值得信任的小報社</strong>。','我們選擇成為<strong>值得信任的小報社</strong>。');
    return next===code?null:{code:next,map:null};
   }
  };
