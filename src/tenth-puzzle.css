@@ -44,3 +44,37 @@
 .market-stage>.market-next{min-width:170px}
 @media(max-width:800px){.market-locker-flow{max-width:100%}.market-progress{padding:12px 16px!important}.market-reference{margin:0 16px 16px;padding:14px}.market-stage{padding:16px}.classification-list{grid-template-columns:1fr}.classification-list article{min-height:0}.market-reference .locker-object-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.market-progress{display:grid!important;grid-template-columns:1fr!important;gap:4px!important;align-items:start!important}.market-progress b{justify-self:start!important;margin-left:0!important}.market-reference{margin:0 12px 14px;padding:12px}.market-reference .locker-object-grid{grid-template-columns:1fr}.market-reference>p:not(.market-kicker){font-size:12px}.market-stage{padding:14px 12px 16px}.classification-list article>div{grid-template-columns:1fr 1fr}.classification-list button{min-height:44px}.market-stage>.market-next{width:100%;min-width:0}}
+
+/* Tenth case mobile containment: keep the travelogue, old photo and case body inside the viewport. */
+@media(max-width:700px){
+ .gazette-case:has(.market-locker-flow),
+ .gazette-case:has(.market-locker-flow) .gazette-columns,
+ .gazette-case:has(.market-locker-flow) .gazette-query,
+ .gazette-case:has(.market-locker-flow) .gazette-manuscript,
+ .gazette-case:has(.market-locker-flow) .document-reader,
+ .gazette-case:has(.market-locker-flow) .document-copy,
+ .gazette-case:has(.market-locker-flow) .gazette-travelogue{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow-x:hidden!important;
+ }
+ .gazette-case:has(.market-locker-flow) .document-copy{padding:16px 14px!important}
+ .gazette-case:has(.market-locker-flow) .document-copy p,
+ .gazette-case:has(.market-locker-flow) .document-copy h4,
+ .gazette-case:has(.market-locker-flow) .document-copy small{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+ }
+ .gazette-case:has(.market-locker-flow) .travel-document-image{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:16px 0 6px!important;
+  object-fit:contain!important;
+ }
+}
