@@ -27,7 +27,7 @@ const protectBlock = String.raw`   {choice==='protect'&&<section className="endi
 export function endingVisualRedesignTransform(){
  return {
   name:'suzuran-ending-visual-redesign-transform',
-  enforce:'post',
+  enforce:'pre',
   transform(code,id){
    if(!id.endsWith('/src/main.jsx'))return null;
    let next=code;
@@ -52,7 +52,6 @@ export function endingVisualRedesignTransform(){
     next=next.slice(0,newProtectStart)+protectBlock+next.slice(mainEnd);
    }
 
-   // 最終選擇一旦寫入 localStorage 就不再提供重選入口。
    next=next.replace(
     " const choose=next=>{\n  window.localStorage.setItem('suzuran-final-choice',next);\n  setChoice(next);\n  setReveal(1);\n  window.scrollTo({top:0,behavior:'smooth'});\n };",
     " const choose=next=>{\n  const locked=window.localStorage.getItem('suzuran-final-choice');\n  if(locked)return;\n  window.localStorage.setItem('suzuran-final-choice',next);\n  setChoice(next);\n  setReveal(1);\n  window.scrollTo({top:0,behavior:'smooth'});\n };"
