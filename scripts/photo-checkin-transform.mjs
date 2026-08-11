@@ -1,11 +1,27 @@
 const photoComponent = `
 function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
- const [photoCheck1,setPhotoCheck1]=useState(()=>window.localStorage.getItem('suzuran-1916-photo-place1')==='1');
- const [photoCheck2,setPhotoCheck2]=useState(()=>window.localStorage.getItem('suzuran-1916-photo-place2')==='1');
+ const photoTasks=[
+  {no:1,place:'./assets/puzzles/1916/place1.jpg',pose:'./assets/puzzles/1916/pose1.png'},
+  {no:2,place:'./assets/puzzles/1916/place2.jpg',pose:'./assets/puzzles/1916/pose2.jpg'},
+  {no:3,place:'./assets/puzzles/1916/place3.jpg',pose:'./assets/puzzles/1916/pose3.jpg'},
+  {no:4,place:'./assets/puzzles/1916/place4.jpg',pose:'./assets/puzzles/1916/pose4.jpg'},
+  {no:5,place:'./assets/puzzles/1916/place5.jpg',pose:'./assets/puzzles/1916/pose5.jpg'},
+  {no:6,place:'./assets/puzzles/1916/place6.jpg',pose:'./assets/puzzles/1916/pose6.jpg'},
+  {no:7,place:'./assets/puzzles/1916/place7.jpg',pose:'./assets/puzzles/1916/pose7.jpg'},
+  {no:8,place:'./assets/puzzles/1916/place8.jpg',pose:'./assets/puzzles/1916/pose8.jpg'},
+  {no:9,place:'./assets/puzzles/1916/place9.jpg',pose:'./assets/puzzles/1916/pose9.webp'},
+  {no:10,place:'./assets/puzzles/1916/place10.jpg',pose:'./assets/puzzles/1916/pose10.jpg'}
+ ];
+ const [photoChecks,setPhotoChecks]=useState(()=>Object.fromEntries(photoTasks.map(task=>[task.no,window.localStorage.getItem('suzuran-1916-photo-place'+task.no)==='1'])));
  const [staffCode,setStaffCode]=useState('');
  const [staffError,setStaffError]=useState(false);
  if(index!==0)return null;
  const unlockKey='suzuran-main-v3-unlocked-'+index;
+ const allDone=photoTasks.every(task=>photoChecks[task.no]);
+ const markDone=no=>{
+  setPhotoChecks(prev=>({...prev,[no]:true}));
+  window.localStorage.setItem('suzuran-1916-photo-place'+no,'1');
+ };
  const confirmByStaff=event=>{
   event.preventDefault();
   const normalizedCode=staffCode.trim().normalize('NFKC').toLowerCase();
@@ -20,35 +36,30 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
   <header className="photo-checkin-head">
    <small>CHECK-IN / 拍照打卡</small>
    <h4>拍照打卡</h4>
-   <p>請在大正製酒株式會社園區內找到下方兩個指定位置，並在各地點模仿對應姿勢完成拍照。兩組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿與案件查核資料。</p>
+   <p>請在大正製酒株式會社園區內找到下方十個指定位置，並在各地點模仿對應姿勢完成拍照。十組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿與案件查核資料。</p>
   </header>
   <div className="photo-checkin-grid">
-   <article className={'photo-checkin-card '+(photoCheck1?'is-done':'')}>
-    <div className="photo-checkin-number">01</div>
-    <div className="photo-reference-pair">
-     <figure><img src="./assets/puzzles/1916/place1.jpg" alt="第一個指定拍照地點" loading="lazy"/><figcaption>指定地點 1</figcaption></figure>
-     <figure><img src="./assets/puzzles/1916/pose1.png" alt="第一個指定拍照姿勢" loading="lazy"/><figcaption>指定姿勢 1</figcaption></figure>
-    </div>
-    <p>找到「指定地點 1」，並模仿「指定姿勢 1」拍下一張照片。</p>
-    <button type="button" onClick={()=>{setPhotoCheck1(true);window.localStorage.setItem('suzuran-1916-photo-place1','1')}} disabled={photoCheck1}>{photoCheck1?'✓ 第一組已完成':'我已完成第一組拍照'}</button>
-   </article>
-   <article className={'photo-checkin-card '+(photoCheck2?'is-done':'')}>
-    <div className="photo-checkin-number">02</div>
-    <div className="photo-reference-pair">
-     <figure><img src="./assets/puzzles/1916/place2.jpg" alt="第二個指定拍照地點" loading="lazy"/><figcaption>指定地點 2</figcaption></figure>
-     <figure><img src="./assets/puzzles/1916/pose2.png" alt="第二個指定拍照姿勢" loading="lazy"/><figcaption>指定姿勢 2</figcaption></figure>
-    </div>
-    <p>找到「指定地點 2」，並模仿「指定姿勢 2」拍下一張照片。</p>
-    <button type="button" onClick={()=>{setPhotoCheck2(true);window.localStorage.setItem('suzuran-1916-photo-place2','1')}} disabled={photoCheck2}>{photoCheck2?'✓ 第二組已完成':'我已完成第二組拍照'}</button>
-   </article>
+   {photoTasks.map(task=>{
+    const done=!!photoChecks[task.no];
+    const label=String(task.no).padStart(2,'0');
+    return <article key={task.no} className={'photo-checkin-card '+(done?'is-done':'')}>
+     <div className="photo-checkin-number">{label}</div>
+     <div className="photo-reference-pair">
+      <figure><img src={task.place} alt={'第'+task.no+'個指定拍照地點'} loading="lazy"/><figcaption>指定地點 {task.no}</figcaption></figure>
+      <figure><img src={task.pose} alt={'第'+task.no+'個指定拍照姿勢'} loading="lazy"/><figcaption>指定姿勢 {task.no}</figcaption></figure>
+     </div>
+     <p>找到「指定地點 {task.no}」，並模仿「指定姿勢 {task.no}」拍下一張照片。</p>
+     <button type="button" onClick={()=>markDone(task.no)} disabled={done}>{done?'✓ 第'+task.no+'組已完成':'我已完成第'+task.no+'組拍照'}</button>
+    </article>;
+   })}
   </div>
   <div className="photo-checkin-submit">
-   {!(photoCheck1&&photoCheck2)&&<p>尚未完成兩組指定拍照。</p>}
-   {photoCheck1&&photoCheck2&&!solved&&(
+   {!allDone&&<p>目前完成 {photoTasks.filter(task=>photoChecks[task.no]).length} / {photoTasks.length} 組指定拍照。</p>}
+   {allDone&&!solved&&(
     <form className="photo-staff-gate" onSubmit={confirmByStaff}>
      <div className="photo-staff-gate-copy">
       <small>STAFF CONFIRM / 隊輔確認</small>
-      <strong>請隊輔先確認兩組照片皆符合指定地點與姿勢，再輸入隊輔通關密碼。</strong>
+      <strong>請隊輔先確認十組照片皆符合指定地點與姿勢，再輸入隊輔通關密碼。</strong>
      </div>
      <label htmlFor={'photo-staff-code-'+index}>隊輔通關密碼</label>
      <div className="photo-staff-gate-row">
