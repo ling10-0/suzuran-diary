@@ -1,133 +1,158 @@
-.ending-artwork-page{
-  width:100%;
-  max-width:100%;
-  padding:24px 18px 30px;
-  background:#17130f;
+.ending-artwork-result{
+  min-height:100vh;
+  border:0!important;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(190,143,78,.16),transparent 38%),
+    linear-gradient(180deg,#17110d 0%,#0f0b08 100%);
+  box-shadow:none!important;
+  overflow:hidden;
+}
+
+.ending-result-shell{
+  width:min(980px,100%);
+  margin:0 auto;
+  padding:34px 24px 42px;
   box-sizing:border-box;
 }
 
-.ending-artwork-frame{
-  width:min(760px,100%);
-  max-width:100%;
+.ending-result-kicker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  width:min(900px,100%);
+  margin:0 auto 14px;
+  padding:0 2px 12px;
+  border-bottom:1px solid rgba(225,199,150,.2);
+  color:#ddc79f;
+}
+
+.ending-result-kicker span{
+  font:10px 'DM Mono',monospace;
+  letter-spacing:.2em;
+  opacity:.64;
+}
+
+.ending-result-kicker b{
+  font-size:12px;
+  letter-spacing:.08em;
+  font-weight:600;
+}
+
+.ending-result-poster{
+  width:min(900px,100%);
   margin:0 auto;
-  border:1px solid rgba(177,139,84,.55);
-  background:#201810;
-  box-shadow:0 24px 70px rgba(0,0,0,.45);
+  padding:0;
+  background:#1b130e;
+  border:1px solid rgba(213,177,118,.34);
+  box-shadow:0 28px 90px rgba(0,0,0,.56);
   overflow:hidden;
   box-sizing:border-box;
 }
 
-.ending-artwork-image{
+.ending-result-poster img{
   display:block;
   width:100%;
-  max-width:100%;
   height:auto;
-  object-fit:contain;
-  object-position:top center;
+  margin:0;
 }
 
-.ending-artwork-actions{
+.ending-result-footer{
   display:flex;
-  justify-content:center;
   align-items:center;
-  gap:12px;
-  width:min(760px,100%);
-  margin:18px auto 0;
+  justify-content:space-between;
+  gap:18px;
+  width:min(900px,100%);
+  margin:14px auto 0;
+  padding:14px 16px;
+  border:1px solid rgba(213,177,118,.18);
+  background:rgba(35,25,18,.78);
+  color:#cfb98f;
+  box-sizing:border-box;
 }
 
-.ending-artwork-actions button{
-  min-width:150px;
-  min-height:48px;
-  padding:12px 20px;
-  border:1px solid #8f744c;
-  background:#2b2119;
-  color:#ead8b0;
+.ending-result-footer span{
+  font-size:12px;
+  letter-spacing:.06em;
+  opacity:.72;
+}
+
+.ending-result-footer button{
+  min-height:42px;
+  padding:9px 18px;
+  border:1px solid #b49463;
+  background:#d8bf8c;
+  color:#2b1f16;
   font-family:inherit;
-  font-size:14px;
+  font-weight:800;
   cursor:pointer;
 }
 
-.ending-artwork-actions button.secondary{
-  background:transparent;
-  color:#ead8b0;
-}
-
-.ending-toolbar-switch{
-  flex-wrap:wrap;
-}
-
-.ending-switcher{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-
-.ending-switcher button{
-  padding:6px 10px;
-  border:1px solid rgba(234,216,176,.35);
-  border-bottom:1px solid rgba(234,216,176,.35);
-  background:transparent;
-  color:#ead8b0;
-  font-size:12px;
-  line-height:1.2;
-}
-
-.ending-switcher button.is-active{
-  background:#ead8b0;
-  color:#2b2119;
-  border-color:#ead8b0;
-  font-weight:800;
+/* 既然結局已鎖定，移除所有舊的重選／切換 UI，讓上傳的視覺真正成為主體。 */
+.ending-artwork-result .ending-toolbar,
+.ending-artwork-result .ending-switcher,
+.ending-artwork-result .ending-artwork-actions{
+  display:none!important;
 }
 
 @media(max-width:700px){
-  .ending-artwork-page{
-    padding:0 0 118px;
-    overflow:hidden;
+  .ending-artwork-result{
+    min-height:100dvh;
+    background:#100c09;
   }
 
-  .ending-artwork-frame{
+  .ending-result-shell{
+    width:100%;
+    padding:18px 0 108px;
+  }
+
+  .ending-result-kicker{
+    width:100%;
+    margin:0;
+    padding:0 14px 12px;
+    border-bottom:0;
+    box-sizing:border-box;
+  }
+
+  .ending-result-kicker span{
+    font-size:9px;
+    letter-spacing:.14em;
+  }
+
+  .ending-result-kicker b{
+    font-size:11px;
+    text-align:right;
+  }
+
+  .ending-result-poster{
     width:100%;
     max-width:100%;
-    margin:0;
     border-left:0;
     border-right:0;
     box-shadow:none;
   }
 
-  .ending-artwork-image{
+  .ending-result-poster img{
     width:100%;
     max-width:100%;
     height:auto;
   }
 
-  .ending-artwork-actions{
-    width:100%;
-    max-width:100%;
-    padding:16px 12px 0;
-    margin:0;
-    flex-direction:column;
-    box-sizing:border-box;
-  }
-
-  .ending-artwork-actions button{
-    width:100%;
-    min-width:0;
-  }
-
-  .ending-toolbar-switch{
-    align-items:flex-start;
+  .ending-result-footer{
+    width:calc(100% - 24px);
+    margin:14px 12px 0;
+    padding:12px;
     gap:10px;
   }
 
-  .ending-switcher{
-    width:100%;
-    justify-content:flex-start;
+  .ending-result-footer span{
+    font-size:11px;
   }
 
-  .ending-switcher button{
-    flex:1 1 auto;
-    min-width:0;
+  .ending-result-footer button{
+    flex:0 0 auto;
+    min-height:40px;
+    padding:8px 13px;
+    font-size:13px;
   }
 }
