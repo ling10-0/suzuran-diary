@@ -14,7 +14,8 @@ export function suzuranMissingEventTransform() {
         const component = `
 function SuzuranMissingNotice(){
  const params=new URLSearchParams(window.location.search);
- const trigger=params.get('event')==='suzuran-missing';
+ const testMode=params.get('test')==='1';
+ const trigger=params.get('event')==='suzuran-missing'||(testMode&&params.get('missing')==='1');
  const storageKey='suzuran-event-missing';
  const acknowledgedKey='suzuran-event-missing-acknowledged';
  const [active,setActive]=useState(()=>trigger||window.localStorage.getItem(storageKey)==='1');
