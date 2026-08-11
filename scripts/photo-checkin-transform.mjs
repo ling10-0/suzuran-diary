@@ -17,7 +17,8 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
  const [staffError,setStaffError]=useState(false);
  if(index!==0)return null;
  const unlockKey='suzuran-main-v3-unlocked-'+index;
- const allDone=photoTasks.every(task=>photoChecks[task.no]);
+ const completedCount=photoTasks.filter(task=>photoChecks[task.no]).length;
+ const minimumDone=completedCount>=4;
  const markDone=no=>{
   setPhotoChecks(prev=>({...prev,[no]:true}));
   window.localStorage.setItem('suzuran-1916-photo-place'+no,'1');
@@ -36,7 +37,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
   <header className="photo-checkin-head">
    <small>CHECK-IN / 拍照打卡</small>
    <h4>拍照打卡</h4>
-   <p>請在大正製酒株式會社園區內找到下方十個指定位置，並在各地點模仿對應姿勢完成拍照。十組都完成後，請交由隊輔確認；隊輔輸入通關密碼後，才會開放本關手稿與案件查核資料。</p>
+   <p>請在大正製酒株式會社園區內，從下方十組指定地點與姿勢中任選四組完成拍照。完成四組後，請交由隊輔確認；隊輔輸入通關密碼後，即可開放本關手稿與案件查核資料。</p>
   </header>
   <div className="photo-checkin-grid">
    {photoTasks.map(task=>{
@@ -54,12 +55,12 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
    })}
   </div>
   <div className="photo-checkin-submit">
-   {!allDone&&<p>目前完成 {photoTasks.filter(task=>photoChecks[task.no]).length} / {photoTasks.length} 組指定拍照。</p>}
-   {allDone&&!solved&&(
+   {!minimumDone&&<p>目前完成 {completedCount} / 4 組。再完成 {4-completedCount} 組即可交由隊輔確認。</p>}
+   {minimumDone&&!solved&&(
     <form className="photo-staff-gate" onSubmit={confirmByStaff}>
      <div className="photo-staff-gate-copy">
       <small>STAFF CONFIRM / 隊輔確認</small>
-      <strong>請隊輔先確認十組照片皆符合指定地點與姿勢，再輸入隊輔通關密碼。</strong>
+      <strong>已完成至少四組拍照。請隊輔確認其中四組皆符合指定地點與姿勢，再輸入隊輔通關密碼。</strong>
      </div>
      <label htmlFor={'photo-staff-code-'+index}>隊輔通關密碼</label>
      <div className="photo-staff-gate-row">
