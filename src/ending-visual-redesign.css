@@ -1,158 +1,122 @@
-.ending-artwork-result{
-  min-height:100vh;
-  border:0!important;
-  background:
-    radial-gradient(circle at 50% -10%,rgba(190,143,78,.16),transparent 38%),
-    linear-gradient(180deg,#17110d 0%,#0f0b08 100%);
-  box-shadow:none!important;
-  overflow:hidden;
+.ending-poster-result{
+  background:#120f0c;
+  border:0;
+  box-shadow:none;
+  overflow:visible;
 }
 
-.ending-result-shell{
+.ending-poster-shell{
   width:min(980px,100%);
   margin:0 auto;
-  padding:34px 24px 42px;
+  padding:18px 18px 34px;
   box-sizing:border-box;
 }
 
-.ending-result-kicker{
+.ending-poster-kicker{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px;
-  width:min(900px,100%);
-  margin:0 auto 14px;
-  padding:0 2px 12px;
-  border-bottom:1px solid rgba(225,199,150,.2);
-  color:#ddc79f;
-}
-
-.ending-result-kicker span{
-  font:10px 'DM Mono',monospace;
-  letter-spacing:.2em;
-  opacity:.64;
-}
-
-.ending-result-kicker b{
-  font-size:12px;
-  letter-spacing:.08em;
-  font-weight:600;
-}
-
-.ending-result-poster{
-  width:min(900px,100%);
-  margin:0 auto;
-  padding:0;
-  background:#1b130e;
-  border:1px solid rgba(213,177,118,.34);
-  box-shadow:0 28px 90px rgba(0,0,0,.56);
-  overflow:hidden;
+  align-items:baseline;
+  gap:10px;
+  width:100%;
+  margin:0 auto 12px;
+  padding:0 2px;
+  color:#ead8b0;
   box-sizing:border-box;
 }
 
-.ending-result-poster img{
+.ending-poster-kicker span{
+  font:10px 'DM Mono';
+  letter-spacing:.18em;
+  color:#c8ab79;
+}
+
+.ending-poster-kicker b{
+  font-size:13px;
+  letter-spacing:.04em;
+}
+
+.ending-poster-frame{
+  width:100%;
+  margin:0;
+  border:1px solid rgba(188,150,93,.55);
+  background:#1a140f;
+  box-shadow:0 24px 70px rgba(0,0,0,.5);
+  overflow:hidden;
+}
+
+.ending-poster-image{
   display:block;
   width:100%;
   height:auto;
-  margin:0;
 }
 
-.ending-result-footer{
+.ending-poster-footer{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:18px;
-  width:min(900px,100%);
-  margin:14px auto 0;
+  align-items:center;
+  gap:16px;
+  width:100%;
+  margin:16px auto 0;
   padding:14px 16px;
-  border:1px solid rgba(213,177,118,.18);
-  background:rgba(35,25,18,.78);
-  color:#cfb98f;
+  border-top:1px solid rgba(184,145,86,.35);
+  color:#cbb58b;
   box-sizing:border-box;
 }
 
-.ending-result-footer span{
+.ending-poster-footer span{
   font-size:12px;
-  letter-spacing:.06em;
-  opacity:.72;
+  line-height:1.6;
+  opacity:.82;
 }
 
-.ending-result-footer button{
-  min-height:42px;
-  padding:9px 18px;
-  border:1px solid #b49463;
-  background:#d8bf8c;
-  color:#2b1f16;
+.ending-poster-footer button{
+  flex:0 0 auto;
+  min-height:44px;
+  padding:10px 18px;
+  border:1px solid #8f744c;
+  background:#2a2119;
+  color:#ead8b0;
   font-family:inherit;
-  font-weight:800;
   cursor:pointer;
 }
 
-/* 既然結局已鎖定，移除所有舊的重選／切換 UI，讓上傳的視覺真正成為主體。 */
-.ending-artwork-result .ending-toolbar,
-.ending-artwork-result .ending-switcher,
-.ending-artwork-result .ending-artwork-actions{
-  display:none!important;
-}
-
 @media(max-width:700px){
-  .ending-artwork-result{
-    min-height:100dvh;
-    background:#100c09;
+  .ending-main{
+    padding-left:0!important;
+    padding-right:0!important;
   }
 
-  .ending-result-shell{
+  .ending-poster-shell{
     width:100%;
-    padding:18px 0 108px;
+    padding:0 0 110px;
   }
 
-  .ending-result-kicker{
-    width:100%;
+  .ending-poster-kicker{
+    padding:12px 14px 10px;
     margin:0;
-    padding:0 14px 12px;
-    border-bottom:0;
-    box-sizing:border-box;
+    background:#18130f;
   }
 
-  .ending-result-kicker span{
-    font-size:9px;
-    letter-spacing:.14em;
-  }
-
-  .ending-result-kicker b{
-    font-size:11px;
-    text-align:right;
-  }
-
-  .ending-result-poster{
+  .ending-poster-frame{
     width:100%;
-    max-width:100%;
     border-left:0;
     border-right:0;
     box-shadow:none;
   }
 
-  .ending-result-poster img{
+  .ending-poster-footer{
+    flex-direction:column;
+    align-items:stretch;
+    margin:0;
+    padding:16px 14px 0;
+    border-top:0;
+  }
+
+  .ending-poster-footer span{
+    text-align:center;
+  }
+
+  .ending-poster-footer button{
     width:100%;
-    max-width:100%;
-    height:auto;
-  }
-
-  .ending-result-footer{
-    width:calc(100% - 24px);
-    margin:14px 12px 0;
-    padding:12px;
-    gap:10px;
-  }
-
-  .ending-result-footer span{
-    font-size:11px;
-  }
-
-  .ending-result-footer button{
-    flex:0 0 auto;
-    min-height:40px;
-    padding:8px 13px;
-    font-size:13px;
+    min-height:50px;
   }
 }
