@@ -1,42 +1,26 @@
-const publishBlock = String.raw`   {choice==='publish'&&<section className="ending-experience ending-reveal ending-a-visual">
-    <div className="ending-toolbar ending-toolbar-switch">
-     <small>ENDING A / 同意刊登</small>
-     <div className="ending-switcher" aria-label="切換結局">
-      <button type="button" className="is-active" onClick={()=>choose('publish')}>結局 A</button>
-      <button type="button" onClick={()=>choose('protect')}>結局 B</button>
-      <button type="button" onClick={reset}>重新選擇</button>
-     </div>
-    </div>
-    <div className="ending-artwork-page ending-artwork-page-a">
-     <figure className="ending-artwork-frame">
-      <img className="ending-artwork-image" src="./assets/ending/ending-a.png" alt="結局 A：真相刊出。號外頭版揭露七－圖庫案、報社取得升等資格，鈴蘭與青木遭帶回調查，最後寫著你們得到了頭版，也失去了他們的自由。"/>
+const publishBlock = String.raw`   {choice==='publish'&&<section className="ending-experience ending-reveal ending-artwork-result ending-artwork-result-a">
+    <div className="ending-result-shell">
+     <div className="ending-result-kicker"><span>FINAL RESULT</span><b>ENDING A · 同意刊登</b></div>
+     <figure className="ending-result-poster">
+      <img src="./assets/ending/ending-a.png" alt="結局 A：真相刊出。號外頭版揭露七－圖庫案，報社取得升等資格，而鈴蘭與青木遭帶回調查。"/>
      </figure>
-     <div className="ending-artwork-actions">
+     <footer className="ending-result-footer">
+      <span>最終選擇已確定</span>
       <button type="button" onClick={home}>返回市役所</button>
-      <button type="button" onClick={()=>choose('protect')}>查看結局 B</button>
-      <button type="button" className="secondary" onClick={reset}>回到結局選擇</button>
-     </div>
+     </footer>
     </div>
    </section>}`;
 
-const protectBlock = String.raw`   {choice==='protect'&&<section className="ending-experience ending-reveal ending-b-visual">
-    <div className="ending-toolbar ending-toolbar-switch">
-     <small>ENDING B / 不同意刊登</small>
-     <div className="ending-switcher" aria-label="切換結局">
-      <button type="button" onClick={()=>choose('publish')}>結局 A</button>
-      <button type="button" className="is-active" onClick={()=>choose('protect')}>結局 B</button>
-      <button type="button" onClick={reset}>重新選擇</button>
-     </div>
-    </div>
-    <div className="ending-artwork-page ending-artwork-page-b">
-     <figure className="ending-artwork-frame">
-      <img className="ending-artwork-image" src="./assets/ending/ending-b.png" alt="結局 B：未刊出的名字。蘭寄來平安電報，小報社在深夜繼續排版地方新聞，最後寫著我們選擇成為值得信任的小報社。"/>
+const protectBlock = String.raw`   {choice==='protect'&&<section className="ending-experience ending-reveal ending-artwork-result ending-artwork-result-b">
+    <div className="ending-result-shell">
+     <div className="ending-result-kicker"><span>FINAL RESULT</span><b>ENDING B · 不同意刊登</b></div>
+     <figure className="ending-result-poster">
+      <img src="./assets/ending/ending-b.png" alt="結局 B：未刊出的名字。蘭寄來平安電報，小報社繼續記錄地方生活。"/>
      </figure>
-     <div className="ending-artwork-actions">
+     <footer className="ending-result-footer">
+      <span>最終選擇已確定</span>
       <button type="button" onClick={home}>返回市役所</button>
-      <button type="button" onClick={()=>choose('publish')}>查看結局 A</button>
-      <button type="button" className="secondary" onClick={reset}>回到結局選擇</button>
-     </div>
+     </footer>
     </div>
    </section>}`;
 
@@ -47,9 +31,16 @@ export function endingVisualRedesignTransform(){
   transform(code,id){
    if(!id.endsWith('/src/main.jsx'))return null;
    let next=code;
+
    if(!next.includes("import './ending-visual-redesign.css';")){
     next=next.replace("import './ending-consistency.css';","import './ending-consistency.css';\nimport './ending-visual-redesign.css';");
    }
+
+   // 最終選擇一旦寫入 localStorage 就鎖定，不能再從結局頁改選。
+   next=next.replace(
+    " const choose=next=>{\n  window.localStorage.setItem('suzuran-final-choice',next);",
+    " const choose=next=>{\n  if(window.localStorage.getItem('suzuran-final-choice'))return;\n  window.localStorage.setItem('suzuran-final-choice',next);"
+   );
 
    const publishStart=next.indexOf("   {choice==='publish'&&<section");
    const protectStart=next.indexOf("   {choice==='protect'&&<section");
