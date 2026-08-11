@@ -1,2 +1,89 @@
-.ending-visual-sheet{padding:32px;background:#d9bd84;color:#2d2117}.ending-visual-title{text-align:center;padding:10px 8px 24px}.ending-visual-title small{font:10px 'DM Mono';letter-spacing:.16em;color:#9b3028}.ending-visual-title h1{margin:10px 0 6px;font-size:56px;line-height:1.1}.ending-visual-title p{margin:0;font-size:14px;color:#6a5036}.ending-section-tab{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:13px}.ending-section-tab b{display:grid;place-items:center;min-width:36px;height:36px;border:1px solid #6b4e30;background:#2c2119;color:#ecd7aa}.ending-section-tab span{font-weight:700;letter-spacing:.04em}.ending-frontpage-card,.ending-telegram-visual,.ending-desk-visual,.ending-nextissue-card,.ending-promotion-card,.ending-urgent-card{margin:0 auto 22px;max-width:980px;border:1px solid #5a4229;background:#e6cd98;box-shadow:7px 8px 0 rgba(50,34,20,.16);box-sizing:border-box}.ending-frontpage-card{padding:18px}.ending-frontpage-copy{text-align:center;padding:8px 10px 18px;border-bottom:3px double #5a4229}.ending-frontpage-copy small{font:10px 'DM Mono';letter-spacing:.18em;color:#9b3028}.ending-frontpage-copy h2{margin:8px 0 4px;font-size:38px;line-height:1.25}.ending-frontpage-copy p{margin:0;font-size:17px;letter-spacing:.08em}.ending-evidence-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:14px}.ending-evidence-strip figure{margin:0;border:1px solid rgba(70,50,30,.45);background:#c8ab73;overflow:hidden}.ending-evidence-strip img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;filter:sepia(.45) grayscale(.35) contrast(1.05)}.ending-evidence-strip figcaption{padding:8px;font-size:11px;text-align:center}.ending-promotion-card,.ending-urgent-card{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:20px;padding:20px 22px}.ending-promotion-seal{display:grid;place-items:center;width:88px;height:88px;border:4px double #9b3028;border-radius:50%;color:#9b3028;font-weight:900;text-align:center;transform:rotate(-6deg)}.ending-promotion-card small,.ending-urgent-card small{font:10px 'DM Mono';letter-spacing:.13em;color:#9b3028}.ending-promotion-card h3,.ending-urgent-card h3{margin:5px 0;font-size:24px;line-height:1.4}.ending-promotion-card p{margin:0;color:#6a5036}.ending-urgent-stamp{padding:10px 12px;border:4px double #a33027;color:#9b3028;font-size:30px;font-weight:900;transform:rotate(-4deg)}.ending-final-banner{display:block;max-width:980px;margin:22px auto 0;padding:34px 24px;border:1px solid #5f4329;background:#201710;color:#ead8b0;text-align:center;font-size:33px;line-height:1.55;font-weight:800}.ending-final-banner strong{color:#c33d32}.ending-final-banner small{display:block;margin-top:8px;font-size:13px;line-height:1.8;font-weight:400;color:#dec89b}.ending-b-sheet{background:linear-gradient(#cfb37c,#b8945f)}.ending-telegram-visual,.ending-desk-visual,.ending-nextissue-card{padding:18px;background:#d5b77d}.ending-telegram-paper{position:relative;padding:28px 30px 26px;border:1px solid #a34b3f;background:#e5c993;box-shadow:inset 0 0 0 8px rgba(255,255,255,.08)}.ending-telegram-paper small{display:block;padding-bottom:10px;border-bottom:2px solid #a34b3f;font:10px 'DM Mono';letter-spacing:.16em;color:#a23931}.ending-telegram-paper p{margin:28px 0 12px;font-size:24px;line-height:1.8}.ending-telegram-paper em{display:block;text-align:right;font-style:normal;font-size:22px}.telegram-seal{position:absolute;right:24px;top:22px;display:grid;place-items:center;width:74px;height:74px;border:3px solid rgba(155,48,40,.55);border-radius:50%;color:rgba(155,48,40,.7);transform:rotate(8deg)}.ending-desk-visual{display:grid;grid-template-columns:1.35fr .9fr;gap:16px}.ending-desk-visual>.ending-section-tab{grid-column:1/-1}.ending-desk-photo{min-height:260px;border:1px solid #4f3823;background:#2a1f18;overflow:hidden}.ending-desk-photo img{display:block;width:100%;height:100%;min-height:260px;object-fit:cover;filter:sepia(.45) brightness(.72) contrast(1.1)}.ending-desk-tags{display:grid;align-content:center;gap:12px}.ending-desk-tags span{padding:15px 14px;border:1px solid #65482d;background:#ead2a0;font-weight:700}.ending-nextissue-paper{display:grid;grid-template-columns:1.1fr .9fr;min-height:240px;border:1px solid #5a4229;background:#e7ce99;overflow:hidden}.ending-nextissue-paper>div{padding:28px}.ending-nextissue-paper small{font:10px 'DM Mono';letter-spacing:.15em}.ending-nextissue-paper h3{margin:10px 0 4px;font-size:30px;line-height:1.35}.ending-nextissue-paper p{margin:0;font-size:18px}.ending-nextissue-paper img{display:block;width:100%;height:100%;object-fit:cover;filter:sepia(.55) grayscale(.2)}.ending-final-protect{background:#e3c993;color:#2d2117;border-color:#7d5b38}.ending-final-protect strong{color:#a73229}
-@media(max-width:700px){.ending-visual-sheet{padding:18px 12px 120px}.ending-visual-title{padding:6px 4px 18px}.ending-visual-title h1{font-size:38px;line-height:1.2}.ending-visual-title p{font-size:13px}.ending-frontpage-card,.ending-telegram-visual,.ending-desk-visual,.ending-nextissue-card,.ending-promotion-card,.ending-urgent-card{width:100%;max-width:100%;margin-bottom:16px;box-shadow:4px 5px 0 rgba(50,34,20,.13)}.ending-frontpage-card,.ending-telegram-visual,.ending-desk-visual,.ending-nextissue-card{padding:12px}.ending-frontpage-copy h2{font-size:27px;line-height:1.35}.ending-frontpage-copy p{font-size:14px}.ending-evidence-strip{grid-template-columns:1fr 1fr;gap:8px}.ending-evidence-strip figure:last-child{grid-column:1/-1}.ending-evidence-strip img{aspect-ratio:16/10}.ending-promotion-card,.ending-urgent-card{grid-template-columns:72px minmax(0,1fr);gap:12px;padding:15px}.ending-promotion-seal{width:68px;height:68px;font-size:13px}.ending-promotion-card h3,.ending-urgent-card h3{font-size:18px;overflow-wrap:anywhere}.ending-urgent-stamp{font-size:21px;padding:8px}.ending-final-banner{padding:26px 14px;font-size:25px;line-height:1.6}.ending-telegram-paper{padding:22px 16px 20px}.ending-telegram-paper p{margin:24px 0 8px;font-size:20px;line-height:1.75}.ending-telegram-paper em{font-size:18px}.telegram-seal{width:58px;height:58px;right:12px;top:12px;font-size:12px}.ending-desk-visual{grid-template-columns:1fr}.ending-desk-visual>.ending-section-tab{grid-column:auto}.ending-desk-photo{min-height:210px}.ending-desk-photo img{min-height:210px}.ending-desk-tags{grid-template-columns:1fr;gap:8px}.ending-desk-tags span{padding:12px}.ending-nextissue-paper{grid-template-columns:1fr}.ending-nextissue-paper>div{padding:20px}.ending-nextissue-paper h3{font-size:26px}.ending-nextissue-paper img{height:180px}.ending-a-visual .ending-action,.ending-b-visual .ending-action{flex-direction:column}.ending-a-visual .ending-action button,.ending-b-visual .ending-action button{width:100%}}
+.ending-artwork-page{
+  width:100%;
+  max-width:100%;
+  padding:24px 18px 30px;
+  background:#17130f;
+  box-sizing:border-box;
+}
+
+.ending-artwork-frame{
+  width:min(760px,100%);
+  max-width:100%;
+  margin:0 auto;
+  border:1px solid rgba(177,139,84,.55);
+  background:#201810;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+.ending-artwork-image{
+  display:block;
+  width:100%;
+  max-width:100%;
+  height:auto;
+  object-fit:contain;
+  object-position:top center;
+}
+
+.ending-artwork-actions{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  width:min(760px,100%);
+  margin:18px auto 0;
+}
+
+.ending-artwork-actions button{
+  min-width:150px;
+  min-height:48px;
+  padding:12px 20px;
+  border:1px solid #8f744c;
+  background:#2b2119;
+  color:#ead8b0;
+  font-family:inherit;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.ending-artwork-actions button.secondary{
+  background:transparent;
+  color:#ead8b0;
+}
+
+@media(max-width:700px){
+  .ending-artwork-page{
+    padding:0 0 118px;
+    overflow:hidden;
+  }
+
+  .ending-artwork-frame{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    border-left:0;
+    border-right:0;
+    box-shadow:none;
+  }
+
+  .ending-artwork-image{
+    width:100%;
+    max-width:100%;
+    height:auto;
+  }
+
+  .ending-artwork-actions{
+    width:100%;
+    max-width:100%;
+    padding:16px 12px 0;
+    margin:0;
+    flex-direction:column;
+    box-sizing:border-box;
+  }
+
+  .ending-artwork-actions button{
+    width:100%;
+    min-width:0;
+  }
+}
