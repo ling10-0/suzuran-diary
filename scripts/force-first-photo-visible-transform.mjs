@@ -3,6 +3,25 @@ export function forceFirstPhotoVisibleTransform(){
   name:'suzuran-force-first-photo-visible-transform',
   enforce:'pre',
   transform(code,id){
+   // puzzleLayoutOverrides.js 會在頁面渲染後再次改寫案件目錄與案件標題，
+   // 因此這裡直接修正它的 caseMeta，避免 003／010 被蓋回純地點名。
+   if(id.endsWith('/src/puzzleLayoutOverrides.js')){
+    let next=code;
+    next=next.replace(
+     "3:{label:'新盛橋通、櫻橋通',code:'巡查第〇三號',task:'新盛橋通、櫻橋通',",
+     "3:{label:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',directoryLabel:'新盛橋通、櫻橋通＋進來涼',code:'巡查第〇三號',task:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',"
+    );
+    next=next.replace(
+     "10:{label:'新富町市場',code:'市場第〇十號',task:'新富町市場',",
+     "10:{label:'新富町市場（第二市場）＋鹿港肉包',directoryLabel:'新富町市場＋鹿港肉包',code:'市場第〇十號',task:'新富町市場（第二市場）＋鹿港肉包',"
+    );
+    next=next.replace(
+     "setText(card.querySelector('h3'),meta.label);",
+     "setText(card.querySelector('h3'),meta.directoryLabel||meta.label);"
+    );
+    return next===code?null:{code:next,map:null};
+   }
+
    if(!id.endsWith('/src/main.jsx')||!code.includes('function PhotoCheckinChallenge('))return null;
 
    let next=code;
