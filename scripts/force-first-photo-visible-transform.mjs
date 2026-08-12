@@ -1,13 +1,14 @@
 export function forceFirstPhotoVisibleTransform(){
  return {
   name:'suzuran-force-first-photo-visible-transform',
+  enforce:'pre',
   transform(code,id){
    if(!id.endsWith('/src/main.jsx')||!code.includes('function PhotoCheckinChallenge('))return null;
 
    let next=code;
 
-   // 這支 transform 必須在 React JSX 編譯前執行；不能使用 enforce:'post'，
-   // 否則 FieldJournal 已被轉成 jsx() 呼叫，下面的 JSX/函式錨點全部對不到。
+   // 必須在 React JSX 編譯前執行；force transform 排在其他 pre transforms 之後、react() 之前，
+   // 這樣第一關／案件標題的最後覆寫才真的會進入 production bundle。
 
    // 第一關固定至少完成五組拍照才可交由隊輔確認。
    next=next.replaceAll('const minimumDone=completedCount>=3;','const minimumDone=completedCount>=5;');
@@ -23,8 +24,8 @@ export function forceFirstPhotoVisibleTransform(){
    if(!next.includes('suzuran-first-case-final-runtime-override')){
     const runtimeOverride=`// suzuran-first-case-final-runtime-override
 // 第一關只保留拍照打卡流程；完全移除舊選擇題。
-// 工程資料本身仍保留在案件資料中，但現有 FieldJournal 會等 solved=true 才顯示；
-// solved 只會在完成至少五組拍照並由隊輔輸入密碼後成立。
+// 工程資料仍保留在案件資料中；現有 FieldJournal 只有在 solved=true 時才顯示第一關工程資料，
+// 而 solved 只會在完成至少五組拍照並由隊輔輸入通關密碼後成立。
 Object.assign(mainlineCases[0],{
  direct:true,
  pending:false,
