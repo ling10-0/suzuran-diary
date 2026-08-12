@@ -3,26 +3,26 @@
 @media(max-width:800px){
   .story-intro-overlay{align-items:center!important;justify-items:center!important;padding:0!important;overflow:hidden!important;background:#17110c!important}
   .story-shell{width:100%!important;height:auto!important;max-height:100dvh!important;display:flex!important;align-items:center!important;justify-content:center!important;filter:none!important}
-  .story-scene{width:100%!important;height:min(100dvh,calc(56.25vw + 144px))!important;min-height:0!important;aspect-ratio:auto!important;border:0!important;background:#2d2017!important;overflow:hidden!important}
+  .story-scene{width:100%!important;height:min(100dvh,calc(56.25vw + 118px))!important;min-height:0!important;aspect-ratio:auto!important;border:0!important;background:#2d2017!important;overflow:hidden!important}
   .story-scene-bg{inset:0!important;background-size:100% auto!important;background-repeat:no-repeat!important;background-position:center top!important;transform:none!important;animation:none!important;filter:saturate(.9) contrast(1.03)!important}
   .story-scene-shade{background:linear-gradient(180deg,rgba(18,11,7,.03),rgba(18,11,7,0) 58%,rgba(18,11,7,.18) 100%)!important}
   .story-era{left:12px!important;top:12px!important;padding:6px 9px!important;font-size:9px!important;z-index:3!important}
   .story-character-marker{display:none!important}
-  .story-dialogue{left:8px!important;right:8px!important;top:calc(56.25vw - 22px)!important;bottom:auto!important;min-height:118px!important;padding:8px 9px 39px!important;border-width:3px!important;background:rgba(241,218,168,.98)!important;box-shadow:0 -5px 14px rgba(20,12,7,.2)!important}
-  .story-dialogue-meta{margin-bottom:4px!important;padding-bottom:4px!important}
+  .story-dialogue{left:8px!important;right:8px!important;top:calc(56.25vw - 18px)!important;bottom:auto!important;min-height:106px!important;padding:7px 9px 37px!important;border-width:3px!important;background:rgba(241,218,168,.98)!important;box-shadow:0 -5px 14px rgba(20,12,7,.2)!important}
+  .story-dialogue-meta{margin-bottom:3px!important;padding-bottom:3px!important}
   .story-dialogue-meta strong{font-size:13px!important}
   .story-dialogue-meta span{font-size:9px!important}
-  .story-dialogue p{font-size:13.5px!important;line-height:1.4!important;min-height:31px!important}
-  .story-dialogue-actions{right:8px!important;left:8px!important;bottom:7px!important;justify-content:stretch!important;gap:7px!important}
-  .story-dialogue-actions button{flex:1!important;min-height:28px!important;padding:4px 7px!important;font-size:10.5px!important}
+  .story-dialogue p{font-size:13px!important;line-height:1.36!important;min-height:28px!important}
+  .story-dialogue-actions{right:8px!important;left:8px!important;bottom:6px!important;justify-content:stretch!important;gap:7px!important}
+  .story-dialogue-actions button{flex:1!important;min-height:27px!important;padding:4px 7px!important;font-size:10.5px!important}
 }
 
 @media(max-width:430px){
-  .story-scene{height:min(100dvh,calc(56.25vw + 136px))!important}
-  .story-dialogue{top:calc(56.25vw - 20px)!important;min-height:112px!important;padding:7px 8px 37px!important}
+  .story-scene{height:min(100dvh,calc(56.25vw + 108px))!important}
+  .story-dialogue{top:calc(56.25vw - 17px)!important;min-height:101px!important;padding:6px 8px 35px!important}
   .story-dialogue-meta{margin-bottom:3px!important;padding-bottom:3px!important}
-  .story-dialogue p{font-size:13px!important;line-height:1.38!important;min-height:29px!important}
-  .story-dialogue-actions button{min-height:27px!important;font-size:10.5px!important}
+  .story-dialogue p{font-size:12.8px!important;line-height:1.34!important;min-height:27px!important}
+  .story-dialogue-actions button{min-height:26px!important;font-size:10.5px!important}
 }
 
 @media(max-height:720px) and (min-width:801px){.story-shell{width:min(960px,94vw)!important}.story-scene{min-height:0!important}.story-dialogue{min-height:88px!important;padding:9px 176px 9px 13px!important}.story-dialogue-meta{margin-bottom:4px!important;padding-bottom:4px!important}.story-dialogue p{font-size:14px!important;line-height:1.42!important}.story-dialogue-actions{right:11px!important;bottom:9px!important}.story-dialogue-actions button{min-height:30px!important;padding:5px 10px!important}.story-character-marker{bottom:98px!important}}
