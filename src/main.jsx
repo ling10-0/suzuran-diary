@@ -9,10 +9,11 @@ import './campaign.css';
 import './refinements.css';
 import './office.css';
 import './newspaper.css';
+import './mobile-group.css';
 import {sideQuests} from './sideQuestCases.js';
 import {mainlineCases} from './mainlineCases.js';
 import {createJapaneseName} from './japaneseName.js';
-import {loadNewsroomProgress, saveNewsroomProgress} from './sharedProgress.js';
+import {clearTestNewsroomProgress, loadNewsroomProgress, MAIN_PROGRESS_START, PHOTO_PROGRESS_END, PHOTO_PROGRESS_START, saveNewsroomProgress, SIDE_PROGRESS_START} from './sharedProgress.js';
 
 const chapters = [
   {date:'DAY / 01',year:'1938',tag:'角色登錄',title:'集合啦!見習調查員',text:'由驛前工坊出發，沿市場、公署與河道採集人們的生活記錄。',place:'臺中舊城・第一日主線',tone:'ochre',points:[{name:'1916工坊',historic:'驛前南側倉庫區',lat:24.131331,lng:120.681887},{name:'臺中市第三公有零售市場',historic:'敷島町第三市場',lat:24.1331583,lng:120.6830965},{name:'南園酒家／精養軒舊址',historic:'精養軒',lat:24.1362,lng:120.6798},{name:'臺中市役所',historic:'臺中市役所',lat:24.1383354,lng:120.6791052},{name:'臺中郵局',historic:'臺中郵便局',lat:24.1383,lng:120.6766},{name:'合作金庫舊址',historic:'臺中州立圖書館',lat:24.1411747,lng:120.6794953},{name:'柳川古道',historic:'柳川水路',lat:24.1423566,lng:120.6775796},{name:'第二市場',historic:'新富町第二市場',lat:24.1424183,lng:120.6791452}]},
@@ -702,129 +703,57 @@ function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){
 
 
 
+function createTestSessionCode(){
+ const bytes=new Uint8Array(4);
+ window.crypto.getRandomValues(bytes);
+ return Array.from(bytes,byte=>byte.toString(36).padStart(2,'0')).join('').slice(0,8).toUpperCase();
+}
+
 function NewsroomEntry({onComplete}){
  const [newsroom,setNewsroom]=useState('');
+ const [testMode,setTestMode]=useState(false);
+ const [testSession,setTestSession]=useState(()=>createTestSessionCode());
  const [error,setError]=useState('');
 
  const submit=event=>{
   event.preventDefault();
-
   const next=newsroom.trim();
-
-  if(!next){
-   setError('請填入領隊指定的報社名稱。');
+  const session=testSession.trim().toUpperCase();
+  if(!['蘭臺','見山','迴聲'].includes(next)){
+   setError('請選擇蘭臺、見山或迴聲。');
+   return;
+  }
+  if(testMode&&!/^[A-Z0-9]{6,12}$/.test(session)){
+   setError('測試場次碼需為 6–12 位英文字母或數字。');
    return;
   }
 
-  window.localStorage.setItem(
-   'suzuran-newsroom',
-   next
-  );
-
-  onComplete(next);
+  window.localStorage.setItem('suzuran-newsroom',next);
+  window.localStorage.setItem('suzuran-progress-mode',testMode?'test':'live');
+  if(testMode)window.localStorage.setItem('suzuran-test-session',session);
+  else window.localStorage.removeItem('suzuran-test-session');
+  onComplete({newsroom:next,testMode,testSession:testMode?session:''});
  };
 
- return (
-  <div className="newspaper-journal-page newsroom-entry-page">
-
-   <header className="route-nav">
-
-    <button
-     className="brand"
-     onClick={()=>window.location.assign('./')}
-    >
-     <span>翻閱1938</span>
-     <i>市報</i>
-    </button>
-
-    <button
-     className="route-back"
-     onClick={()=>window.location.assign('./')}
-    >
-     <ArrowLeft size={18}/>
-     返回市役所
-    </button>
-
-   </header>
-
-
-   <main>
-
-    <section className="newsroom-entry">
-
-     <p className="eyebrow">
-      PRESS REGISTRATION / 報社登記
-     </p>
-
-     <h1>
-      請報明所屬報社
-     </h1>
-
-     <p>
-      進入調查案件前，請選擇同組共用的報社名稱，
-      以便啟用共同調查進度。
-     </p>
-
-
-     <form onSubmit={submit}>
-
-      <label htmlFor="newsroom-name">
-       報社／組別名稱
-      </label>
-
-      <select
-       id="newsroom-name"
-       value={newsroom}
-       onChange={event=>{
-        setNewsroom(event.target.value);
-        setError('');
-       }}
-       autoFocus
-      >
-
-       <option value="">
-        請選擇報社
-       </option>
-
-       <option value="蘭臺">
-        蘭臺
-       </option>
-
-       <option value="見山">
-        見山
-       </option>
-
-       <option value="迴聲">
-        迴聲
-       </option>
-
-      </select>
-
-
-      <button type="submit">
-       登記後進入案件目錄
-       <ArrowUpRight size={17}/>
-      </button>
-
-
-      {error&&(
-       <small>{error}</small>
-      )}
-
-     </form>
-
-
-     <footer>
-      同一組請選擇相同報社；
-      案件解謎進度將由同組共同使用。
-     </footer>
-
-    </section>
-
-   </main>
-
-  </div>
- );
+ return <div className="newspaper-journal-page newsroom-entry-page">
+  <header className="route-nav"><button className="brand" onClick={()=>window.location.assign('./')}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={()=>window.location.assign('./')}><ArrowLeft size={18}/> 返回市役所</button></header>
+  <main><section className="newsroom-entry">
+   <p className="eyebrow">PRESS REGISTRATION / 組別登記</p>
+   <h1>請選擇所屬組別</h1>
+   <p>同組裝置選擇相同組別後，案件與拍照進度會共同同步。正式活動請使用正式場次；排練時可開啟測試模式。</p>
+   <form onSubmit={submit}>
+    <label htmlFor="newsroom-name">組別名稱</label>
+    <select id="newsroom-name" value={newsroom} onChange={event=>{setNewsroom(event.target.value);setError('')}} autoFocus>
+     <option value="">請選擇組別</option><option value="蘭臺">蘭臺</option><option value="見山">見山</option><option value="迴聲">迴聲</option>
+    </select>
+    <label className="test-mode-toggle"><input type="checkbox" checked={testMode} onChange={event=>{setTestMode(event.target.checked);setError('')}}/><span><b>使用測試模式</b><small>測試完成後，可清空這個場次的共同與本機解鎖紀錄。</small></span></label>
+    {testMode&&<div className="test-session-field"><label htmlFor="test-session">測試場次碼</label><div><input id="test-session" value={testSession} onChange={event=>{setTestSession(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''));setError('')}} minLength="6" maxLength="12" autoCapitalize="characters"/><button type="button" onClick={()=>setTestSession(createTestSessionCode())}>產生新碼</button></div><small>同組所有測試裝置須輸入相同場次碼。</small></div>}
+    <button type="submit">登記後進入案件目錄 <ArrowUpRight size={17}/></button>
+    {error&&<small className="entry-error">{error}</small>}
+   </form>
+   <footer>{testMode?'目前將使用可清空的獨立測試紀錄，不會影響正式活動。':'正式場次紀錄不提供前台清空，避免活動進度被誤刪。'}</footer>
+  </section></main>
+ </div>;
 }
 function SideQuestArchive({isUnlocked,onUnlock}){
  const [working,setWorking]=useState(null);
@@ -880,43 +809,96 @@ function SideQuestArchive({isUnlocked,onUnlock}){
 
 function NewspaperJournalPage({caseIndex}){
  const home=()=>window.location.assign('./');
- const [newsroom,setNewsroom]=useState(()=>window.localStorage.getItem('suzuran-newsroom')||'');
+ const [syncConfig,setSyncConfig]=useState(()=>{
+  const newsroom=window.localStorage.getItem('suzuran-newsroom')||'';
+  const testMode=window.localStorage.getItem('suzuran-progress-mode')==='test';
+  const testSession=window.localStorage.getItem('suzuran-test-session')||'';
+  return {newsroom,testMode,testSession};
+ });
+ const {newsroom,testMode,testSession}=syncConfig;
  const [sharedProgress,setSharedProgress]=useState(null);
  const [progressError,setProgressError]=useState('');
+ const syncContext={testMode,testSession};
+ const mainProgressId=index=>MAIN_PROGRESS_START+index;
+ const sideProgressId=id=>SIDE_PROGRESS_START+(id-100);
+ const localProgress=()=>[
+  ...puzzles.map((_,index)=>window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1'?mainProgressId(index):null),
+  ...sideQuests.map(quest=>window.localStorage.getItem('suzuran-side-v2-unlocked-'+quest.id)==='1'?sideProgressId(quest.id):null),
+  ...Array.from({length:10},(_,index)=>window.localStorage.getItem('suzuran-1916-photo-place'+(index+1))==='1'?PHOTO_PROGRESS_START+index:null),
+ ].filter(Number.isInteger);
  const refreshProgress=async()=>{
-  try{setSharedProgress(await loadNewsroomProgress(newsroom));setProgressError('')}catch{setProgressError('共同進度暫時無法連線，已改以本機進度顯示。')}
+  try{
+   const remote=await loadNewsroomProgress(newsroom,syncContext);
+   const local=localProgress();
+   const missing=local.filter(progressId=>!remote.includes(progressId));
+   if(missing.length)await Promise.all(missing.map(progressId=>saveNewsroomProgress(newsroom,progressId,syncContext)));
+   setSharedProgress(Array.from(new Set([...remote,...local])));
+   setProgressError('');
+  }catch{
+   setSharedProgress(current=>current??localProgress());
+   setProgressError('共同進度暫時無法連線；本機解鎖已保留，連線恢復後會自動補同步。');
+  }
  };
  useEffect(()=>{
   if(!newsroom)return;
   refreshProgress();
-  const timer=window.setInterval(refreshProgress,10000);
+  const timer=window.setInterval(refreshProgress,5000);
   return()=>window.clearInterval(timer)
- },[newsroom]);
- const mainProgressId=index=>1050+index;
- const sideProgressId=id=>1070+(id-100);
+ },[newsroom,testMode,testSession]);
  const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';
  const isSideUnlocked=id=>(sharedProgress?.includes(sideProgressId(id))??false)||window.localStorage.getItem('suzuran-side-v2-unlocked-'+id)==='1';
  const unlockedCount=puzzles.filter((_,index)=>isSolved(index)).length;
+ const syncedMainCount=sharedProgress===null?null:(sharedProgress||[]).filter(id=>id>=MAIN_PROGRESS_START&&id<MAIN_PROGRESS_START+puzzles.length).length;
+ const photoCount=sharedProgress===null?null:(sharedProgress||[]).filter(id=>id>=PHOTO_PROGRESS_START&&id<=PHOTO_PROGRESS_END).length;
+ const score=syncedMainCount===null?null:Math.min(130,syncedMainCount*10+(photoCount||0)*2);
+ const newsroomLevel=score===null?'計算中…':score>=100?'中央報社':score>=70?'全島報社':score>=40?'州級報社':'地方報社';
  const markSharedSolved=async index=>{
   const progressId=mainProgressId(index);
-  try{await saveNewsroomProgress(newsroom,progressId);setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
+  setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));
+  try{await saveNewsroomProgress(newsroom,progressId,syncContext);setProgressError('')}catch{setProgressError('答案已在本機解鎖；共同進度將在連線恢復後同步。')}
  };
  const unlockSideQuest=async id=>{
   const progressId=sideProgressId(id);
   window.localStorage.setItem('suzuran-side-v2-unlocked-'+id,'1');
   setSharedProgress(current=>Array.from(new Set([...(current||[]),progressId])));
-  try{await saveNewsroomProgress(newsroom,progressId);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度需完成資料表更新後才會同步。')}
+  try{await saveNewsroomProgress(newsroom,progressId,syncContext);setProgressError('')}catch{setProgressError('支線已在本機解鎖；共同進度將在連線恢復後同步。')}
+ };
+ const changeGroup=()=>{
+  window.localStorage.removeItem('suzuran-newsroom');
+  window.localStorage.removeItem('suzuran-progress-mode');
+  window.localStorage.removeItem('suzuran-test-session');
+  setSyncConfig({newsroom:'',testMode:false,testSession:''});
+ };
+ const clearTestProgress=async()=>{
+  if(!testMode||!window.confirm(`確定清空「${newsroom}／${testSession}」的測試進度嗎？同場次所有裝置都會回到未解鎖狀態。`))return;
+  try{
+   await clearTestNewsroomProgress(newsroom,syncContext);
+   puzzles.forEach((_,index)=>window.localStorage.removeItem('suzuran-main-v3-unlocked-'+index));
+   sideQuests.forEach(quest=>window.localStorage.removeItem('suzuran-side-v2-unlocked-'+quest.id));
+   Array.from({length:10},(_,index)=>window.localStorage.removeItem('suzuran-1916-photo-place'+(index+1)));
+   ['suzuran-1916-photo-gate','suzuran-1916-photo-score','suzuran-taisho-bridge-photo-gate'].forEach(key=>window.localStorage.removeItem(key));
+   setSharedProgress([]);
+   setProgressError('');
+   window.location.assign('./?page=puzzles');
+  }catch(error){setProgressError(error.message||'測試進度清空失敗，請稍後再試。')}
  };
  const selected=Number.isInteger(caseIndex)&&caseIndex>=0&&caseIndex<puzzles.length?caseIndex:null;
  const openCase=index=>window.location.assign('./?page=puzzles&case='+(index+1));
  const goIndex=()=>window.location.assign('./?page=puzzles');
  const dayGroups=[1,2].map(day=>({day,items:puzzles.map((item,index)=>({...item,index})).filter(item=>item.day===day)}));
- if(!newsroom)return <NewsroomEntry onComplete={setNewsroom}/>;
+ if(!newsroom)return <NewsroomEntry onComplete={setSyncConfig}/>;
  return <div className={'newspaper-journal-page '+(selected===null?'journal-index-page':'journal-case-page')}>
   <header className="route-nav"><button className="brand" onClick={home}><span>翻閱1938</span><i>市報</i></button><button className="route-back" onClick={selected===null?home:goIndex}><ArrowLeft size={18}/> {selected===null?'返回市役所':'返回案件目錄'}</button></header>
   <main>
+   <section className="journal-group-status" aria-label="組別與共同進度">
+    <div><span>目前組別</span><strong>{newsroom}</strong><small>{testMode?'測試場次 '+testSession:'正式場次'}</small></div>
+    <div><span>共同進度</span><strong>{syncedMainCount===null?'連線中…':syncedMainCount+' 件已同步'}</strong><small>{photoCount===null?'拍照點計算中…':'拍照點 '+photoCount+' / 10'}</small></div>
+    <div><span>目前分數</span><strong>{score===null?'—':score+' / 130'}</strong></div>
+    <div className="newsroom-level"><span>報社等級</span><strong>{newsroomLevel}</strong></div>
+   </section>
+   <div className="sync-actions"><button type="button" onClick={changeGroup}>變更組別／場次</button>{testMode&&<button className="clear-test-progress" type="button" onClick={clearTestProgress}>清空此測試場次</button>}</div>
    <section className="gazette-hero"><div className="gazette-mast"><small>昭和十三年 臺中市街調查記錄</small><h1>臺中市報</h1><b>調查手稿特別附錄</b></div><div className="gazette-meta"><span>第千百七十三號外</span><time>昭和十三年八月十四日</time><strong>{unlockedCount} / {puzzles.length} 件受理</strong></div></section>
-   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span>所屬報社：{newsroom}<br/>解謎進度由同組共用</span></section>
+   <section className="gazette-guidance"><b>案件說明</b><p>內地人遊記可於查核前閱覽；輸入走讀現場取得的答案後，即可對照本島人手稿、貼付寫真、記錄調查後記並編製個人結語。</p><span className="group-sync-status"><b>目前組別｜{newsroom}</b><br/>{testMode?'測試場次｜'+testSession:'正式共同進度'}</span></section>
    {progressError&&<p className="shared-progress-error">{progressError}</p>}
    {selected===null
     ?<><section className="case-directory">{dayGroups.map(group=><div className={'case-day-group day-'+group.day} key={group.day}><header><div><small>DAY / 0{group.day}</small><h2>第{group.day===1?'一':'二'}日調查案件</h2></div><span>{group.items.filter(item=>isSolved(item.index)).length} / {group.items.length} 件可閱</span></header><div className="case-directory-grid">{group.items.map(item=>{const solved=isSolved(item.index);const status=item.direct?'直接閱覽':item.pending?'題目待發':solved?'已解鎖':'未查核';return <button className={'case-file case-type-'+item.type+(solved?' is-open':'')} onClick={()=>openCase(item.index)} key={item.label}><span>{String(item.index+1).padStart(2,'0')}</span><div><small>{item.code}</small><h3>{item.taskTitle}</h3><p>{item.hint}</p></div><b>{status}</b><ArrowUpRight size={18}/></button>})}</div></div>)}</section><SideQuestArchive isUnlocked={isSideUnlocked} onUnlock={unlockSideQuest}/></>

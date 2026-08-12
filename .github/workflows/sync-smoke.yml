@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/sync-smoke.yml'
+      - 'src/sharedProgress.js'
+      - 'supabase/setup.sql'
 
 jobs:
   test-sync:
@@ -13,24 +15,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          URL='https://unyntuezvovodpklishf.supabase.co/rest/v1/newsroom_progress'
+          URL='https://unyntuezvovodpklishf.supabase.co/rest/v1/newsroom_test_progress'
           KEY='sb_publishable_V-bPAyQBvzHTdRIPlDtbWQ_QYd3Jn1G'
+          SESSION="CI${GITHUB_RUN_ID:0:10}"
 
           status=$(curl -sS -o /tmp/post.txt -w '%{http_code}' \
-            -X POST "$URL?on_conflict=newsroom,case_index" \
+            -X POST "$URL?on_conflict=test_session,newsroom,case_index" \
             -H "apikey: $KEY" \
             -H 'Content-Type: application/json' \
             -H 'Prefer: resolution=ignore-duplicates,return=minimal' \
-            --data '{"newsroom":"迴聲","case_index":0}')
+            --data "{\"test_session\":\"$SESSION\",\"newsroom\":\"迴聲\",\"case_index\":1050}")
           echo "POST status: $status"
           cat /tmp/post.txt || true
           test "$status" = '201' || test "$status" = '204'
 
           status=$(curl -sS -o /tmp/get.txt -w '%{http_code}' \
-            "$URL?select=case_index&newsroom=eq.%E8%BF%B4%E8%81%B2&case_index=eq.0" \
+            "$URL?select=case_index&test_session=eq.$SESSION&newsroom=eq.%E8%BF%B4%E8%81%B2&case_index=eq.1050" \
             -H "apikey: $KEY" \
             -H 'Accept: application/json')
           echo "GET status: $status"
           cat /tmp/get.txt
           test "$status" = '200'
-          grep -q '0' /tmp/get.txt
+          grep -q '1050' /tmp/get.txt
+
+          status=$(curl -sS -o /tmp/delete.txt -w '%{http_code}' \
+            -X DELETE "$URL?test_session=eq.$SESSION&newsroom=eq.%E8%BF%B4%E8%81%B2" \
+            -H "apikey: $KEY" \
+            -H 'Prefer: return=minimal')
+          echo "DELETE status: $status"
+          cat /tmp/delete.txt || true
+          test "$status" = '200' || test "$status" = '204'

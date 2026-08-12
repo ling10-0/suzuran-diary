@@ -18,6 +18,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - name: Verify mobile group and sync UI made it into production bundle
         shell: bash
@@ -26,4 +27,5 @@ jobs:
           grep -R -q '目前組別' dist
           grep -R -q '共同進度' dist
           grep -R -q '件已同步' dist
+          grep -R -q '清空此測試場次' dist
           echo 'Production bundle contains group and sync status UI.'
