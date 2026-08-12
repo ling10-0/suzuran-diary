@@ -13,9 +13,11 @@ export function forceFirstPhotoVisibleTransform(){
    // 第一關固定至少完成五組拍照才可交由隊輔確認。
    next=next.replaceAll('const minimumDone=completedCount>=3;','const minimumDone=completedCount>=5;');
 
-   // 案件目錄只顯示地點；合作店名只留在案件內標題。
-   next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）＋進來涼"','"新盛橋通、櫻橋通（中山綠橋）"');
-   next=next.replaceAll('"新富町市場＋鹿港阿甫師肉包"','"新富町市場（第二市場）"');
+   // 003／010 跟 002 一樣：案件目錄外面直接顯示合作店家名稱。
+   // 010 同時統一店名為「鹿港肉包」，不再顯示舊的「鹿港阿甫師肉包」。
+   next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）"','"新盛橋通、櫻橋通（中山綠橋）＋進來涼"');
+   next=next.replaceAll('"新富町市場＋鹿港阿甫師肉包"','"新富町市場（第二市場）＋鹿港肉包"');
+   next=next.replaceAll('"新富町市場（第二市場）"','"新富町市場（第二市場）＋鹿港肉包"');
 
    const fieldAnchor='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    const fieldStart=next.indexOf(fieldAnchor);
@@ -37,16 +39,16 @@ Object.assign(mainlineCases[0],{
  inputLabel:''
 });
 
-// 003／010：目錄純地點名，點進案件後才顯示合作店家。
+// 003／010：案件目錄與案件內都直接顯示合作店家名稱，呈現方式比照 002。
 if(mainlineCases[2]) Object.assign(mainlineCases[2],{
  taskTitle:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
- directoryTitle:'新盛橋通、櫻橋通（中山綠橋）',
+ directoryTitle:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
  label:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
  title:'新盛橋通、櫻橋通（中山綠橋）＋進來涼'
 });
 if(mainlineCases[9]) Object.assign(mainlineCases[9],{
  taskTitle:'新富町市場（第二市場）＋鹿港肉包',
- directoryTitle:'新富町市場（第二市場）',
+ directoryTitle:'新富町市場（第二市場）＋鹿港肉包',
  label:'新富町市場（第二市場）＋鹿港肉包',
  title:'新富町市場（第二市場）＋鹿港肉包'
 });
