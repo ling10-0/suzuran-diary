@@ -1,195 +1,6 @@
-.truth-investigation-hub{
+.ending-choice-direct{
   width:min(980px,100%);
-  margin:0 auto 28px;
-  padding:24px 18px 8px;
-  box-sizing:border-box;
-}
-
-.truth-investigation-head{
-  padding:24px;
-  border:1px solid rgba(188,150,93,.52);
-  background:#1b1510;
-  color:#ead8b0;
-}
-
-.truth-investigation-head small{
-  display:block;
-  margin-bottom:8px;
-  color:#c8ab79;
-  font:10px 'DM Mono';
-  letter-spacing:.18em;
-}
-
-.truth-investigation-head h1{
-  margin:0;
-  font-size:clamp(28px,5vw,46px);
-  line-height:1.18;
-}
-
-.truth-investigation-head p{
-  margin:13px 0 0;
-  color:#cbb58b;
-  line-height:1.8;
-}
-
-.truth-progress{
-  position:relative;
-  height:34px;
-  margin-top:18px;
-  overflow:hidden;
-  border:1px solid rgba(188,150,93,.42);
-  background:#100d0a;
-}
-
-.truth-progress span{
-  position:absolute;
-  inset:0 auto 0 0;
-  background:#8f251d;
-  transition:width .3s ease;
-}
-
-.truth-progress b{
-  position:relative;
-  z-index:1;
-  display:grid;
-  height:100%;
-  place-items:center;
-  color:#f0ddb2;
-  font-size:11px;
-  letter-spacing:.08em;
-}
-
-.truth-evidence-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
-  margin:12px 0;
-}
-
-.truth-evidence-card{
-  min-width:0;
-  padding:0;
-  overflow:hidden;
-  border:1px solid rgba(188,150,93,.42);
-  background:#18120e;
-  color:#ead8b0;
-  text-align:left;
-  cursor:pointer;
-}
-
-.truth-evidence-card img{
-  display:block;
-  width:100%;
-  aspect-ratio:4/3;
-  object-fit:cover;
-  filter:sepia(.15) brightness(.78);
-}
-
-.truth-evidence-card span{
-  display:grid;
-  gap:4px;
-  padding:12px;
-}
-
-.truth-evidence-card small{
-  color:#a9885f;
-  font-size:9px;
-  letter-spacing:.12em;
-}
-
-.truth-evidence-card b{
-  font-size:14px;
-}
-
-.truth-evidence-card em{
-  color:#a88e68;
-  font-size:10px;
-  font-style:normal;
-}
-
-.truth-evidence-card.is-active{
-  border-color:#d0ae77;
-  box-shadow:inset 0 0 0 2px rgba(208,174,119,.22);
-}
-
-.truth-evidence-card.is-seen em{
-  color:#d9be8d;
-}
-
-.truth-detail-panel{
-  display:grid;
-  grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);
-  gap:20px;
-  padding:20px;
-  border:1px solid rgba(188,150,93,.5);
-  background:#211810;
-  color:#ead8b0;
-}
-
-.truth-detail-image{
-  overflow:hidden;
-  border:1px solid rgba(188,150,93,.36);
-  background:#0f0c09;
-}
-
-.truth-detail-image img{
-  display:block;
-  width:100%;
-  height:100%;
-  min-height:230px;
-  object-fit:cover;
-}
-
-.truth-detail-panel small{
-  color:#b7996d;
-  font-size:9px;
-  letter-spacing:.14em;
-}
-
-.truth-detail-panel h2{
-  margin:7px 0 10px;
-  font-size:clamp(22px,3.5vw,32px);
-}
-
-.truth-detail-panel p{
-  margin:0;
-  color:#cdb994;
-  font-size:14px;
-  line-height:1.9;
-}
-
-.truth-complete-note{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  margin-top:12px;
-  padding:13px 15px;
-  border-left:3px solid #69523a;
-  background:#17120e;
-  color:#a88f6d;
-}
-
-.truth-complete-note.is-ready{
-  border-left-color:#a13b30;
-  color:#ead8b0;
-}
-
-.truth-complete-note span{
-  font-size:12px;
-  line-height:1.6;
-}
-
-.ending-choice-hub.is-locked{
-  opacity:.62;
-}
-
-.ending-choice-hub.is-locked .publication-choice-card{
-  cursor:not-allowed;
-}
-
-.publication-choice-card:disabled{
-  filter:grayscale(.45);
-  opacity:.56;
+  margin:0 auto;
 }
 
 .ending-poster-result{
@@ -209,6 +20,7 @@
 .ending-poster-kicker{
   display:flex;
   align-items:baseline;
+  justify-content:space-between;
   gap:10px;
   width:100%;
   margin:0 auto 12px;
@@ -229,6 +41,7 @@
 }
 
 .ending-poster-frame{
+  position:relative;
   width:100%;
   margin:0;
   border:1px solid rgba(188,150,93,.55);
@@ -237,10 +50,88 @@
   overflow:hidden;
 }
 
+.interactive-poster.is-revealing{
+  cursor:pointer;
+}
+
 .ending-poster-image{
   display:block;
   width:100%;
   height:auto;
+}
+
+.ending-reveal-cover{
+  position:absolute;
+  z-index:3;
+  left:0;
+  right:0;
+  bottom:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+  padding:22px 16px;
+  border:0;
+  border-top:1px solid rgba(215,181,126,.72);
+  background:
+    linear-gradient(180deg,rgba(26,20,15,.96),rgba(12,9,7,.985)),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 4px);
+  color:#ead8b0;
+  font-family:inherit;
+  text-align:center;
+  cursor:pointer;
+  transition:top .45s ease,background .2s ease;
+}
+
+.ending-reveal-cover::before{
+  content:'✦';
+  display:block;
+  margin-bottom:3px;
+  color:#a73b30;
+  font-size:18px;
+}
+
+.ending-reveal-cover span{
+  font-size:clamp(15px,2.6vw,22px);
+  font-weight:700;
+  letter-spacing:.04em;
+}
+
+.ending-reveal-cover small{
+  color:#b99d70;
+  font:9px 'DM Mono';
+  letter-spacing:.18em;
+}
+
+.ending-reveal-cover:active{
+  background:#2a2017;
+}
+
+.ending-poster-progress{
+  display:grid;
+  grid-template-columns:repeat(3,1fr) auto;
+  align-items:center;
+  gap:7px;
+  margin:13px 0 0;
+  color:#bca37b;
+}
+
+.ending-poster-progress span{
+  height:4px;
+  background:#3b3024;
+  transition:background .25s ease;
+}
+
+.ending-poster-progress span.done{
+  background:#9e3429;
+}
+
+.ending-poster-progress b{
+  margin-left:5px;
+  font-size:10px;
+  letter-spacing:.08em;
+  white-space:nowrap;
 }
 
 .ending-poster-footer{
@@ -279,36 +170,8 @@
     padding-right:0!important;
   }
 
-  .truth-investigation-hub{
-    padding:12px 10px 4px;
-  }
-
-  .truth-investigation-head{
-    padding:18px 15px;
-  }
-
-  .truth-evidence-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .truth-evidence-card img{
-    aspect-ratio:16/10;
-  }
-
-  .truth-detail-panel{
-    grid-template-columns:1fr;
-    gap:14px;
-    padding:14px;
-  }
-
-  .truth-detail-image img{
-    min-height:0;
-    max-height:270px;
-  }
-
-  .truth-complete-note{
-    flex-direction:column;
-    gap:4px;
+  .ending-choice-direct{
+    width:100%;
   }
 
   .ending-poster-shell{
@@ -317,6 +180,9 @@
   }
 
   .ending-poster-kicker{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:4px;
     padding:12px 14px 10px;
     margin:0;
     background:#18130f;
@@ -327,6 +193,23 @@
     border-left:0;
     border-right:0;
     box-shadow:none;
+  }
+
+  .ending-reveal-cover{
+    min-height:120px;
+    padding:18px 14px;
+  }
+
+  .ending-poster-progress{
+    grid-template-columns:repeat(3,1fr);
+    padding:0 14px;
+    margin-top:12px;
+  }
+
+  .ending-poster-progress b{
+    grid-column:1/-1;
+    margin:2px 0 0;
+    text-align:center;
   }
 
   .ending-poster-footer{
