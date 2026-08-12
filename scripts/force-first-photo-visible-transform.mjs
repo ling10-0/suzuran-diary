@@ -4,7 +4,7 @@ export function forceFirstPhotoVisibleTransform(){
   enforce:'pre',
   transform(code,id){
    // puzzleLayoutOverrides.js 會在頁面渲染後再次改寫案件目錄與案件標題，
-   // 因此這裡直接修正它的 caseMeta，避免 003／010 被蓋回純地點名。
+   // 因此這裡直接修正它的 caseMeta，避免 003／010 被蓋回舊名稱。
    if(id.endsWith('/src/puzzleLayoutOverrides.js')){
     let next=code;
     next=next.replace(
@@ -13,7 +13,7 @@ export function forceFirstPhotoVisibleTransform(){
     );
     next=next.replace(
      "10:{label:'新富町市場',code:'市場第〇十號',task:'新富町市場',",
-     "10:{label:'新富町市場（第二市場）＋鹿港肉包',directoryLabel:'新富町市場＋鹿港肉包',code:'市場第〇十號',task:'新富町市場（第二市場）＋鹿港肉包',"
+     "10:{label:'新富町市場＋鹿港肉包',directoryLabel:'新富町市場＋鹿港肉包',code:'市場第〇十號',task:'新富町市場＋鹿港肉包',"
     );
     next=next.replace(
      "setText(card.querySelector('h3'),meta.label);",
@@ -35,9 +35,11 @@ export function forceFirstPhotoVisibleTransform(){
    // 003：移除「中山綠橋」，縮短手機版標題；仍保留合作店家「進來涼」。
    next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）＋進來涼"','"新盛橋通、櫻橋通＋進來涼"');
    next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）"','"新盛橋通、櫻橋通＋進來涼"');
-   // 010 同時統一店名為「鹿港肉包」，不再顯示舊的「鹿港阿甫師肉包」。
-   next=next.replaceAll('"新富町市場＋鹿港阿甫師肉包"','"新富町市場（第二市場）＋鹿港肉包"');
-   next=next.replaceAll('"新富町市場（第二市場）"','"新富町市場（第二市場）＋鹿港肉包"');
+
+   // 010：移除「（第二市場）」並統一合作店名為「鹿港肉包」。
+   next=next.replaceAll('"新富町市場＋鹿港阿甫師肉包"','"新富町市場＋鹿港肉包"');
+   next=next.replaceAll('"新富町市場（第二市場）＋鹿港肉包"','"新富町市場＋鹿港肉包"');
+   next=next.replaceAll('"新富町市場（第二市場）"','"新富町市場＋鹿港肉包"');
 
    const fieldAnchor='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    const fieldStart=next.indexOf(fieldAnchor);
@@ -67,10 +69,10 @@ if(mainlineCases[2]) Object.assign(mainlineCases[2],{
  title:'新盛橋通、櫻橋通＋進來涼'
 });
 if(mainlineCases[9]) Object.assign(mainlineCases[9],{
- taskTitle:'新富町市場（第二市場）＋鹿港肉包',
- directoryTitle:'新富町市場（第二市場）＋鹿港肉包',
- label:'新富町市場（第二市場）＋鹿港肉包',
- title:'新富町市場（第二市場）＋鹿港肉包'
+ taskTitle:'新富町市場＋鹿港肉包',
+ directoryTitle:'新富町市場＋鹿港肉包',
+ label:'新富町市場＋鹿港肉包',
+ title:'新富町市場＋鹿港肉包'
 });
 `;
     next=next.slice(0,fieldStart)+runtimeOverride+next.slice(fieldStart);
