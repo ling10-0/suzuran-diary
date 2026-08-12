@@ -7,17 +7,19 @@ export function forceFirstPhotoVisibleTransform(){
 
    let next=code;
 
-   // 第一關為「拍照打卡即完成」：通關後直接看工程圖／名冊，不再作答。
+   // 第一關只保留拍照打卡＋工程資料，不再有任何選擇題。
    next=next.replace(
     "Object.assign(mainlineCases[0], {\n  direct: false,",
     "Object.assign(mainlineCases[0], {\n  direct: true,"
    );
 
-   // 隊輔確認拍照後，同時完成第一關並解鎖工程圖資料。
-   next=next.replace(
-    "window.localStorage.setItem('suzuran-1916-photo-gate','1');\n  window.localStorage.setItem('suzuran-1916-photo-score',String(completedPhotoIds.length*2));",
-    "window.localStorage.setItem('suzuran-1916-photo-gate','1');\n  window.localStorage.setItem(unlockKey,'1');\n  window.localStorage.setItem('suzuran-1916-photo-score',String(completedPhotoIds.length*2));\n  setSolved(true);\n  onSharedSolved?.(index);"
-   );
+   const puzzleAnchor='const puzzles = mainlineCases;';
+   if(next.includes(puzzleAnchor)&&!next.includes('suzuran-first-case-no-quiz')){
+    next=next.replace(
+     puzzleAnchor,
+     "// suzuran-first-case-no-quiz\nObject.assign(mainlineCases[0],{direct:true,question:null,questionDetails:[],questionHint:'',options:[],inputLabel:''});\n"+puzzleAnchor
+    );
+   }
 
    const fieldAnchor='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    const fieldStart=next.indexOf(fieldAnchor);
@@ -40,17 +42,16 @@ export function forceFirstPhotoVisibleTransform(){
    if(queryIndex<0)return null;
    field=field.slice(0,queryIndex)+render+'\n\n   '+field.slice(queryIndex);
 
-   // 第一關完全不顯示案件問題說明。
-   field=field.replaceAll('{item.question&&(', '{index!==0&&item.question&&(');
-   field=field.replaceAll('{item.question&&', '{index!==0&&item.question&&');
+   // 第一關案件問題區一律不顯示。
+   field=field.replace(/\{(?:index!==0&&)*item\.question&&/g,'{index!==0&&item.question&&');
 
-   // 第一關完全不顯示任何作答 form（包含 A～D 選擇題與「送交查核」）。
-   field=field.replaceAll('{!item.direct&&!item.pending&&(!solved||replayMode)&&<form', '{index!==0&&!item.direct&&!item.pending&&(!solved||replayMode)&&<form');
-   field=field.replaceAll('{!item.direct&&!item.pending&&!solved&&<form', '{index!==0&&!item.direct&&!item.pending&&!solved&&<form');
-   field=field.replaceAll('{!item.direct&&!item.pending&&!solved&&(', '{index!==0&&!item.direct&&!item.pending&&!solved&&(');
+   // 第一關所有作答表單一律不顯示，避免任何 A～D 與送交查核殘留。
+   field=field.replace(/\{!item\.direct&&!item\.pending&&\(!solved\|\|replayMode\)&&<form/g,'{index!==0&&!item.direct&&!item.pending&&(!solved||replayMode)&&<form');
+   field=field.replace(/\{!item\.direct&&!item\.pending&&!solved&&<form/g,'{index!==0&&!item.direct&&!item.pending&&!solved&&<form');
+   field=field.replace(/\{!item\.direct&&!item\.pending&&!solved&&\(/g,'{index!==0&&!item.direct&&!item.pending&&!solved&&(');
 
-   // 第一關工程文件只有在拍照門檻通過後才出現。
-   field=field.replaceAll('{item.evidenceDocuments?.length>0&&', '{item.evidenceDocuments?.length>0&&(index!==0||photoGatePassed||solved)&&');
+   // 第一關工程圖／工程人員名冊只能在五項拍照完成且隊輔確認後開放。
+   field=field.replace(/\{item\.evidenceDocuments\?\.length>0&&(?:\(index!==0\|\|photoGatePassed\|\|solved\)&&)?/g,'{item.evidenceDocuments?.length>0&&(index!==0||photoGatePassed)&&');
 
    next=next.slice(0,fieldStart)+field+next.slice(fieldEnd);
    return next===code?null:{code:next,map:null};
