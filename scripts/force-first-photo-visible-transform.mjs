@@ -7,7 +7,7 @@ export function forceFirstPhotoVisibleTransform(){
 
    let next=code;
 
-   // 第一關改回「拍照打卡即完成」：不再需要後續選擇題。
+   // 第一關為「拍照打卡即完成」：通關後直接看工程圖／名冊，不再作答。
    next=next.replace(
     "Object.assign(mainlineCases[0], {\n  direct: false,",
     "Object.assign(mainlineCases[0], {\n  direct: true,"
@@ -34,21 +34,23 @@ export function forceFirstPhotoVisibleTransform(){
    ];
    variants.forEach(v=>{field=field.replaceAll(v,'')});
 
-   // 第一關拍照區固定顯示；通關前只有打卡，通關後才顯示工程圖／名冊。
+   // 第一關拍照區固定顯示。
    const queryAnchor='<section className="gazette-query">';
    const queryIndex=field.indexOf(queryAnchor);
    if(queryIndex<0)return null;
    field=field.slice(0,queryIndex)+render+'\n\n   '+field.slice(queryIndex);
 
-   // 第一關完全移除「請選擇最值得追查的線索」與 A～D 選擇題。
-   field=field.replaceAll(
-    "{item.question&&(index!==0||photoGatePassed||solved)&&(\n",
-    "{item.question&&index!==0&&(\n"
-   );
-   field=field.replaceAll(
-    "{item.question&&(index!==0||photoGatePassed||solved)&&(",
-    "{item.question&&index!==0&&(" 
-   );
+   // 第一關完全不顯示案件問題說明。
+   field=field.replaceAll('{item.question&&(', '{index!==0&&item.question&&(');
+   field=field.replaceAll('{item.question&&', '{index!==0&&item.question&&');
+
+   // 第一關完全不顯示任何作答 form（包含 A～D 選擇題與「送交查核」）。
+   field=field.replaceAll('{!item.direct&&!item.pending&&(!solved||replayMode)&&<form', '{index!==0&&!item.direct&&!item.pending&&(!solved||replayMode)&&<form');
+   field=field.replaceAll('{!item.direct&&!item.pending&&!solved&&<form', '{index!==0&&!item.direct&&!item.pending&&!solved&&<form');
+   field=field.replaceAll('{!item.direct&&!item.pending&&!solved&&(', '{index!==0&&!item.direct&&!item.pending&&!solved&&(');
+
+   // 第一關工程文件只有在拍照門檻通過後才出現。
+   field=field.replaceAll('{item.evidenceDocuments?.length>0&&', '{item.evidenceDocuments?.length>0&&(index!==0||photoGatePassed||solved)&&');
 
    next=next.slice(0,fieldStart)+field+next.slice(fieldEnd);
    return next===code?null:{code:next,map:null};
