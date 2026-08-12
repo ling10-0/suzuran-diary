@@ -1,6 +1,6 @@
 (()=>{
   const slides=[
-    {eyebrow:'STEP 01 / 你的身分',title:'你現在是一名見習記者',desc:'這不是單純的走讀。兩天裡，你們會跟著鈴蘭進入舊城、採集線索，替一樁被掩蓋的事件完成調查。',visual:`<div class="guide-role-badge">1938<br/>見習記者<br/>PRESS</div>`},
+    {eyebrow:'STEP 01 / 你的身分',title:'你現在是一名見習記者',desc:'這不是單純的走讀，兩天裡，你們會跟著鈴蘭進入舊城、採集線索，替一樁被掩蓋的事件完成調查。',visual:`<div class="guide-role-badge">1938<br/>見習記者</div>`},
     {eyebrow:'STEP 02 / 每一站怎麼玩',title:'到站 → 找線索 → 解謎',desc:'抵達指定地點後，先閱讀網站上的資料，再觀察現地或照片。解出答案後輸入網站，答對才會開啟下一份資料。',visual:`<div class="guide-flow"><div class="guide-flow-item"><strong>① 到站</strong><span>跟著導覽移動<br/>確認目前站點</span></div><div class="guide-flow-item"><strong>② 查線索</strong><span>讀資料、看照片<br/>注意不合理之處</span></div><div class="guide-flow-item"><strong>③ 解謎</strong><span>小組討論答案<br/>輸入網站查核</span></div></div>`},
     {eyebrow:'STEP 03 / 為什麼要收手稿',title:'每一題，都是同一個故事的一塊碎片',desc:'答對後取得的手稿不是獎品，而是後面推理會用到的證據。看到人物、日期、地點或重複出現的字眼，記得把它們串起來。',visual:`<div class="guide-pages"><div class="guide-page"><b>人物</b><i></i><i></i><i></i></div><div class="guide-page"><b>日期</b><i></i><i></i><i></i></div><div class="guide-page"><b>地點</b><i></i><i></i><i></i></div></div>`},
     {eyebrow:'STEP 04 / 最後不是只有對錯',title:'你們最後要決定：這則新聞要不要刊？',desc:'當真相完整後，你們還要以報社的身分做一次選擇。公開真相，或保護事件中的人——你們的判斷會決定故事最後留下什麼。',visual:`<div class="guide-choice"><div class="guide-choice-card"><b>刊登</b><small>讓真相被看見<br/>也承擔公開的代價</small></div><div class="guide-choice-card"><b>不刊登</b><small>保護當事人<br/>也承擔沉默的重量</small></div></div>`}
