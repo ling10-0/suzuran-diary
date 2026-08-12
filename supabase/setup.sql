@@ -5,6 +5,7 @@
 create table if not exists public.newsroom_progress (
   newsroom text not null,
   case_index integer not null,
+  launch_version text not null,
   created_at timestamptz not null default now(),
   primary key (newsroom, case_index)
 );
@@ -16,6 +17,13 @@ alter table public.newsroom_progress
 alter table public.newsroom_progress
   add constraint newsroom_progress_case_index_check
   check (case_index between 1000 and 1099);
+
+alter table public.newsroom_progress
+  drop constraint if exists newsroom_progress_launch_version_check;
+
+alter table public.newsroom_progress
+  add constraint newsroom_progress_launch_version_check
+  check (launch_version = '2026-08-14-launch');
 
 alter table public.newsroom_progress enable row level security;
 
@@ -35,6 +43,7 @@ on public.newsroom_progress for insert to anon, authenticated
 with check (
   newsroom in ('蘭臺', '見山', '迴聲')
   and case_index between 1000 and 1099
+  and launch_version = '2026-08-14-launch'
 );
 
 grant select, insert on public.newsroom_progress to anon, authenticated;

@@ -32,7 +32,10 @@ test('正式場次使用 1050 起始 ID 與正式資料表', async () => {
   assert.equal(progress.MAIN_PROGRESS_START, 1050);
   await progress.saveNewsroomProgress('蘭臺', progress.MAIN_PROGRESS_START, {testMode:false});
   assert.match(requests[0].url, /newsroom_progress\?on_conflict=newsroom%2Ccase_index/);
-  assert.deepEqual(JSON.parse(requests[0].options.body), {newsroom:'蘭臺',case_index:1050});
+  assert.deepEqual(JSON.parse(requests[0].options.body), {newsroom:'蘭臺',case_index:1050,launch_version:'2026-08-14-launch'});
+  requests.length=0;
+  await progress.loadNewsroomProgress('蘭臺',{testMode:false});
+  assert.match(requests[0].url,/launch_version=eq\.2026-08-14-launch/);
 });
 
 test('測試場次會隔離資料並可清空', async () => {
