@@ -91,7 +91,8 @@ export function routeTransform() {
         );
 
         // 支線劇情已自網站移除：刪除資料引用、支線元件、解鎖邏輯與案件頁入口。
-        next = next.replace("import {sideQuests} from './sideQuestCases.js';\n", '');
+        // Keep the side-quest data import: shared progress still maps and clears
+        // historical side-quest records even though the archive UI is hidden.
         next = next.replace(/\nfunction SideQuestArchive\(\{isUnlocked,onUnlock\}\)\{.*?(?=\nfunction [A-Z])/s, '\n');
         next = next.replace(/\n const isSideUnlocked=id=>[^;]+;/, '');
         next = next.replace(/\n const unlockSideQuest=async id=>\{.*?\n \};/s, '');
