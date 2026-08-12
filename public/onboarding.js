@@ -8,12 +8,14 @@
 
   const storyLines=[
     {speaker:'市役所官員',side:'official',text:'你們就是今天前來報到的見習記者吧？'},
-    {speaker:'市役所官員',side:'official',text:'最近，市役所收到了一批彼此對不上的舊資料。'},
-    {speaker:'市役所官員',side:'official',text:'其中幾份紀錄，都指向一項沒有被好好說明的地下工程。'},
-    {speaker:'市役所官員',side:'official',text:'從現在開始，你們要前往舊城各站調查。文件、帳本、照片，甚至現場看到的細節，都可能是線索。'},
-    {speaker:'見習記者',side:'reporter',text:'所以，我們不能只相信眼前看到的第一份資料？'},
-    {speaker:'市役所官員',side:'official',text:'沒錯。文件可能被改過，證詞也可能彼此矛盾。你們要自己查證，再把事件拼回來。'},
-    {speaker:'市役所官員',side:'official',text:'還有一件事——查到最後，真相要不要刊出去，也會由你們自己決定。'},
+    {speaker:'市役所官員',side:'official',text:'最近，市役所收到了一項新的機密任務。現在，我要把它交給你們。'},
+    {speaker:'市役所官員',side:'official',text:'三十年前，一支工程團隊竊走了帝國重要的工程圖，之後便集體失蹤，至今下落不明。'},
+    {speaker:'市役所官員',side:'official',text:'從現在開始，你們要前往舊城各站展開調查。文件、帳本、照片，甚至現場不起眼的細節，都可能成為線索。'},
+    {speaker:'市役所官員',side:'official',text:'這項任務屬於機密調查。切記低調行動，連帶領你們走訪舊城的導遊，也不能透露任務內容。'},
+    {speaker:'見習記者',side:'reporter',text:'那……我們完成任務，有什麼好處嗎？'},
+    {speaker:'市役所官員',side:'official',text:'當然少不了你們的。你們在調查中的表現，將決定最後能晉升到哪一級報社。'},
+    {speaker:'見習記者',side:'reporter',text:'知道了，我們會好好表現。'},
+    {speaker:'市役所官員',side:'official',text:'還有一件事。查到最後，真相要不要刊出去，也會由你們自己決定。'},
     {speaker:'見習記者',side:'reporter',text:'明白。那就從第一站開始吧。'}
   ];
 
@@ -115,7 +117,7 @@
           <div class="story-character-marker reporter" aria-hidden="true"><span>見習記者</span></div>
           <div class="story-era">1938・臺中市役所</div>
           <div class="story-dialogue">
-            <div class="story-dialogue-meta"><strong data-story-name>市役所官員</strong><span data-story-progress>01 / 08</span></div>
+            <div class="story-dialogue-meta"><strong data-story-name>市役所官員</strong><span data-story-progress>01 / 10</span></div>
             <p data-story-text></p>
             <div class="story-dialogue-actions">
               <button type="button" class="story-skip" data-story-skip>略過劇情</button>
