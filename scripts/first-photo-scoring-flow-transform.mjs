@@ -32,15 +32,23 @@ export function firstPhotoScoringFlowTransform(){
     " const confirmByStaff=async event=>{\n  event.preventDefault();\n  const normalizedCode=staffCode.trim().normalize('NFKC').toLowerCase();\n  const ok=normalizedCode==='okok';\n  setStaffError(!ok);\n  if(!ok)return;\n  const completedPhotoIds=photoTasks.filter(task=>photoChecks[task.no]).map(task=>1030+task.no);\n  window.localStorage.setItem('suzuran-1916-photo-gate','1');\n  window.localStorage.setItem('suzuran-1916-photo-score',String(completedPhotoIds.length*2));\n  const newsroom=window.localStorage.getItem('suzuran-newsroom')||'';\n  try{if(newsroom)await Promise.all(completedPhotoIds.map(progressId=>saveNewsroomProgress(newsroom,progressId)))}catch{}\n  window.location.reload();\n };"
    );
 
-   // 拍照關卡只在尚未通過隊輔確認時顯示。
+   // 第一關的拍照打卡永遠保留在頁面上：通關前可操作，通關後仍可回看已完成紀錄。
    next=next.replace(
     "{item.direct&&index===0&&!solved&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} ",
-    "{index===0&&!photoGatePassed&&!solved&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} "
+    "{index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} "
+   );
+   next=next.replace(
+    "{index===0&&!photoGatePassed&&!solved&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} ",
+    "{index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} "
    );
 
    // 通過拍照前，不提前顯示第一關的案件題、證物與作答區。
    next=next.replace(
     "{item.question&&(!(item.direct&&index===0)||solved)&&(\n",
+    "{item.question&&(index!==0||photoGatePassed||solved)&&(\n"
+   );
+   next=next.replace(
+    "{item.question&&(\n",
     "{item.question&&(index!==0||photoGatePassed||solved)&&(\n"
    );
    next=next.replace(
