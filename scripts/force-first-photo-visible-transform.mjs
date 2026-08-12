@@ -9,7 +9,7 @@ export function forceFirstPhotoVisibleTransform(){
     let next=code;
     next=next.replace(
      "3:{label:'新盛橋通、櫻橋通',code:'巡查第〇三號',task:'新盛橋通、櫻橋通',",
-     "3:{label:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',directoryLabel:'新盛橋通、櫻橋通＋進來涼',code:'巡查第〇三號',task:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',"
+     "3:{label:'新盛橋通、櫻橋通＋進來涼',directoryLabel:'新盛橋通、櫻橋通＋進來涼',code:'巡查第〇三號',task:'新盛橋通、櫻橋通＋進來涼',"
     );
     next=next.replace(
      "10:{label:'新富町市場',code:'市場第〇十號',task:'新富町市場',",
@@ -32,9 +32,10 @@ export function forceFirstPhotoVisibleTransform(){
    // 第一關固定至少完成五組拍照才可交由隊輔確認。
    next=next.replaceAll('const minimumDone=completedCount>=3;','const minimumDone=completedCount>=5;');
 
-   // 003／010 跟 002 一樣：案件目錄外面直接顯示合作店家名稱。
+   // 003：移除「中山綠橋」，縮短手機版標題；仍保留合作店家「進來涼」。
+   next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）＋進來涼"','"新盛橋通、櫻橋通＋進來涼"');
+   next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）"','"新盛橋通、櫻橋通＋進來涼"');
    // 010 同時統一店名為「鹿港肉包」，不再顯示舊的「鹿港阿甫師肉包」。
-   next=next.replaceAll('"新盛橋通、櫻橋通（中山綠橋）"','"新盛橋通、櫻橋通（中山綠橋）＋進來涼"');
    next=next.replaceAll('"新富町市場＋鹿港阿甫師肉包"','"新富町市場（第二市場）＋鹿港肉包"');
    next=next.replaceAll('"新富町市場（第二市場）"','"新富町市場（第二市場）＋鹿港肉包"');
 
@@ -60,10 +61,10 @@ Object.assign(mainlineCases[0],{
 
 // 003／010：案件目錄與案件內都直接顯示合作店家名稱，呈現方式比照 002。
 if(mainlineCases[2]) Object.assign(mainlineCases[2],{
- taskTitle:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
- directoryTitle:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
- label:'新盛橋通、櫻橋通（中山綠橋）＋進來涼',
- title:'新盛橋通、櫻橋通（中山綠橋）＋進來涼'
+ taskTitle:'新盛橋通、櫻橋通＋進來涼',
+ directoryTitle:'新盛橋通、櫻橋通＋進來涼',
+ label:'新盛橋通、櫻橋通＋進來涼',
+ title:'新盛橋通、櫻橋通＋進來涼'
 });
 if(mainlineCases[9]) Object.assign(mainlineCases[9],{
  taskTitle:'新富町市場（第二市場）＋鹿港肉包',
