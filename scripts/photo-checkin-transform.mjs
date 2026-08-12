@@ -125,7 +125,7 @@ export function photoCheckinTransform(){
 
    if(!next.includes('<PhotoCheckinChallenge index={index}')){
     const directBlock=/\{\/\*\s*直接閱覽案件\s*\*\/\}[\s\S]*?\{item\.direct&&\([\s\S]*?<p className="gazette-approved">[\s\S]*?本件無須輸入答案，可直接對照兩種城市記錄。\s*<\/p>[\s\S]*?\)\}/;
-    const replacement=`{/* 直接閱覽案件 */}\n\n    {item.direct&&index!==0&&(\n     <p className="gazette-approved">\n      本件無須輸入答案，可直接對照兩種城市記錄。\n     </p>\n    )}\n    {item.direct&&index===0&&!solved&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} `;
+    const replacement=`{/* 直接閱覽案件 */}\n\n    {item.direct&&index!==0&&(\n     <p className="gazette-approved">\n      本件無須輸入答案，可直接對照兩種城市記錄。\n     </p>\n    )}\n    {index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} `;
     next=next.replace(directBlock,replacement);
    }
 
