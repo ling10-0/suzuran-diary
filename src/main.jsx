@@ -1062,4 +1062,20 @@ function App(){
  if(page==='guide') return <GameGuidePage/>;
  return <MunicipalHome/>
 }
-createRoot(document.getElementById('root')).render(<App/>);
+class AppErrorBoundary extends React.Component {
+ constructor(props){super(props);this.state={error:null}}
+ static getDerivedStateFromError(error){return {error}}
+ componentDidCatch(error,info){console.error('Suzuran app render failed',error,info)}
+ render(){
+  if(!this.state.error) return this.props.children;
+  return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:24,background:'#eee9dd',color:'#262c28',textAlign:'center'}}><section><h1>案件資料載入未完成</h1><p>案件沒有被刪除，請重新載入最新版本。</p><button type="button" onClick={()=>{try{window.sessionStorage.removeItem('suzuran-app-recovery-attempted')}catch(_){/* ignore */}window.location.reload()}}>重新載入案件</button></section></main>
+ }
+}
+
+createRoot(document.getElementById('root')).render(<AppErrorBoundary><App/></AppErrorBoundary>);
+window.requestAnimationFrame(()=>{
+ if(!document.getElementById('root')?.childElementCount) return;
+ try{window.sessionStorage.removeItem('suzuran-app-recovery-attempted')}catch(_){/* ignore */}
+ const currentUrl=new URL(window.location.href);
+ if(currentUrl.searchParams.delete('_app_refresh')) window.history.replaceState({},'',currentUrl);
+});
