@@ -49,12 +49,12 @@
         #${overlayId} h1{margin:0;font-size:clamp(30px,7vw,46px);letter-spacing:.08em}
         #${overlayId} .desc{margin:18px 0 26px;font-size:14px;line-height:1.9}
         #${overlayId} .options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-        #${overlayId} .option{min-height:108px;padding:18px 10px;border:1px solid #55442f;color:#2d2117;background:rgba(255,255,255,.16);font:700 clamp(22px,5vw,30px) 'Noto Serif TC',serif;letter-spacing:.12em;cursor:pointer}
-        #${overlayId} .option.selected{color:#f2e4c2;background:#8f251d;outline:3px double #8f251d;outline-offset:3px}
+        #${overlayId} .option{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;box-sizing:border-box!important;min-height:108px;padding:18px 10px!important;border:1px solid #55442f!important;color:#2d2117;background:rgba(255,255,255,.16);font:700 clamp(22px,5vw,30px) 'Noto Serif TC',serif;line-height:1.2!important;letter-spacing:.12em;white-space:nowrap!important;cursor:pointer;transform:none!important;text-indent:0!important}
+        #${overlayId} .option.selected{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:18px 10px!important;border:1px solid #8f251d!important;color:#f2e4c2;background:#8f251d;outline:none!important;box-shadow:inset 0 0 0 4px #ead9ad,inset 0 0 0 5px #8f251d;transform:none!important;text-indent:0!important}
         #${overlayId} .confirm{width:100%;min-height:50px;margin-top:22px;border:1px solid #2d2117;color:#f2e4c2;background:#2d2117;font:14px 'Noto Serif TC',serif;letter-spacing:.08em;cursor:pointer}
         #${overlayId} .confirm:disabled{cursor:not-allowed;opacity:.42}
         #${overlayId} .note{display:block;margin-top:15px;color:#756650;font-size:11px;line-height:1.7;text-align:center}
-        @media(max-width:560px){#${overlayId}{padding:14px}#${overlayId} .card{padding:28px 20px}#${overlayId} .options{grid-template-columns:1fr}#${overlayId} .option{min-height:68px}}
+        @media(max-width:560px){#${overlayId}{padding:14px}#${overlayId} .card{padding:28px 20px}#${overlayId} .options{grid-template-columns:1fr}#${overlayId} .option,#${overlayId} .option.selected{min-height:68px;padding:14px 10px!important}}
       </style>
       <section class="card" role="dialog" aria-modal="true" aria-labelledby="group-title">
         <p class="eyebrow">TEAM REGISTRATION / 調查小隊登記</p>
