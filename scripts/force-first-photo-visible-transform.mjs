@@ -7,27 +7,36 @@ export function forceFirstPhotoVisibleTransform(){
 
    let next=code;
 
-   // 第一關只保留拍照打卡＋工程資料，不再有任何選擇題。
-   next=next.replace(
-    "Object.assign(mainlineCases[0], {\n  direct: false,",
-    "Object.assign(mainlineCases[0], {\n  direct: true,"
-   );
-
-   const puzzleAnchor='const puzzles = mainlineCases;';
-   if(next.includes(puzzleAnchor)&&!next.includes('suzuran-first-case-no-quiz')){
-    next=next.replace(
-     puzzleAnchor,
-     "// suzuran-first-case-no-quiz\nObject.assign(mainlineCases[0],{direct:true,question:null,questionDetails:[],questionHint:'',options:[],inputLabel:''});\n"+puzzleAnchor
-    );
-   }
-
    const fieldAnchor='function FieldJournal({item,index,unlockedCount,sharedSolved,onSharedSolved}){';
    const fieldStart=next.indexOf(fieldAnchor);
    if(fieldStart<0)return null;
    const fieldEnd=next.indexOf('\nfunction NewsroomEntry',fieldStart);
    if(fieldEnd<0)return null;
 
-   let field=next.slice(fieldStart,fieldEnd);
+   // 重要：第一關資料會被多個 transform 反覆 Object.assign。
+   // 所以不能在 const puzzles 前覆寫，必須在所有案件設定都完成後、FieldJournal 宣告前做最後一次 runtime override。
+   if(!next.includes('suzuran-first-case-final-runtime-override')){
+    const runtimeOverride=`// suzuran-first-case-final-runtime-override
+const suzuranFirstPhotoGateReady=window.localStorage.getItem('suzuran-1916-photo-gate')==='1';
+Object.assign(mainlineCases[0],{
+ direct:true,
+ pending:false,
+ question:null,
+ questionDetails:[],
+ questionHint:'',
+ options:[],
+ inputLabel:'',
+ evidenceDocuments:suzuranFirstPhotoGateReady?(mainlineCases[0].evidenceDocuments||[]):[]
+});
+`;
+    next=next.slice(0,fieldStart)+runtimeOverride+next.slice(fieldStart);
+   }
+
+   // runtime override 插入後重新抓 FieldJournal 範圍。
+   const actualFieldStart=next.indexOf(fieldAnchor);
+   const actualFieldEnd=next.indexOf('\nfunction NewsroomEntry',actualFieldStart);
+   let field=next.slice(actualFieldStart,actualFieldEnd);
+
    const render="{index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>}";
    const variants=[
     render,
@@ -42,18 +51,17 @@ export function forceFirstPhotoVisibleTransform(){
    if(queryIndex<0)return null;
    field=field.slice(0,queryIndex)+render+'\n\n   '+field.slice(queryIndex);
 
-   // 第一關案件問題區一律不顯示。
+   // 雙重保險：第一關案件問題與作答表單一律不顯示。
    field=field.replace(/\{(?:index!==0&&)*item\.question&&/g,'{index!==0&&item.question&&');
-
-   // 第一關所有作答表單一律不顯示，避免任何 A～D 與送交查核殘留。
    field=field.replace(/\{!item\.direct&&!item\.pending&&\(!solved\|\|replayMode\)&&<form/g,'{index!==0&&!item.direct&&!item.pending&&(!solved||replayMode)&&<form');
    field=field.replace(/\{!item\.direct&&!item\.pending&&!solved&&<form/g,'{index!==0&&!item.direct&&!item.pending&&!solved&&<form');
    field=field.replace(/\{!item\.direct&&!item\.pending&&!solved&&\(/g,'{index!==0&&!item.direct&&!item.pending&&!solved&&(');
 
-   // 第一關工程圖／工程人員名冊只能在五項拍照完成且隊輔確認後開放。
+   // 工程圖／工程人員名冊只有 photo gate 成功後才會保留在 item 中。
+   // 這裡不再依 solved 狀態放行，避免舊進度提前看到資料。
    field=field.replace(/\{item\.evidenceDocuments\?\.length>0&&(?:\(index!==0\|\|photoGatePassed\|\|solved\)&&)?/g,'{item.evidenceDocuments?.length>0&&(index!==0||photoGatePassed)&&');
 
-   next=next.slice(0,fieldStart)+field+next.slice(fieldEnd);
+   next=next.slice(0,actualFieldStart)+field+next.slice(actualFieldEnd);
    return next===code?null:{code:next,map:null};
   }
  };
