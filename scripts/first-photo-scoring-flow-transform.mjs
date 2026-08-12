@@ -42,6 +42,20 @@ export function firstPhotoScoringFlowTransform(){
     "{index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>} "
    );
 
+   // 若前面的版面 transform 已把舊的打卡 JSX 移除，直接在「題目」區前重新插回去。
+   // 這個 fallback 不依賴 item.direct，因此第一關改成一般查核案件後仍一定會顯示。
+   const photoRender="{index===0&&<PhotoCheckinChallenge index={index} solved={solved} setSolved={setSolved} onSharedSolved={onSharedSolved}/>}";
+   if(next.includes('function PhotoCheckinChallenge(')&&!next.includes(photoRender)){
+    const queryAnchor='<section className="gazette-query">';
+    const fieldStart=next.indexOf(fieldAnchor);
+    if(fieldStart>=0){
+     const queryIndex=next.indexOf(queryAnchor,fieldStart);
+     if(queryIndex>=0){
+      next=next.slice(0,queryIndex)+photoRender+'\n\n   '+next.slice(queryIndex);
+     }
+    }
+   }
+
    // 通過拍照前，不提前顯示第一關的案件題、證物與作答區。
    next=next.replace(
     "{item.question&&(!(item.direct&&index===0)||solved)&&(\n",
