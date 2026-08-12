@@ -8,6 +8,7 @@ export const MAIN_PROGRESS_START = 1050;
 export const SIDE_PROGRESS_START = 1070;
 export const PHOTO_PROGRESS_START = 1031;
 export const PHOTO_PROGRESS_END = 1040;
+export const FORMAL_PROGRESS_VERSION = '2026-08-14-launch';
 
 const headers = {
   apikey: publishableKey,
@@ -73,6 +74,7 @@ export async function loadNewsroomProgress(newsroom, context) {
     order: 'case_index.asc',
   });
   if (scope.testMode) query.set('test_session', 'eq.' + scope.testSession);
+  else query.set('launch_version', 'eq.' + FORMAL_PROGRESS_VERSION);
 
   const response = await request(scope.endpoint + '?' + query.toString(), {headers});
   if (!response.ok) await responseError(response, '讀取');
@@ -88,6 +90,7 @@ export async function saveNewsroomProgress(newsroom, caseIndex, context) {
   const query = new URLSearchParams({on_conflict: conflictColumns});
   const body = {newsroom: group, case_index: progressId};
   if (scope.testMode) body.test_session = scope.testSession;
+  else body.launch_version = FORMAL_PROGRESS_VERSION;
 
   const response = await request(scope.endpoint + '?' + query.toString(), {
     method: 'POST',

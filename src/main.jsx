@@ -13,9 +13,9 @@ import './mobile-group.css';
 import {sideQuests} from './sideQuestCases.js';
 import {mainlineCases} from './mainlineCases.js';
 import {createJapaneseName} from './japaneseName.js';
-import {clearTestNewsroomProgress, loadNewsroomProgress, MAIN_PROGRESS_START, PHOTO_PROGRESS_END, PHOTO_PROGRESS_START, saveNewsroomProgress, SIDE_PROGRESS_START} from './sharedProgress.js';
+import {clearTestNewsroomProgress, FORMAL_PROGRESS_VERSION, loadNewsroomProgress, MAIN_PROGRESS_START, PHOTO_PROGRESS_END, PHOTO_PROGRESS_START, saveNewsroomProgress, SIDE_PROGRESS_START} from './sharedProgress.js';
 
-const FORMAL_LAUNCH_RESET_VERSION = '2026-08-14-launch';
+const FORMAL_LAUNCH_RESET_VERSION = FORMAL_PROGRESS_VERSION;
 
 function resetPrelaunchDeviceRecords(){
  try{
