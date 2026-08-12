@@ -1,0 +1,13 @@
+@media (max-width:640px){
+  .reporter-journal-card>header{padding:18px 12px 24px!important;}
+  .reporter-journal-card>header h2{margin-bottom:0!important;}
+  .reporter-journal-card>header p[data-journal-sub]{display:block!important;margin:16px 0 0!important;padding:0!important;min-height:20px!important;line-height:1.6!important;font-size:11px!important;}
+  .reporter-journal-body{padding-top:18px!important;}
+  .journal-actions{grid-template-columns:1fr!important;}
+  .journal-actions .journal-primary{width:100%!important;}
+}
+@media (max-width:390px){
+  .reporter-journal-card>header{padding-bottom:22px!important;}
+  .reporter-journal-card>header p[data-journal-sub]{margin-top:14px!important;font-size:10.5px!important;}
+  .reporter-journal-body{padding-top:17px!important;}
+}
