@@ -128,12 +128,7 @@
       </div>`;
     document.body.appendChild(storyOverlay);
 
-    const launcher=document.createElement('button');
-    launcher.className='game-guide-launcher';
-    launcher.type='button';
-    launcher.textContent='？ 遊戲說明';
-    launcher.addEventListener('click',openGuide);
-    document.body.appendChild(launcher);
+    window.addEventListener('suzuran:open-guide',openGuide);
 
     overlay.querySelector('[data-guide-close]').addEventListener('click',closeGuide);
     overlay.querySelector('[data-guide-prev]').addEventListener('click',()=>{if(current>0){current--;render();}});
