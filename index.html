@@ -80,6 +80,37 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (() => {
+        const recoveryKey = 'suzuran-app-recovery-attempted';
+        const recoveryParam = '_app_refresh';
+
+        const showRecoveryMessage = () => {
+          const root = document.getElementById('root');
+          if (!root || root.childElementCount > 0) return;
+          root.innerHTML = '<main style="min-height:100vh;display:grid;place-items:center;padding:24px;background:#eee9dd;color:#262c28;text-align:center"><section><h1 style="font-size:28px">案件資料載入未完成</h1><p style="line-height:1.8">案件沒有被刪除，請重新載入最新版本。</p><button type="button" onclick="sessionStorage.removeItem(\'' + recoveryKey + '\');location.reload()" style="border:1px solid #262c28;background:#fff;padding:12px 22px;cursor:pointer">重新載入案件</button></section></main>';
+        };
+
+        window.setTimeout(() => {
+          const root = document.getElementById('root');
+          if (!root || root.childElementCount > 0) return;
+
+          try {
+            if (!sessionStorage.getItem(recoveryKey)) {
+              sessionStorage.setItem(recoveryKey, '1');
+              const nextUrl = new URL(location.href);
+              nextUrl.searchParams.set(recoveryParam, Date.now().toString());
+              location.replace(nextUrl.toString());
+              return;
+            }
+          } catch (_) {
+            // Storage may be unavailable in privacy mode; the manual fallback still works.
+          }
+
+          showRecoveryMessage();
+        }, 5000);
+      })();
+    </script>
     <script src="./test-mode.js"></script>
     <script src="./group-selection.js" defer></script>
     <script src="./onboarding.js" defer></script>
