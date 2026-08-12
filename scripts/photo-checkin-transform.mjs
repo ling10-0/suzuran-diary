@@ -18,7 +18,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
  if(index!==0)return null;
  const unlockKey='suzuran-main-v3-unlocked-'+index;
  const completedCount=photoTasks.filter(task=>photoChecks[task.no]).length;
- const minimumDone=completedCount>=3;
+ const minimumDone=completedCount>=5;
  const markDone=no=>{
   setPhotoChecks(prev=>({...prev,[no]:true}));
   window.localStorage.setItem('suzuran-1916-photo-place'+no,'1');
@@ -29,6 +29,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
   const ok=normalizedCode==='okok';
   setStaffError(!ok);
   if(!ok)return;
+  window.localStorage.setItem('suzuran-1916-photo-gate','1');
   window.localStorage.setItem(unlockKey,'1');
   setSolved(true);
   onSharedSolved?.(index);
@@ -37,7 +38,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
   <header className="photo-checkin-head">
    <small>CHECK-IN / 拍照打卡</small>
    <h4>拍照打卡</h4>
-   <p>請在大正製酒株式會社園區內，從下方十組指定地點與姿勢中任選三組完成拍照。每完成一組可獲得 2 分；完成三組後即可交由隊輔確認，通過後繼續進行本關案件查核。</p>
+   <p>請在大正製酒株式會社園區內，從下方十組指定地點與姿勢中任選五組完成拍照。每完成一組可獲得 2 分；完成五組後交由隊輔確認，通過後才會開放工程圖與工程人員名冊。</p>
   </header>
   <div className="photo-checkin-grid">
    {photoTasks.map(task=>{
@@ -55,7 +56,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
    })}
   </div>
   <div className="photo-checkin-submit">
-   {!minimumDone&&<p>目前完成 {completedCount} / 3 組，拍照暫得 {completedCount*2} 分。再完成 {3-completedCount} 組即可交由隊輔確認。</p>}
+   {!minimumDone&&<p>目前完成 {completedCount} / 5 組，拍照暫得 {completedCount*2} 分。再完成 {5-completedCount} 組即可交由隊輔確認。</p>}
    {minimumDone&&!solved&&(
     <form className="photo-staff-gate" onSubmit={confirmByStaff}>
      <div className="photo-staff-gate-copy">
@@ -65,7 +66,7 @@ function PhotoCheckinChallenge({index,solved,setSolved,onSharedSolved}){
      <label htmlFor={'photo-staff-code-'+index}>隊輔通關密碼</label>
      <div className="photo-staff-gate-row">
       <input id={'photo-staff-code-'+index} type="password" autoComplete="off" value={staffCode} onChange={event=>{setStaffCode(event.target.value);setStaffError(false)}} placeholder="僅由隊輔輸入" />
-      <button type="submit" className="photo-pass-button">確認並繼續案件</button>
+      <button type="submit" className="photo-pass-button">確認並開放工程資料</button>
      </div>
      {staffError&&<p className="photo-staff-error">密碼不正確，請由隊輔重新確認。</p>}
     </form>
@@ -101,14 +102,12 @@ export function photoCheckinTransform(){
     "item.direct&&index!==0\n       ?'公開'\n       :item.direct&&index===0\n        ?(solved?'受理済':'待隊輔確認')"
    );
 
-   /* 1916 的案件查核資料要在拍照＋隊輔確認後才開示。 */
+   /* 第一關案件資料在拍照＋隊輔確認前不開示。 */
    next=next.replace(
     "{item.question&&(\n",
     "{item.question&&(!(item.direct&&index===0)||solved)&&(\n"
    );
 
-   /* 案件目錄與 sharedSolved 原本把所有 direct 案件直接視為通關，
-      會讓 1916 一進頁面就被標成 solved，導致密碼欄永遠不出現。 */
    next=next.replace(
     "const isSolved=index=>puzzles[index]?.direct||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';",
     "const isSolved=index=>(puzzles[index]?.direct&&index!==0)||(sharedProgress?.includes(mainProgressId(index))??false)||window.localStorage.getItem('suzuran-main-v3-unlocked-'+index)==='1';"
