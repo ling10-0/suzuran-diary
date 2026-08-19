@@ -61,7 +61,7 @@
     localStorage.setItem(realNameKey, realName);
     localStorage.setItem(nameKey, displayName);
     localStorage.setItem(versionKey, '2');
-    localStorage.setItem(groupKey, groups[0]);
+    if (!validGroup()) localStorage.setItem(groupKey, groups[0]);
     localStorage.removeItem(progressModeKey);
     localStorage.removeItem(testSessionKey);
     cleanPreviewParam();
@@ -74,7 +74,10 @@
   }
 
   const initialParams = new URLSearchParams(window.location.search);
-  if (!testModeActive() && initialParams.get('preview') === '1') {
+  if (!testModeActive() && (
+    initialParams.get('preview') === '1' ||
+    sessionStorage.getItem(previewActiveKey) === '1'
+  )) {
     clearPreviewSession();
     cleanPreviewParam();
   }
