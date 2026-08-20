@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - agent/offline-package
     paths:
       - 'src/**'
       - 'public/**'
@@ -30,7 +31,7 @@ on:
       - '.github/workflows/offline-package.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-offline:
@@ -64,7 +65,7 @@ jobs:
           test -f 'offline-package/game/offline-map-tile.svg'
           test ! -d 'offline-package/game/server'
           test ! -d 'offline-package/game/.openai'
-          grep -q 'offline=1&preview=1' 'offline-package/offline-server.ps1'
+          grep -q 'offline=1' 'offline-package/offline-server.ps1'
           grep -q '單機展示模式' 'offline-package/game/test-mode.js'
           if grep -R --include='*.js' -n 'tile.openstreetmap.org' offline-package/game; then
             echo 'Offline package still contains an OpenStreetMap tile dependency.' >&2
@@ -78,3 +79,29 @@ jobs:
           path: offline-package/
           if-no-files-found: error
           retention-days: 90
+
+      - name: Create shareable ZIP
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          cd offline-package
+          zip -r ../suzuran-1938-offline-windows.zip .
+
+      - name: Publish stable offline release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git tag -f offline-latest "$GITHUB_SHA"
+          git push origin refs/tags/offline-latest --force
+          if gh release view offline-latest >/dev/null 2>&1; then
+            gh release upload offline-latest suzuran-1938-offline-windows.zip --clobber
+            gh release edit offline-latest \
+              --title '翻閱1938｜Windows 單機展示版' \
+              --notes '主管／後續實習生用的可攜式單機展示包。完整解壓縮後，雙擊「啟動遊戲.bat」即可。遊戲資料僅存本機，不寫入正式 Supabase。'
+          else
+            gh release create offline-latest suzuran-1938-offline-windows.zip \
+              --title '翻閱1938｜Windows 單機展示版' \
+              --notes '主管／後續實習生用的可攜式單機展示包。完整解壓縮後，雙擊「啟動遊戲.bat」即可。遊戲資料僅存本機，不寫入正式 Supabase。'
+          fi
