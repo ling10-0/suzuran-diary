@@ -81,7 +81,7 @@ function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]
     $stream.Flush()
 }
 
-$url = "http://127.0.0.1:$port/?offline=1&preview=1"
+$url = "http://127.0.0.1:$port/?offline=1"
 Write-Host ''
 Write-Host '翻閱1938：那些待續的章節｜單機展示版' -ForegroundColor Cyan
 Write-Host "本機網址：$url"
