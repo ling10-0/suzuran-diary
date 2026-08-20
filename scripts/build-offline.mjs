@@ -35,6 +35,22 @@ cpSync(
   path.join(offlineSourceDir, 'offline-map-tile.svg'),
   path.join(gameDir, 'offline-map-tile.svg'),
 );
+cpSync(
+  path.join(offlineSourceDir, 'offline-ui.css'),
+  path.join(gameDir, 'offline-ui.css'),
+);
+
+// Keep the game UI identical to the web build. The only offline-specific visual
+// is a tiny unobtrusive reset control layered on top of the normal page.
+const offlineIndexPath = path.join(gameDir, 'index.html');
+let offlineIndex = readFileSync(offlineIndexPath, 'utf8');
+if (!offlineIndex.includes('./offline-ui.css')) {
+  offlineIndex = offlineIndex.replace(
+    '</head>',
+    '    <link rel="stylesheet" href="./offline-ui.css" />\n  </head>',
+  );
+  writeFileSync(offlineIndexPath, offlineIndex, 'utf8');
+}
 
 // The normal web version uses OpenStreetMap. For the archive, replace that
 // network tile source with the bundled neutral tile so the route map still
