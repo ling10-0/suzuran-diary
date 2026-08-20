@@ -67,7 +67,7 @@ jobs:
           test ! -d 'offline-package/game/.openai'
           grep -q 'offline=1' 'offline-package/offline-server.ps1'
           grep -q 'READY' 'offline-package/offline-server.ps1'
-          grep -q 'http://localhost:' 'offline-package/offline-server.ps1'
+          grep -q '127.0.0.2' 'offline-package/offline-server.ps1'
           grep -q '單機展示模式' 'offline-package/game/test-mode.js'
           python - <<'PY'
           from pathlib import Path
@@ -118,7 +118,7 @@ jobs:
             for ($i = 0; $i -lt 30; $i++) {
               if ($proc.HasExited) { break }
               try {
-                $response = Invoke-WebRequest -UseBasicParsing 'http://localhost:1938/?offline=1' -TimeoutSec 2
+                $response = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.2:1938/?offline=1' -TimeoutSec 2
                 if ($response.StatusCode -eq 200 -and $response.Content -match '1938') {
                   $ok = $true
                   break
