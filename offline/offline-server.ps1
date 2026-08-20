@@ -7,11 +7,13 @@ if (-not (Test-Path -LiteralPath $gameRoot -PathType Container)) {
 }
 
 $root = (Resolve-Path -LiteralPath $gameRoot).Path
-$rootPrefix = $root.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
+$trimChars = [char[]]@([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
+$rootPrefix = $root.TrimEnd($trimChars) + [IO.Path]::DirectorySeparatorChar
 $listener = $null
 $port = $null
 
 foreach ($candidatePort in 1938..1948) {
+    $candidate = $null
     try {
         $candidate = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $candidatePort)
         $candidate.Start()
@@ -47,7 +49,7 @@ function Get-ContentType([string]$filePath) {
         '.webp' { 'image/webp' }
         '.ico'  { 'image/x-icon' }
         '.woff' { 'font/woff' }
-        '.woff2'{ 'font/woff2' }
+        '.woff2' { 'font/woff2' }
         '.ttf'  { 'font/ttf' }
         '.mp3'  { 'audio/mpeg' }
         '.wav'  { 'audio/wav' }
@@ -60,7 +62,7 @@ function Get-ContentType([string]$filePath) {
 }
 
 function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]$body, [string]$contentType, [bool]$headOnly = $false) {
-    if ($null -eq $body) { $body = [byte[]]::new(0) }
+    if ($null -eq $body) { $body = [byte[]]@() }
     $headers = @(
         "HTTP/1.1 $statusCode $statusText",
         "Content-Type: $contentType",
@@ -92,6 +94,8 @@ Start-Process $url
 try {
     while ($true) {
         $client = $listener.AcceptTcpClient()
+        $stream = $null
+        $reader = $null
         try {
             $stream = $client.GetStream()
             $reader = [IO.StreamReader]::new($stream, [Text.Encoding]::ASCII, $false, 4096, $true)
