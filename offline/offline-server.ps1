@@ -81,8 +81,26 @@ function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]
     $stream.Flush()
 }
 
-# Use explicit formatting instead of PowerShell variable interpolation so the
-# selected local port can never disappear from the browser URL.
+function Find-EdgePath {
+    $candidates = @()
+    if ($env:ProgramFiles) {
+        $candidates += (Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe')
+    }
+    $programFilesX86 = ${env:ProgramFiles(x86)}
+    if ($programFilesX86) {
+        $candidates += (Join-Path $programFilesX86 'Microsoft\Edge\Application\msedge.exe')
+    }
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+            return $candidate
+        }
+    }
+    $command = Get-Command msedge.exe -ErrorAction SilentlyContinue
+    if ($command) { return $command.Source }
+    return $null
+}
+
+# Use explicit formatting so the selected local port can never disappear.
 $url = ('http://127.0.0.1:{0}/?offline=1' -f $port)
 Write-Host ''
 Write-Host '翻閱1938：那些待續的章節｜單機展示版' -ForegroundColor Cyan
@@ -91,7 +109,21 @@ Write-Host '遊戲資料只會保存在這台電腦，不會寫入正式 Supabas
 Write-Host '要結束單機伺服器，直接關閉這個視窗即可。'
 Write-Host ''
 
-Start-Process -FilePath $url
+# Prefer an isolated Edge app window. It uses a dedicated browser profile, so
+# localhost-specific zoom/settings from the user's normal browser do not alter
+# the archived game's visual scale. Progress still persists between launches.
+$edgePath = Find-EdgePath
+if ($edgePath) {
+    $profileRoot = Join-Path $env:LOCALAPPDATA 'Suzuran1938OfflineBrowser'
+    New-Item -ItemType Directory -Path $profileRoot -Force | Out-Null
+    Start-Process -FilePath $edgePath -ArgumentList @(
+        "--app=$url",
+        "--user-data-dir=$profileRoot",
+        '--no-first-run'
+    ) | Out-Null
+} else {
+    Start-Process -FilePath $url | Out-Null
+}
 
 try {
     while ($true) {
