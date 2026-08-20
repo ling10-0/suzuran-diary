@@ -15,6 +15,7 @@ $trimChars = [char[]]@([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirector
 $rootPrefix = $root.TrimEnd($trimChars) + [IO.Path]::DirectorySeparatorChar
 $listener = $null
 $port = $null
+$loopbackAddress = [System.Net.IPAddress]::Parse('127.0.0.2')
 
 $ports = @(1938..1948)
 if ($env:SUZURAN_OFFLINE_PORT) {
@@ -28,7 +29,7 @@ if ($env:SUZURAN_OFFLINE_PORT) {
 foreach ($candidatePort in $ports) {
     $candidate = $null
     try {
-        $candidate = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, [int]$candidatePort)
+        $candidate = [System.Net.Sockets.TcpListener]::new($loopbackAddress, [int]$candidatePort)
         $candidate.Start()
         $listener = $candidate
         $port = [int]$candidatePort
@@ -93,9 +94,9 @@ function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]
     $stream.Flush()
 }
 
-# Open the archived game in the user's normal browser instead of Edge app mode.
-# Using localhost also avoids any zoom preference previously saved for 127.0.0.1.
-$url = ('http://localhost:{0}/?offline=1' -f $port)
+# Open in the user's normal browser. 127.0.0.2 is still a loopback-only
+# address but gets a fresh browser zoom preference separate from 127.0.0.1.
+$url = ('http://127.0.0.2:{0}/?offline=1' -f $port)
 Write-Host ('READY {0}' -f $url) -ForegroundColor Green
 Write-Host 'Keep this window open while playing. Close it to stop the offline server.'
 
