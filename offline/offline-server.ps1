@@ -93,45 +93,14 @@ function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]
     $stream.Flush()
 }
 
-function Find-EdgePath {
-    $candidates = @()
-    if ($env:ProgramFiles) {
-        $candidates += (Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe')
-    }
-    $programFilesX86 = ${env:ProgramFiles(x86)}
-    if ($programFilesX86) {
-        $candidates += (Join-Path $programFilesX86 'Microsoft\Edge\Application\msedge.exe')
-    }
-    foreach ($item in $candidates) {
-        if (Test-Path -LiteralPath $item -PathType Leaf) {
-            return $item
-        }
-    }
-    $command = Get-Command msedge.exe -ErrorAction SilentlyContinue
-    if ($command) { return $command.Source }
-    return $null
-}
-
-$url = ('http://127.0.0.1:{0}/?offline=1' -f $port)
+# Open the archived game in the user's normal browser instead of Edge app mode.
+# Using localhost also avoids any zoom preference previously saved for 127.0.0.1.
+$url = ('http://localhost:{0}/?offline=1' -f $port)
 Write-Host ('READY {0}' -f $url) -ForegroundColor Green
 Write-Host 'Keep this window open while playing. Close it to stop the offline server.'
 
 if ($env:SUZURAN_OFFLINE_NO_BROWSER -ne '1') {
-    $edgePath = Find-EdgePath
-    if ($edgePath) {
-        $profileBase = $env:LOCALAPPDATA
-        if (-not $profileBase) { $profileBase = $env:TEMP }
-        $profileRoot = Join-Path $profileBase 'Suzuran1938OfflineBrowser'
-        New-Item -ItemType Directory -Path $profileRoot -Force | Out-Null
-        Start-Process -FilePath $edgePath -ArgumentList @(
-            ('--app={0}' -f $url),
-            ('--user-data-dir={0}' -f $profileRoot),
-            '--force-device-scale-factor=1',
-            '--no-first-run'
-        ) | Out-Null
-    } else {
-        Start-Process -FilePath $url | Out-Null
-    }
+    Start-Process -FilePath $url | Out-Null
 }
 
 while ($true) {
