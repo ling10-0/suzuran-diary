@@ -222,13 +222,43 @@ jobs:
             test "$(stat -f%z "$RUNNER_TEMP/$image")" -gt 100000
           done
 
-      - name: Create final Windows and Mac archive
+      - name: Create UTF-8 final Windows and Mac archive
         shell: bash
         run: |
           FINAL_DIR='翻閱1938_最終單機封存版'
+          FINAL_ZIP='翻閱1938_最終單機封存版_Windows_Mac.zip'
           mv offline-package "$FINAL_DIR"
           chmod +x "$FINAL_DIR/mac-server" "$FINAL_DIR/啟動遊戲_Mac.command"
-          ditto -c -k --keepParent "$FINAL_DIR" '翻閱1938_最終單機封存版_Windows_Mac.zip'
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path('翻閱1938_最終單機封存版')
+          output = Path('翻閱1938_最終單機封存版_Windows_Mac.zip')
+          with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as archive:
+              archive.write(root, root.as_posix())
+              for path in sorted(root.rglob('*')):
+                  archive.write(path, path.as_posix())
+
+          with zipfile.ZipFile(output) as archive:
+              expected = [
+                  '翻閱1938_最終單機封存版/啟動遊戲.bat',
+                  '翻閱1938_最終單機封存版/啟動遊戲_Mac.command',
+                  '翻閱1938_最終單機封存版/mac-server',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/anonymous-article.png',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/rejection-record.png',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/final-fragment.png',
+              ]
+              for name in expected:
+                  info = archive.getinfo(name)
+                  assert info.flag_bits & 0x800, f'UTF-8 filename flag missing: {name}'
+              for name in [
+                  '翻閱1938_最終單機封存版/啟動遊戲_Mac.command',
+                  '翻閱1938_最終單機封存版/mac-server',
+              ]:
+                  mode = (archive.getinfo(name).external_attr >> 16) & 0o777
+                  assert mode & 0o111, f'Executable bit missing: {name} ({oct(mode)})'
+          PY
 
       - name: Upload final universal archive
         uses: actions/upload-artifact@v4
