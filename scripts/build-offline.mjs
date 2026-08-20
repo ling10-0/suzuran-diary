@@ -52,12 +52,20 @@ if (!offlineIndex.includes('./offline-ui.css')) {
   writeFileSync(offlineIndexPath, offlineIndex, 'utf8');
 }
 
+// The web build is hosted under /suzuran-diary/, so a few puzzle images use
+// absolute GitHub Pages paths. In the portable archive those paths would point
+// to a non-existent local folder. Rewrite every site-internal base path to a
+// relative path so all bundled images/documents are served from game/.
+const webBasePrefix = '/suzuran-diary/';
+const offlineBasePrefix = './';
+
 // The normal web version uses OpenStreetMap. For the archive, replace that
 // network tile source with the bundled neutral tile so the route map still
 // works without an internet connection.
 const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const offlineTileUrl = './offline-map-tile.svg';
 let tileReplacements = 0;
+let basePathReplacements = 0;
 
 function rewriteOfflineAssets(directory) {
   for (const entry of readdirSync(directory)) {
@@ -70,10 +78,23 @@ function rewriteOfflineAssets(directory) {
     if (!/\.(?:js|mjs|html|css)$/i.test(entry)) continue;
 
     const source = readFileSync(filePath, 'utf8');
-    if (!source.includes(osmTileUrl)) continue;
-    const occurrences = source.split(osmTileUrl).length - 1;
-    writeFileSync(filePath, source.split(osmTileUrl).join(offlineTileUrl), 'utf8');
-    tileReplacements += occurrences;
+    let rewritten = source;
+
+    if (rewritten.includes(osmTileUrl)) {
+      const occurrences = rewritten.split(osmTileUrl).length - 1;
+      rewritten = rewritten.split(osmTileUrl).join(offlineTileUrl);
+      tileReplacements += occurrences;
+    }
+
+    if (rewritten.includes(webBasePrefix)) {
+      const occurrences = rewritten.split(webBasePrefix).length - 1;
+      rewritten = rewritten.split(webBasePrefix).join(offlineBasePrefix);
+      basePathReplacements += occurrences;
+    }
+
+    if (rewritten !== source) {
+      writeFileSync(filePath, rewritten, 'utf8');
+    }
   }
 }
 
@@ -84,6 +105,7 @@ const version = [
   `Built: ${new Date().toISOString()}`,
   `Source commit: ${process.env.GITHUB_SHA || 'local-build'}`,
   `Offline map replacements: ${tileReplacements}`,
+  `Offline site-path replacements: ${basePathReplacements}`,
   '',
   '啟動方式：完整解壓縮後，雙擊「啟動遊戲.bat」。',
 ].join('\n');
@@ -91,3 +113,4 @@ writeFileSync(path.join(outputDir, 'VERSION.txt'), version, 'utf8');
 
 console.log(`Offline package ready: ${path.relative(projectRoot, outputDir)}`);
 console.log(`OpenStreetMap tile replacements: ${tileReplacements}`);
+console.log(`GitHub Pages base-path replacements: ${basePathReplacements}`);
