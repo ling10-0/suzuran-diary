@@ -1,0 +1,68 @@
+name: Build offline package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - agent/offline-package
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'offline/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.github/workflows/offline-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build portable archive
+        run: npm run build:offline
+
+      - name: Verify archive isolation
+        shell: bash
+        run: |
+          test -f 'offline-package/啟動遊戲.bat'
+          test -f 'offline-package/offline-server.ps1'
+          test -f 'offline-package/game/index.html'
+          test -f 'offline-package/game/offline-map-tile.svg'
+          test ! -d 'offline-package/game/server'
+          test ! -d 'offline-package/game/.openai'
+          grep -q 'offline=1&preview=1' 'offline-package/offline-server.ps1'
+          grep -q '單機展示模式' 'offline-package/game/test-mode.js'
+          if grep -R --include='*.js' -n 'tile.openstreetmap.org' offline-package/game; then
+            echo 'Offline package still contains an OpenStreetMap tile dependency.' >&2
+            exit 1
+          fi
+
+      - name: Upload Windows offline package
+        uses: actions/upload-artifact@v4
+        with:
+          name: suzuran-1938-offline-windows
+          path: offline-package/
+          if-no-files-found: error
+          retention-days: 90
