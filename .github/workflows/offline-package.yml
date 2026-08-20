@@ -198,13 +198,15 @@ jobs:
       - name: Verify Mac launcher server and game assets
         shell: bash
         run: |
+          export NO_PROXY='127.0.0.2,localhost'
+          export no_proxy='127.0.0.2,localhost'
           ./offline-package/mac-server --no-browser --port 1938 > "$RUNNER_TEMP/mac-server.log" 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
 
           OK=0
           for i in {1..30}; do
-            if curl -fsS 'http://127.0.0.2:1938/?offline=1' | grep -q '1938'; then
+            if curl --noproxy '*' --max-time 2 -fsS 'http://127.0.0.2:1938/?offline=1' | grep -q '1938'; then
               OK=1
               break
             fi
@@ -216,7 +218,7 @@ jobs:
           fi
 
           for image in anonymous-article.png rejection-record.png final-fragment.png; do
-            curl -fsS "http://127.0.0.2:1938/assets/puzzles/central-bookstore/$image" -o "$RUNNER_TEMP/$image"
+            curl --noproxy '*' --max-time 5 -fsS "http://127.0.0.2:1938/assets/puzzles/central-bookstore/$image" -o "$RUNNER_TEMP/$image"
             test "$(stat -f%z "$RUNNER_TEMP/$image")" -gt 100000
           done
 
