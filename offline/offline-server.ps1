@@ -18,7 +18,7 @@ foreach ($candidatePort in 1938..1948) {
         $candidate = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $candidatePort)
         $candidate.Start()
         $listener = $candidate
-        $port = $candidatePort
+        $port = [int]$candidatePort
         break
     } catch {
         if ($candidate) {
@@ -27,7 +27,7 @@ foreach ($candidatePort in 1938..1948) {
     }
 }
 
-if (-not $listener) {
+if (-not $listener -or -not $port) {
     Write-Host '無法啟動本機遊戲伺服器（1938–1948 連接埠皆無法使用）。' -ForegroundColor Red
     exit 1
 }
@@ -81,7 +81,9 @@ function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]
     $stream.Flush()
 }
 
-$url = "http://127.0.0.1:$port/?offline=1"
+# Use explicit formatting instead of PowerShell variable interpolation so the
+# selected local port can never disappear from the browser URL.
+$url = ('http://127.0.0.1:{0}/?offline=1' -f $port)
 Write-Host ''
 Write-Host '翻閱1938：那些待續的章節｜單機展示版' -ForegroundColor Cyan
 Write-Host "本機網址：$url"
@@ -89,7 +91,7 @@ Write-Host '遊戲資料只會保存在這台電腦，不會寫入正式 Supabas
 Write-Host '要結束單機伺服器，直接關閉這個視窗即可。'
 Write-Host ''
 
-Start-Process $url
+Start-Process -FilePath $url
 
 try {
     while ($true) {
