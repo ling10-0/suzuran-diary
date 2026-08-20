@@ -24,7 +24,6 @@ rmSync(outputDir, {recursive: true, force: true});
 mkdirSync(outputDir, {recursive: true});
 cpSync(distDir, gameDir, {recursive: true});
 
-// Hosting-only files are unnecessary in the portable archive.
 rmSync(path.join(gameDir, 'server'), {recursive: true, force: true});
 rmSync(path.join(gameDir, '.openai'), {recursive: true, force: true});
 
@@ -40,8 +39,6 @@ cpSync(
   path.join(gameDir, 'offline-ui.css'),
 );
 
-// Keep the game UI identical to the web build. The only offline-specific visual
-// is a tiny unobtrusive reset control layered on top of the normal page.
 const offlineIndexPath = path.join(gameDir, 'index.html');
 let offlineIndex = readFileSync(offlineIndexPath, 'utf8');
 if (!offlineIndex.includes('./offline-ui.css')) {
@@ -52,18 +49,12 @@ if (!offlineIndex.includes('./offline-ui.css')) {
   writeFileSync(offlineIndexPath, offlineIndex, 'utf8');
 }
 
-// The web build is hosted under /suzuran-diary/, so a few puzzle images use
-// absolute GitHub Pages paths. In the portable archive those paths would point
-// to a non-existent local folder. Rewrite every site-internal base path to a
-// relative path so all bundled images/documents are served from game/.
+// GitHub Pages serves the site under /suzuran-diary/. The archive server serves
+// game/ at its own root, so absolute site assets must point to /assets/... .
 const webBasePrefix = '/suzuran-diary/';
-const offlineBasePrefix = './';
-
-// The normal web version uses OpenStreetMap. For the archive, replace that
-// network tile source with the bundled neutral tile so the route map still
-// works without an internet connection.
+const offlineBasePrefix = '/';
 const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const offlineTileUrl = './offline-map-tile.svg';
+const offlineTileUrl = '/offline-map-tile.svg';
 let tileReplacements = 0;
 let basePathReplacements = 0;
 
