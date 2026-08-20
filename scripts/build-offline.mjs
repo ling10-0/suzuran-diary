@@ -27,7 +27,7 @@ cpSync(distDir, gameDir, {recursive: true});
 rmSync(path.join(gameDir, 'server'), {recursive: true, force: true});
 rmSync(path.join(gameDir, '.openai'), {recursive: true, force: true});
 
-for (const fileName of ['啟動遊戲.bat', 'offline-server.ps1', 'README.txt']) {
+for (const fileName of ['啟動遊戲.bat', '啟動遊戲_Mac.command', 'offline-server.ps1', 'README.txt']) {
   cpSync(path.join(offlineSourceDir, fileName), path.join(outputDir, fileName));
 }
 cpSync(
@@ -92,13 +92,14 @@ function rewriteOfflineAssets(directory) {
 rewriteOfflineAssets(gameDir);
 
 const version = [
-  '翻閱1938：那些待續的章節｜單機展示版',
+  '翻閱1938：那些待續的章節｜Windows + Mac 最終單機封存版',
   `Built: ${new Date().toISOString()}`,
   `Source commit: ${process.env.GITHUB_SHA || 'local-build'}`,
   `Offline map replacements: ${tileReplacements}`,
   `Offline site-path replacements: ${basePathReplacements}`,
   '',
-  '啟動方式：完整解壓縮後，雙擊「啟動遊戲.bat」。',
+  'Windows：完整解壓縮後，雙擊「啟動遊戲.bat」。',
+  'Mac：完整解壓縮後，雙擊「啟動遊戲_Mac.command」。',
 ].join('\n');
 writeFileSync(path.join(outputDir, 'VERSION.txt'), version, 'utf8');
 
