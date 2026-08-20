@@ -1,9 +1,13 @@
 $ErrorActionPreference = 'Stop'
 
+function Fail([string]$message) {
+    Write-Host $message -ForegroundColor Red
+    exit 1
+}
+
 $gameRoot = Join-Path $PSScriptRoot 'game'
 if (-not (Test-Path -LiteralPath $gameRoot -PathType Container)) {
-    Write-Host '找不到 game 資料夾，請確認已完整解壓縮單機展示包。' -ForegroundColor Red
-    exit 1
+    Fail 'ERROR: game folder not found. Extract the whole ZIP before launching.'
 }
 
 $root = (Resolve-Path -LiteralPath $gameRoot).Path
@@ -12,61 +16,69 @@ $rootPrefix = $root.TrimEnd($trimChars) + [IO.Path]::DirectorySeparatorChar
 $listener = $null
 $port = $null
 
-foreach ($candidatePort in 1938..1948) {
+$ports = @(1938..1948)
+if ($env:SUZURAN_OFFLINE_PORT) {
+    try {
+        $ports = @([int]$env:SUZURAN_OFFLINE_PORT)
+    } catch {
+        Fail 'ERROR: invalid SUZURAN_OFFLINE_PORT value.'
+    }
+}
+
+foreach ($candidatePort in $ports) {
     $candidate = $null
     try {
-        $candidate = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $candidatePort)
+        $candidate = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, [int]$candidatePort)
         $candidate.Start()
         $listener = $candidate
         $port = [int]$candidatePort
         break
     } catch {
-        if ($candidate) {
+        if ($null -ne $candidate) {
             try { $candidate.Stop() } catch {}
         }
     }
 }
 
-if (-not $listener -or -not $port) {
-    Write-Host '無法啟動本機遊戲伺服器（1938–1948 連接埠皆無法使用）。' -ForegroundColor Red
-    exit 1
+if ($null -eq $listener -or $null -eq $port) {
+    Fail 'ERROR: no local port available (1938-1948).'
 }
 
 function Get-ContentType([string]$filePath) {
     switch ([IO.Path]::GetExtension($filePath).ToLowerInvariant()) {
-        '.html' { 'text/html; charset=utf-8' }
-        '.htm'  { 'text/html; charset=utf-8' }
-        '.js'   { 'text/javascript; charset=utf-8' }
-        '.mjs'  { 'text/javascript; charset=utf-8' }
-        '.css'  { 'text/css; charset=utf-8' }
-        '.json' { 'application/json; charset=utf-8' }
-        '.txt'  { 'text/plain; charset=utf-8' }
-        '.svg'  { 'image/svg+xml' }
-        '.png'  { 'image/png' }
-        '.jpg'  { 'image/jpeg' }
-        '.jpeg' { 'image/jpeg' }
-        '.gif'  { 'image/gif' }
-        '.webp' { 'image/webp' }
-        '.ico'  { 'image/x-icon' }
-        '.woff' { 'font/woff' }
-        '.woff2' { 'font/woff2' }
-        '.ttf'  { 'font/ttf' }
-        '.mp3'  { 'audio/mpeg' }
-        '.wav'  { 'audio/wav' }
-        '.ogg'  { 'audio/ogg' }
-        '.mp4'  { 'video/mp4' }
-        '.webm' { 'video/webm' }
-        '.pdf'  { 'application/pdf' }
-        default { 'application/octet-stream' }
+        '.html' { return 'text/html; charset=utf-8' }
+        '.htm'  { return 'text/html; charset=utf-8' }
+        '.js'   { return 'text/javascript; charset=utf-8' }
+        '.mjs'  { return 'text/javascript; charset=utf-8' }
+        '.css'  { return 'text/css; charset=utf-8' }
+        '.json' { return 'application/json; charset=utf-8' }
+        '.txt'  { return 'text/plain; charset=utf-8' }
+        '.svg'  { return 'image/svg+xml' }
+        '.png'  { return 'image/png' }
+        '.jpg'  { return 'image/jpeg' }
+        '.jpeg' { return 'image/jpeg' }
+        '.gif'  { return 'image/gif' }
+        '.webp' { return 'image/webp' }
+        '.ico'  { return 'image/x-icon' }
+        '.woff' { return 'font/woff' }
+        '.woff2' { return 'font/woff2' }
+        '.ttf'  { return 'font/ttf' }
+        '.mp3'  { return 'audio/mpeg' }
+        '.wav'  { return 'audio/wav' }
+        '.ogg'  { return 'audio/ogg' }
+        '.mp4'  { return 'video/mp4' }
+        '.webm' { return 'video/webm' }
+        '.pdf'  { return 'application/pdf' }
+        default { return 'application/octet-stream' }
     }
 }
 
-function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]$body, [string]$contentType, [bool]$headOnly = $false) {
+function Write-Response($stream, [int]$statusCode, [string]$statusText, [byte[]]$body, [string]$contentType, [bool]$headOnly) {
     if ($null -eq $body) { $body = [byte[]]@() }
     $headers = @(
-        "HTTP/1.1 $statusCode $statusText",
-        "Content-Type: $contentType",
-        "Content-Length: $($body.Length)",
+        ('HTTP/1.1 {0} {1}' -f $statusCode, $statusText),
+        ('Content-Type: {0}' -f $contentType),
+        ('Content-Length: {0}' -f $body.Length),
         'Cache-Control: no-store, max-age=0',
         'X-Content-Type-Options: nosniff',
         'Connection: close',
@@ -90,9 +102,9 @@ function Find-EdgePath {
     if ($programFilesX86) {
         $candidates += (Join-Path $programFilesX86 'Microsoft\Edge\Application\msedge.exe')
     }
-    foreach ($candidate in $candidates) {
-        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
-            return $candidate
+    foreach ($item in $candidates) {
+        if (Test-Path -LiteralPath $item -PathType Leaf) {
+            return $item
         }
     }
     $command = Get-Command msedge.exe -ErrorAction SilentlyContinue
@@ -100,105 +112,95 @@ function Find-EdgePath {
     return $null
 }
 
-# Use explicit formatting so the selected local port can never disappear.
 $url = ('http://127.0.0.1:{0}/?offline=1' -f $port)
-Write-Host ''
-Write-Host '翻閱1938：那些待續的章節｜單機展示版' -ForegroundColor Cyan
-Write-Host "本機網址：$url"
-Write-Host '遊戲資料只會保存在這台電腦，不會寫入正式 Supabase。' -ForegroundColor Green
-Write-Host '要結束單機伺服器，直接關閉這個視窗即可。'
-Write-Host ''
+Write-Host ('READY {0}' -f $url) -ForegroundColor Green
+Write-Host 'Keep this window open while playing. Close it to stop the offline server.'
 
-# Prefer an isolated Edge app window. It uses a dedicated browser profile, so
-# localhost-specific zoom/settings from the user's normal browser do not alter
-# the archived game's visual scale. Progress still persists between launches.
-$edgePath = Find-EdgePath
-if ($edgePath) {
-    $profileRoot = Join-Path $env:LOCALAPPDATA 'Suzuran1938OfflineBrowser'
-    New-Item -ItemType Directory -Path $profileRoot -Force | Out-Null
-    Start-Process -FilePath $edgePath -ArgumentList @(
-        "--app=$url",
-        "--user-data-dir=$profileRoot",
-        '--no-first-run'
-    ) | Out-Null
-} else {
-    Start-Process -FilePath $url | Out-Null
+if ($env:SUZURAN_OFFLINE_NO_BROWSER -ne '1') {
+    $edgePath = Find-EdgePath
+    if ($edgePath) {
+        $profileBase = $env:LOCALAPPDATA
+        if (-not $profileBase) { $profileBase = $env:TEMP }
+        $profileRoot = Join-Path $profileBase 'Suzuran1938OfflineBrowser'
+        New-Item -ItemType Directory -Path $profileRoot -Force | Out-Null
+        Start-Process -FilePath $edgePath -ArgumentList @(
+            ('--app={0}' -f $url),
+            ('--user-data-dir={0}' -f $profileRoot),
+            '--force-device-scale-factor=1',
+            '--no-first-run'
+        ) | Out-Null
+    } else {
+        Start-Process -FilePath $url | Out-Null
+    }
 }
 
-try {
-    while ($true) {
+while ($true) {
+    $client = $null
+    $stream = $null
+    $reader = $null
+    try {
         $client = $listener.AcceptTcpClient()
-        $stream = $null
-        $reader = $null
-        try {
-            $stream = $client.GetStream()
-            $reader = [IO.StreamReader]::new($stream, [Text.Encoding]::ASCII, $false, 4096, $true)
-            $requestLine = $reader.ReadLine()
-            if ([string]::IsNullOrWhiteSpace($requestLine)) { continue }
+        $stream = $client.GetStream()
+        $reader = [IO.StreamReader]::new($stream, [Text.Encoding]::ASCII, $false, 4096, $true)
+        $requestLine = $reader.ReadLine()
+        if ([string]::IsNullOrWhiteSpace($requestLine)) { continue }
 
-            do {
-                $line = $reader.ReadLine()
-            } while ($null -ne $line -and $line -ne '')
+        do {
+            $line = $reader.ReadLine()
+        } while ($null -ne $line -and $line -ne '')
 
-            $parts = $requestLine.Split(' ')
-            if ($parts.Length -lt 2) {
-                Write-Response $stream 400 'Bad Request' ([Text.Encoding]::UTF8.GetBytes('Bad Request')) 'text/plain; charset=utf-8'
-                continue
-            }
-
-            $method = $parts[0].ToUpperInvariant()
-            $headOnly = $method -eq 'HEAD'
-            if ($method -ne 'GET' -and -not $headOnly) {
-                Write-Response $stream 405 'Method Not Allowed' ([Text.Encoding]::UTF8.GetBytes('Method Not Allowed')) 'text/plain; charset=utf-8'
-                continue
-            }
-
-            $requestTarget = $parts[1]
-            $pathOnly = ($requestTarget -split '\?', 2)[0]
-            try {
-                $decodedPath = [Uri]::UnescapeDataString($pathOnly).TrimStart('/')
-            } catch {
-                $decodedPath = ''
-            }
-
-            if ([string]::IsNullOrWhiteSpace($decodedPath)) {
-                $decodedPath = 'index.html'
-            }
-
-            $relativePath = $decodedPath.Replace('/', [IO.Path]::DirectorySeparatorChar)
-            $candidatePath = [IO.Path]::GetFullPath((Join-Path $root $relativePath))
-            $insideRoot = $candidatePath.Equals($root, [StringComparison]::OrdinalIgnoreCase) -or $candidatePath.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)
-
-            if (-not $insideRoot) {
-                Write-Response $stream 403 'Forbidden' ([Text.Encoding]::UTF8.GetBytes('Forbidden')) 'text/plain; charset=utf-8' $headOnly
-                continue
-            }
-
-            $filePath = $candidatePath
-            if (-not (Test-Path -LiteralPath $filePath -PathType Leaf)) {
-                # SPA route fallback: game routes are served by the same index.html.
-                $filePath = Join-Path $root 'index.html'
-            }
-
-            if (-not (Test-Path -LiteralPath $filePath -PathType Leaf)) {
-                Write-Response $stream 404 'Not Found' ([Text.Encoding]::UTF8.GetBytes('Not Found')) 'text/plain; charset=utf-8' $headOnly
-                continue
-            }
-
-            $body = [IO.File]::ReadAllBytes($filePath)
-            Write-Response $stream 200 'OK' $body (Get-ContentType $filePath) $headOnly
-        } catch {
-            try {
-                if ($stream) {
-                    Write-Response $stream 500 'Internal Server Error' ([Text.Encoding]::UTF8.GetBytes('Internal Server Error')) 'text/plain; charset=utf-8'
-                }
-            } catch {}
-        } finally {
-            if ($reader) { $reader.Dispose() }
-            if ($stream) { $stream.Dispose() }
-            $client.Close()
+        $parts = $requestLine.Split(' ')
+        if ($parts.Length -lt 2) {
+            Write-Response $stream 400 'Bad Request' ([Text.Encoding]::UTF8.GetBytes('Bad Request')) 'text/plain; charset=utf-8' $false
+            continue
         }
+
+        $method = $parts[0].ToUpperInvariant()
+        $headOnly = $method -eq 'HEAD'
+        if ($method -ne 'GET' -and -not $headOnly) {
+            Write-Response $stream 405 'Method Not Allowed' ([Text.Encoding]::UTF8.GetBytes('Method Not Allowed')) 'text/plain; charset=utf-8' $headOnly
+            continue
+        }
+
+        $requestTarget = $parts[1]
+        $pathOnly = ($requestTarget -split '\?', 2)[0]
+        try {
+            $decodedPath = [Uri]::UnescapeDataString($pathOnly).TrimStart('/')
+        } catch {
+            $decodedPath = ''
+        }
+        if ([string]::IsNullOrWhiteSpace($decodedPath)) {
+            $decodedPath = 'index.html'
+        }
+
+        $relativePath = $decodedPath.Replace('/', [IO.Path]::DirectorySeparatorChar)
+        $candidatePath = [IO.Path]::GetFullPath((Join-Path $root $relativePath))
+        $insideRoot = $candidatePath.Equals($root, [StringComparison]::OrdinalIgnoreCase) -or $candidatePath.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)
+        if (-not $insideRoot) {
+            Write-Response $stream 403 'Forbidden' ([Text.Encoding]::UTF8.GetBytes('Forbidden')) 'text/plain; charset=utf-8' $headOnly
+            continue
+        }
+
+        $filePath = $candidatePath
+        if (-not (Test-Path -LiteralPath $filePath -PathType Leaf)) {
+            $filePath = Join-Path $root 'index.html'
+        }
+        if (-not (Test-Path -LiteralPath $filePath -PathType Leaf)) {
+            Write-Response $stream 404 'Not Found' ([Text.Encoding]::UTF8.GetBytes('Not Found')) 'text/plain; charset=utf-8' $headOnly
+            continue
+        }
+
+        $body = [IO.File]::ReadAllBytes($filePath)
+        Write-Response $stream 200 'OK' $body (Get-ContentType $filePath) $headOnly
+    } catch {
+        if ($null -ne $stream) {
+            try {
+                Write-Response $stream 500 'Internal Server Error' ([Text.Encoding]::UTF8.GetBytes('Internal Server Error')) 'text/plain; charset=utf-8' $false
+            } catch {}
+        }
+    } finally {
+        if ($null -ne $reader) { try { $reader.Dispose() } catch {} }
+        if ($null -ne $stream) { try { $stream.Dispose() } catch {} }
+        if ($null -ne $client) { try { $client.Close() } catch {} }
     }
-} finally {
-    $listener.Stop()
 }
