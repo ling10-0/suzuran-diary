@@ -5,7 +5,19 @@ on:
   push:
     branches:
       - main
-      - agent/offline-package
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'offline/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.github/workflows/offline-package.yml'
+  pull_request:
+    branches:
+      - main
     paths:
       - 'src/**'
       - 'public/**'
