@@ -1,0 +1,269 @@
+name: Build offline package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - agent/offline-package
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'offline/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.github/workflows/offline-package.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'offline/**'
+      - 'scripts/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.js'
+      - '.github/workflows/offline-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build portable archive
+        run: npm run build:offline
+
+      - name: Verify archive isolation and bundled assets
+        shell: bash
+        run: |
+          test -f 'offline-package/啟動遊戲.bat'
+          test -f 'offline-package/啟動遊戲_Mac.command'
+          test -f 'offline-package/offline-server.ps1'
+          test -f 'offline-package/game/index.html'
+          test -f 'offline-package/game/offline-map-tile.svg'
+          test -f 'offline-package/game/assets/puzzles/central-bookstore/anonymous-article.png'
+          test -f 'offline-package/game/assets/puzzles/central-bookstore/rejection-record.png'
+          test -f 'offline-package/game/assets/puzzles/central-bookstore/final-fragment.png'
+          test ! -d 'offline-package/game/server'
+          test ! -d 'offline-package/game/.openai'
+          grep -q 'offline=1' 'offline-package/offline-server.ps1'
+          grep -q 'READY' 'offline-package/offline-server.ps1'
+          grep -q '127.0.0.2' 'offline-package/offline-server.ps1'
+          grep -q '單機展示模式' 'offline-package/game/test-mode.js'
+          python - <<'PY'
+          from pathlib import Path
+          data = Path('offline-package/offline-server.ps1').read_bytes()
+          if any(byte > 127 for byte in data):
+              raise SystemExit('offline-server.ps1 must remain ASCII-only for Windows PowerShell 5.1 compatibility')
+          PY
+          if grep -R --include='*.js' --include='*.html' --include='*.css' -n '/suzuran-diary/assets/' offline-package/game; then
+            echo 'Offline package still contains GitHub Pages asset paths.' >&2
+            exit 1
+          fi
+          if grep -R --include='*.js' -n 'tile.openstreetmap.org' offline-package/game; then
+            echo 'Offline package still contains an OpenStreetMap tile dependency.' >&2
+            exit 1
+          fi
+
+      - name: Upload platform-neutral base package
+        uses: actions/upload-artifact@v4
+        with:
+          name: suzuran-1938-offline-base
+          path: offline-package/
+          if-no-files-found: error
+          retention-days: 30
+
+  windows-launcher-smoke:
+    needs: build-offline
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download offline base package
+        uses: actions/download-artifact@v4
+        with:
+          name: suzuran-1938-offline-base
+          path: offline-package
+
+      - name: Start Windows launcher server and verify game assets
+        shell: powershell
+        run: |
+          $env:SUZURAN_OFFLINE_NO_BROWSER = '1'
+          $env:SUZURAN_OFFLINE_PORT = '1938'
+          $stdout = Join-Path $env:RUNNER_TEMP 'offline-server.stdout.log'
+          $stderr = Join-Path $env:RUNNER_TEMP 'offline-server.stderr.log'
+          $script = Join-Path $PWD 'offline-package\offline-server.ps1'
+          $proc = Start-Process powershell.exe -ArgumentList @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-File', $script
+          ) -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+
+          $ok = $false
+          try {
+            for ($i = 0; $i -lt 30; $i++) {
+              if ($proc.HasExited) { break }
+              try {
+                $response = Invoke-WebRequest -UseBasicParsing 'http://127.0.0.2:1938/?offline=1' -TimeoutSec 2
+                if ($response.StatusCode -eq 200 -and $response.Content -match '1938') {
+                  $ok = $true
+                  break
+                }
+              } catch {}
+              Start-Sleep -Milliseconds 500
+            }
+
+            if (-not $ok) {
+              Write-Host '--- stdout ---'
+              if (Test-Path $stdout) { Get-Content $stdout }
+              Write-Host '--- stderr ---'
+              if (Test-Path $stderr) { Get-Content $stderr }
+              throw 'Windows offline launcher smoke test failed.'
+            }
+
+            $images = @(
+              'anonymous-article.png',
+              'rejection-record.png',
+              'final-fragment.png'
+            )
+            foreach ($image in $images) {
+              $url = "http://127.0.0.2:1938/assets/puzzles/central-bookstore/$image"
+              $asset = Invoke-WebRequest -UseBasicParsing $url -TimeoutSec 5
+              if ($asset.StatusCode -ne 200 -or $asset.RawContentLength -lt 100000) {
+                throw "Windows image verification failed: $image"
+              }
+            }
+          } finally {
+            if (-not $proc.HasExited) {
+              Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+            }
+          }
+
+  mac-universal-package:
+    needs:
+      - build-offline
+      - windows-launcher-smoke
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download offline base package
+        uses: actions/download-artifact@v4
+        with:
+          name: suzuran-1938-offline-base
+          path: offline-package
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.x'
+
+      - name: Build Intel and Apple Silicon Mac server
+        shell: bash
+        run: |
+          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags='-s -w' -o offline-package/mac-server-amd64 ./offline/mac-server.go
+          CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -trimpath -ldflags='-s -w' -o offline-package/mac-server-arm64 ./offline/mac-server.go
+          lipo -create -output offline-package/mac-server offline-package/mac-server-amd64 offline-package/mac-server-arm64
+          rm offline-package/mac-server-amd64 offline-package/mac-server-arm64
+          chmod +x offline-package/mac-server offline-package/啟動遊戲_Mac.command
+          ARCHS="$(lipo -archs offline-package/mac-server)"
+          echo "Mac server architectures: $ARCHS"
+          [[ "$ARCHS" == *"x86_64"* ]]
+          [[ "$ARCHS" == *"arm64"* ]]
+
+      - name: Verify Mac launcher server and game assets
+        shell: bash
+        run: |
+          export NO_PROXY='127.0.0.1,localhost'
+          export no_proxy='127.0.0.1,localhost'
+          ./offline-package/mac-server --no-browser --port 1938 > "$RUNNER_TEMP/mac-server.log" 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          OK=0
+          for i in {1..30}; do
+            if curl --noproxy '*' --connect-timeout 1 --max-time 2 -fsS 'http://127.0.0.1:1938/?offline=1' | grep -q '1938'; then
+              OK=1
+              break
+            fi
+            sleep 0.5
+          done
+          if [ "$OK" -ne 1 ]; then
+            cat "$RUNNER_TEMP/mac-server.log" || true
+            exit 1
+          fi
+
+          for image in anonymous-article.png rejection-record.png final-fragment.png; do
+            curl --noproxy '*' --connect-timeout 1 --max-time 5 -fsS "http://127.0.0.1:1938/assets/puzzles/central-bookstore/$image" -o "$RUNNER_TEMP/$image"
+            test "$(stat -f%z "$RUNNER_TEMP/$image")" -gt 100000
+          done
+
+      - name: Create UTF-8 final Windows and Mac archive
+        shell: bash
+        run: |
+          FINAL_DIR='翻閱1938_最終單機封存版'
+          FINAL_ZIP='翻閱1938_最終單機封存版_Windows_Mac.zip'
+          mv offline-package "$FINAL_DIR"
+          chmod +x "$FINAL_DIR/mac-server" "$FINAL_DIR/啟動遊戲_Mac.command"
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path('翻閱1938_最終單機封存版')
+          output = Path('翻閱1938_最終單機封存版_Windows_Mac.zip')
+          with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as archive:
+              archive.write(root, root.as_posix())
+              for path in sorted(root.rglob('*')):
+                  archive.write(path, path.as_posix())
+
+          with zipfile.ZipFile(output) as archive:
+              expected = [
+                  '翻閱1938_最終單機封存版/啟動遊戲.bat',
+                  '翻閱1938_最終單機封存版/啟動遊戲_Mac.command',
+                  '翻閱1938_最終單機封存版/mac-server',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/anonymous-article.png',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/rejection-record.png',
+                  '翻閱1938_最終單機封存版/game/assets/puzzles/central-bookstore/final-fragment.png',
+              ]
+              for name in expected:
+                  info = archive.getinfo(name)
+                  assert info.flag_bits & 0x800, f'UTF-8 filename flag missing: {name}'
+              for name in [
+                  '翻閱1938_最終單機封存版/啟動遊戲_Mac.command',
+                  '翻閱1938_最終單機封存版/mac-server',
+              ]:
+                  mode = (archive.getinfo(name).external_attr >> 16) & 0o777
+                  assert mode & 0o111, f'Executable bit missing: {name} ({oct(mode)})'
+          PY
+
+      - name: Upload final universal archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: suzuran-1938-offline-windows-mac-final
+          path: '翻閱1938_最終單機封存版_Windows_Mac.zip'
+          if-no-files-found: error
+          retention-days: 90

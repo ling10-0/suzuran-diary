@@ -1,10 +1,15 @@
 (() => {
   const TEST_QUERY = 'test';
   const TEST_VALUE = '1';
+  const OFFLINE_QUERY = 'offline';
   const SESSION_KEY = 'suzuran-test-mode-active';
+  const OFFLINE_SESSION_KEY = 'suzuran-offline-mode-active';
   const TEST_PREFIX = '__suzuran_test__:';
   const SUPABASE_HOST = 'unyntuezvovodpklishf.supabase.co';
-  const SUPABASE_PATH = '/rest/v1/newsroom_progress';
+  const SUPABASE_PATHS = [
+    '/rest/v1/newsroom_progress',
+    '/rest/v1/newsroom_test_progress',
+  ];
 
   const storageProto = Storage.prototype;
   const originalStorage = {
@@ -14,20 +19,38 @@
   };
 
   const currentUrl = new URL(window.location.href);
+  const offlineRequested = currentUrl.searchParams.get(OFFLINE_QUERY) === TEST_VALUE;
   const requested = currentUrl.searchParams.get(TEST_QUERY) === TEST_VALUE;
 
-  if (requested) {
+  if (offlineRequested) {
+    window.sessionStorage.setItem(OFFLINE_SESSION_KEY, '1');
+  }
+  const offlineMode =
+    offlineRequested || window.sessionStorage.getItem(OFFLINE_SESSION_KEY) === '1';
+
+  if (requested || offlineMode) {
     window.sessionStorage.setItem(SESSION_KEY, '1');
   }
 
-  const enabled = requested || window.sessionStorage.getItem(SESSION_KEY) === '1';
+  const enabled =
+    requested || offlineMode || window.sessionStorage.getItem(SESSION_KEY) === '1';
   if (!enabled) return;
 
   window.__SUZURAN_TEST_MODE__ = true;
+  window.__SUZURAN_OFFLINE_MODE__ = offlineMode;
   document.documentElement.dataset.suzuranTestMode = '1';
+  if (offlineMode) document.documentElement.dataset.suzuranOfflineMode = '1';
 
+  let urlChanged = false;
   if (!requested) {
     currentUrl.searchParams.set(TEST_QUERY, TEST_VALUE);
+    urlChanged = true;
+  }
+  if (offlineMode && !offlineRequested) {
+    currentUrl.searchParams.set(OFFLINE_QUERY, TEST_VALUE);
+    urlChanged = true;
+  }
+  if (urlChanged) {
     window.history.replaceState(null, '', currentUrl);
   }
 
@@ -96,9 +119,19 @@
       return originalFetch(input, init);
     }
 
+    const isSupabaseRequest = parsed.hostname === SUPABASE_HOST;
     const isProgressRequest =
-      parsed.hostname === SUPABASE_HOST &&
-      parsed.pathname.endsWith(SUPABASE_PATH);
+      isSupabaseRequest &&
+      SUPABASE_PATHS.some(path => parsed.pathname.endsWith(path));
+
+    // Offline archive mode never contacts Supabase. Unknown future endpoints are
+    // blocked as well so the archived package cannot accidentally affect live data.
+    if (offlineMode && isSupabaseRequest && !isProgressRequest) {
+      return new Response(JSON.stringify({offline: true}), {
+        status: 503,
+        headers: {'Content-Type': 'application/json'},
+      });
+    }
 
     if (!isProgressRequest) {
       return originalFetch(input, init);
@@ -139,6 +172,12 @@
       return new Response('', {status: 201});
     }
 
+    if (method === 'DELETE') {
+      const newsroom = (parsed.searchParams.get('newsroom') || '').replace(/^eq\./, '');
+      if (newsroom) rawRemove(sharedKey(newsroom));
+      return new Response('', {status: 204});
+    }
+
     return new Response('', {status: 204});
   };
 
@@ -148,12 +187,13 @@
       .forEach(rawRemove);
   };
 
-  // In test mode, ?reset=1 must never trigger the production reset logic
+  // In test/offline mode, ?reset=1 must never trigger production reset logic
   // inside group-selection.js. Handle it here and remove the flag first.
   if (currentUrl.searchParams.get('reset') === '1') {
     clearTestData();
     currentUrl.searchParams.delete('reset');
     currentUrl.searchParams.set(TEST_QUERY, TEST_VALUE);
+    if (offlineMode) currentUrl.searchParams.set(OFFLINE_QUERY, TEST_VALUE);
     window.history.replaceState(null, '', currentUrl);
   }
 
@@ -162,7 +202,7 @@
 
     const controls = document.createElement('aside');
     controls.id = 'suzuran-test-controls';
-    controls.setAttribute('aria-label', '測試模式工具');
+    controls.setAttribute('aria-label', offlineMode ? '單機展示模式工具' : '測試模式工具');
     controls.innerHTML = `
       <style>
         #suzuran-test-controls {
@@ -205,25 +245,32 @@
           }
         }
       </style>
-      <strong>🧪 測試模式・不寫入 Supabase</strong>
-      <button type="button" data-action="reset">重置測試</button>
-      <button type="button" data-action="exit">退出</button>
+      <strong>${offlineMode ? '📦 單機展示模式・資料僅存本機' : '🧪 測試模式・不寫入 Supabase'}</strong>
+      <button type="button" data-action="reset">${offlineMode ? '重置體驗' : '重置測試'}</button>
+      ${offlineMode ? '' : '<button type="button" data-action="exit">退出</button>'}
     `;
 
     controls.querySelector('[data-action="reset"]').addEventListener('click', () => {
-      if (!window.confirm('要清除所有測試進度並從頭開始嗎？正式玩家資料與 Supabase 不會受影響。')) return;
+      const message = offlineMode
+        ? '要清除這台電腦上的單機體驗進度並從頭開始嗎？正式玩家資料與 Supabase 不會受影響。'
+        : '要清除所有測試進度並從頭開始嗎？正式玩家資料與 Supabase 不會受影響。';
+      if (!window.confirm(message)) return;
       clearTestData();
       const clean = new URL(window.location.href);
       clean.search = '';
       clean.searchParams.set(TEST_QUERY, TEST_VALUE);
+      if (offlineMode) clean.searchParams.set(OFFLINE_QUERY, TEST_VALUE);
       clean.hash = '';
       window.location.replace(clean);
     });
 
-    controls.querySelector('[data-action="exit"]').addEventListener('click', () => {
+    const exitButton = controls.querySelector('[data-action="exit"]');
+    exitButton?.addEventListener('click', () => {
       window.sessionStorage.removeItem(SESSION_KEY);
+      window.sessionStorage.removeItem(OFFLINE_SESSION_KEY);
       const clean = new URL(window.location.href);
       clean.searchParams.delete(TEST_QUERY);
+      clean.searchParams.delete(OFFLINE_QUERY);
       clean.searchParams.delete('reset');
       window.location.replace(clean);
     });

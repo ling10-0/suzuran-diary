@@ -1,0 +1,108 @@
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import path from 'node:path';
+
+const projectRoot = process.cwd();
+const distDir = path.join(projectRoot, 'dist');
+const outputDir = path.join(projectRoot, 'offline-package');
+const gameDir = path.join(outputDir, 'game');
+const offlineSourceDir = path.join(projectRoot, 'offline');
+
+if (!existsSync(distDir)) {
+  throw new Error('dist/ 不存在，請先執行 Vite build。');
+}
+
+rmSync(outputDir, {recursive: true, force: true});
+mkdirSync(outputDir, {recursive: true});
+cpSync(distDir, gameDir, {recursive: true});
+
+rmSync(path.join(gameDir, 'server'), {recursive: true, force: true});
+rmSync(path.join(gameDir, '.openai'), {recursive: true, force: true});
+
+for (const fileName of ['啟動遊戲.bat', '啟動遊戲_Mac.command', 'offline-server.ps1', 'README.txt']) {
+  cpSync(path.join(offlineSourceDir, fileName), path.join(outputDir, fileName));
+}
+cpSync(
+  path.join(offlineSourceDir, 'offline-map-tile.svg'),
+  path.join(gameDir, 'offline-map-tile.svg'),
+);
+cpSync(
+  path.join(offlineSourceDir, 'offline-ui.css'),
+  path.join(gameDir, 'offline-ui.css'),
+);
+
+const offlineIndexPath = path.join(gameDir, 'index.html');
+let offlineIndex = readFileSync(offlineIndexPath, 'utf8');
+if (!offlineIndex.includes('./offline-ui.css')) {
+  offlineIndex = offlineIndex.replace(
+    '</head>',
+    '    <link rel="stylesheet" href="./offline-ui.css" />\n  </head>',
+  );
+  writeFileSync(offlineIndexPath, offlineIndex, 'utf8');
+}
+
+// GitHub Pages serves the site under /suzuran-diary/. The archive server serves
+// game/ at its own root, so absolute site assets must point to /assets/... .
+const webBasePrefix = '/suzuran-diary/';
+const offlineBasePrefix = '/';
+const osmTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const offlineTileUrl = '/offline-map-tile.svg';
+let tileReplacements = 0;
+let basePathReplacements = 0;
+
+function rewriteOfflineAssets(directory) {
+  for (const entry of readdirSync(directory)) {
+    const filePath = path.join(directory, entry);
+    const stats = statSync(filePath);
+    if (stats.isDirectory()) {
+      rewriteOfflineAssets(filePath);
+      continue;
+    }
+    if (!/\.(?:js|mjs|html|css)$/i.test(entry)) continue;
+
+    const source = readFileSync(filePath, 'utf8');
+    let rewritten = source;
+
+    if (rewritten.includes(osmTileUrl)) {
+      const occurrences = rewritten.split(osmTileUrl).length - 1;
+      rewritten = rewritten.split(osmTileUrl).join(offlineTileUrl);
+      tileReplacements += occurrences;
+    }
+
+    if (rewritten.includes(webBasePrefix)) {
+      const occurrences = rewritten.split(webBasePrefix).length - 1;
+      rewritten = rewritten.split(webBasePrefix).join(offlineBasePrefix);
+      basePathReplacements += occurrences;
+    }
+
+    if (rewritten !== source) {
+      writeFileSync(filePath, rewritten, 'utf8');
+    }
+  }
+}
+
+rewriteOfflineAssets(gameDir);
+
+const version = [
+  '翻閱1938：那些待續的章節｜Windows + Mac 最終單機封存版',
+  `Built: ${new Date().toISOString()}`,
+  `Source commit: ${process.env.GITHUB_SHA || 'local-build'}`,
+  `Offline map replacements: ${tileReplacements}`,
+  `Offline site-path replacements: ${basePathReplacements}`,
+  '',
+  'Windows：完整解壓縮後，雙擊「啟動遊戲.bat」。',
+  'Mac：完整解壓縮後，雙擊「啟動遊戲_Mac.command」。',
+].join('\n');
+writeFileSync(path.join(outputDir, 'VERSION.txt'), version, 'utf8');
+
+console.log(`Offline package ready: ${path.relative(projectRoot, outputDir)}`);
+console.log(`OpenStreetMap tile replacements: ${tileReplacements}`);
+console.log(`GitHub Pages base-path replacements: ${basePathReplacements}`);

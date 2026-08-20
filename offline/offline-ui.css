@@ -1,0 +1,45 @@
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls {
+  right: 10px;
+  bottom: 10px;
+  left: auto;
+  gap: 5px;
+  padding: 5px 6px;
+  border-color: rgba(109, 37, 29, .55);
+  background: rgba(244, 228, 184, .92);
+  box-shadow: 0 3px 12px rgba(35, 25, 15, .16);
+  opacity: .72;
+  font-size: 10px;
+  transition: opacity .15s ease;
+}
+
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls:hover,
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls:focus-within {
+  opacity: 1;
+}
+
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls strong {
+  font-size: 0;
+  letter-spacing: 0;
+}
+
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls strong::after {
+  content: '📦 單機版';
+  font: 700 10px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+html[data-suzuran-offline-mode="1"] body #suzuran-test-controls button {
+  min-height: 26px;
+  padding: 4px 7px;
+  font: 700 10px/1 system-ui, sans-serif;
+}
+
+@media (max-width: 560px) {
+  html[data-suzuran-offline-mode="1"] body #suzuran-test-controls {
+    right: 7px;
+    bottom: 7px;
+    left: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+}
