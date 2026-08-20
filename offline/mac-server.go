@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-const host = "127.0.0.2"
+const host = "127.0.0.1"
 
 func main() {
 	fixedPort := flag.Int("port", 0, "fixed local port (default: scan 1938-1948)")
